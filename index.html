@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>St. Francis Borgia • Landing Page</title>
+
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --blue:#002d72;
+    --gold:#f1b500;
+    --cardBorder:rgba(255,255,255,.18);
+    --scriptSize:clamp(40px,9vw,72px);
+  }
+  *{ box-sizing:border-box }
+  body{ margin:0; background:var(--blue); color:#fff; font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif }
+  a{ color:inherit }
+  .wrap{ max-width:900px; margin:0 auto; padding:18px }
+
+  /* Header */
+  .head{ display:flex; flex-direction:column; align-items:center; gap:12px; margin:12px 0 14px; text-align:center }
+  .logo-circle{ width:190px; height:190px; border-radius:50%; background:#fff; display:flex; align-items:center; justify-content:center; box-shadow:0 6px 18px rgba(0,0,0,.18) }
+  .logo{ max-width:130px; height:auto; display:block }
+  .title-script{ font-family:"Lobster",cursive; font-size:var(--scriptSize); line-height:1; color:var(--gold); text-shadow:0 1px 0 rgba(0,0,0,.08) }
+  .title-sub{ margin-top:6px; font-weight:800; text-transform:uppercase; font-size:calc(var(--scriptSize)*.35); letter-spacing:.5em }
+
+  /* Social */
+  .social{ display:flex; gap:16px; justify-content:center; flex-wrap:wrap; margin:8px 0 18px }
+  .icon-wrap{ width:56px; height:56px; border-radius:14px; background:#fff; display:inline-flex; align-items:center; justify-content:center; box-shadow:0 3px 10px rgba(0,0,0,.12) }
+  .icon-wrap img{ width:30px; height:30px; display:block }
+  .icon-wrap.hudl img{ max-width:76%; max-height:76%; width:auto; height:auto; object-fit:contain }
+
+  /* Chips */
+  .chipbar{ display:flex; gap:14px; justify-content:center; flex-wrap:wrap; margin:8px 0 8px }
+  .chip{ appearance:none; border:2px solid #fff; background:transparent; color:#fff; padding:10px 18px; border-radius:26px; font-weight:700; cursor:pointer }
+  .chip.active{ background:var(--gold); border-color:var(--gold); color:#0a214f }
+
+  /* Sections */
+  .section{ margin:16px 0; border:1px solid var(--cardBorder); border-radius:14px; background:rgba(255,255,255,.04) }
+  .section-head{ padding:14px 16px; border-bottom:1px solid var(--cardBorder); font-weight:800; color:var(--gold); font-family:"Lobster",cursive; font-size:clamp(28px,4.6vw,44px) }
+  .grid{ display:grid; gap:12px; padding:12px }
+  @media (min-width:600px){ .grid{ grid-template-columns:1fr 1fr } }
+
+  .card{ display:flex; align-items:center; justify-content:space-between; gap:12px; background:rgba(255,255,255,.06); border:1px solid var(--cardBorder); border-radius:12px; padding:14px }
+  .team{ font-weight:800; font-size:clamp(16px,2.6vw,24px) }
+
+  /* Action chips */
+  .chips{ display:flex; gap:10px; align-items:center }
+  .round{ width:50px; height:50px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; border:2px solid #fff; background:#fff }
+  .round.view{ background:var(--blue) } /* calendar icon sits on blue */
+  .round img{ max-width:70%; max-height:70%; width:auto; height:auto; display:block; object-fit:contain }
+
+  /* GoFan */
+  .gofan-cta{ display:flex; justify-content:center; margin:22px 0 10px }
+  .gofan-cta img{ height:54px; width:auto; display:block }
+
+  /* Footer */
+  .footer-links{ text-align:center; margin:18px 0 }
+  .footer-links a{ color:#fff; text-decoration:underline; margin:0 10px }
+
+  /* ICS modal */
+  .modal-backdrop{ position:fixed; inset:0; background:rgba(0,0,0,.45); display:none; align-items:flex-end; justify-content:center; z-index:999 }
+  .modal{ width:100%; max-width:900px; max-height:80vh; overflow:auto; background:#0b317f; color:#fff; border-radius:16px 16px 0 0; border:1px solid var(--cardBorder); box-shadow:0 -8px 24px rgba(0,0,0,.25) }
+  .modal header{ display:flex; align-items:center; justify-content:space-between; padding:14px 16px; border-bottom:1px solid var(--cardBorder) }
+  .modal header h3{ margin:0; font-size:20px; font-weight:800 }
+  .modal .close{ appearance:none; border:0; background:transparent; color:#fff; font-size:24px; line-height:1; cursor:pointer }
+  .modal .content{ padding:10px 16px 16px }
+  .event{ padding:10px 0; border-bottom:1px solid var(--cardBorder) }
+  .event:last-child{ border-bottom:0 }
+  .event .when{ font-weight:700 }
+  .event .where{ font-size:13px; opacity:.85 }
+  .modal-backdrop.show{ display:flex }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <!-- Header -->
+    <header class="head">
+      <a href="https://www.borgia.com" target="_blank" rel="noopener" class="logo-circle" aria-label="SFB website">
+        <img class="logo" src="logo.png" alt="St. Francis Borgia Logo">
+      </a>
+      <div class="title-script">St. Francis Borgia</div>
+      <div class="title-sub">Teams</div>
+
+      <!-- Social -->
+      <nav class="social" aria-label="Social & Streaming">
+        <a href="https://www.instagram.com/borgiaknight?igsh=dmVvaGVxd2Q5NHI3" target="_blank" rel="noopener" aria-label="Instagram"><span class="icon-wrap"><img src="icons/square-instagram-brands-solid-full.svg" alt="Instagram"></span></a>
+        <a href="https://x.com/borgiaathletics?s=21&t=rCQlMmtkHbQVpj9pzx_7WA" target="_blank" rel="noopener" aria-label="X"><span class="icon-wrap"><img src="icons/square-x-twitter-brands-solid-full.svg" alt="X"></span></a>
+        <a href="https://www.facebook.com/share/1EWkjCpFom/?mibextid=wwXIfr" target="_blank" rel="noopener" aria-label="Facebook"><span class="icon-wrap"><img src="icons/square-facebook-brands-solid-full.svg" alt="Facebook"></span></a>
+        <a href="https://youtube.com/@borgiaathletics8736?si=KXv4ea6yGnFpL9v" target="_blank" rel="noopener" aria-label="YouTube"><span class="icon-wrap"><img src="icons/square-youtube-brands-solid-full.svg" alt="YouTube"></span></a>
+        <a href="https://fan.hudl.com/usa/mo/washington/organization/3681/st-francis-borgia-h-high-school" target="_blank" rel="noopener" aria-label="Hudl"><span class="icon-wrap hudl"><img src="icons/hudl.png" alt="Hudl"></span></a>
+      </nav>
+    </header>
+
+    <!-- Season chips -->
+    <div class="chipbar" id="seasonBar" role="tablist" aria-label="Season">
+      <button class="chip active" data-season="Fall">Fall</button>
+      <button class="chip" data-season="Winter">Winter</button>
+      <button class="chip" data-season="Spring">Spring</button>
+      <button class="chip" data-season="All Year">All Year</button>
+    </div>
+    <!-- Gender chips (no Coed chip; Coed always included) -->
+    <div class="chipbar" id="genderBar" role="tablist" aria-label="Gender">
+      <button class="chip active" data-gender="Boys">Boys</button>
+      <button class="chip" data-gender="Girls">Girls</button>
+    </div>
+
+    <!-- Teams under chips -->
+    <section id="teamsSection" class="section" aria-label="Teams" style="margin-top:14px;">
+      <div class="section-head">Teams</div>
+      <div id="teamsGrid" class="grid"></div>
+    </section>
+
+    <!-- GoFan -->
+    <div class="gofan-cta">
+      <a href="https://gofan.co/app/school/MO24174" target="_blank" rel="noopener">
+        <img src="icons/gofan.png" alt="GoFan">
+      </a>
+    </div>
+
+    <!-- Footer links -->
+    <div class="footer-links">
+      <a href="https://www.borgia.com/athletics/borgia-athletics" target="_blank" rel="noopener">Borgia Athletics</a> |
+      <a href="https://www.mshsaa.org/MySchool/?s=544" target="_blank" rel="noopener">MSHSAA</a>
+    </div>
+  </div>
+
+  <!-- ICS modal -->
+  <div id="icsModalBackdrop" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="icsModalTitle">
+    <div class="modal">
+      <header>
+        <h3 id="icsModalTitle">Upcoming</h3>
+        <button class="close" id="icsClose" aria-label="Close">×</button>
+      </header>
+      <div class="content" id="icsContent"></div>
+    </div>
+  </div>
+
+<script>
+/* ========= Published CSV from Google Sheets =========
+   Replace if your publish link changes.
+*/
+const GOOGLE_CSV =
+  'https://docs.google.com/spreadsheets/d/e/2PACX-1vT5Ly_7rP62i_7vtVWkC_oiWDQM6E9I0c6-kRtKRaoJIAfNDiFq2k5cQ3nwiuoB-cNKFrb5k3XUQeB1/pub?gid=1131242995&single=true&output=csv';
+
+/* Icons used inside action chips */
+const ICONS = {
+  message:  'icons/message-solid-full.svg',
+  calendar: 'icons/calendar.png',  // middle “View” chip → calendar.png
+  apple:    'icons/apple.png'      // right “Subscribe” chip
+};
+
+/* Remove any stray Coed chip if present in HTML */
+document.querySelectorAll('[data-gender="Coed"]').forEach(el => el.remove());
+
+/* -------- Robust CSV/TSV parser (quoted fields supported) -------- */
+function parseDelimited(text){
+  const firstLine = text.split(/\r?\n/)[0] || '';
+  const delim = firstLine.includes('\t') ? '\t' : ',';
+  const rows = [];
+  let row = [], field = '', i = 0, inQuotes = false;
+  while (i < text.length) {
+    const ch = text[i];
+    if (inQuotes) {
+      if (ch === '"') { if (text[i+1] === '"') { field += '"'; i += 2; } else { inQuotes = false; i++; } continue; }
+      field += ch; i++; continue;
+    } else {
+      if (ch === '"') { inQuotes = true; i++; continue; }
+      if (ch === delim) { row.push(field); field = ''; i++; continue; }
+      if (ch === '\n') { row.push(field); rows.push(row); row = []; field = ''; i++; continue; }
+      if (ch === '\r') { i++; continue; }
+      field += ch; i++; continue;
+    }
+  }
+  row.push(field); rows.push(row);
+  while (rows.length && rows[rows.length-1].every(c=>c==='')) rows.pop();
+  const headers = (rows.shift() || []).map(h=>h.trim());
+  return rows.map(cols => {
+    const o={}; headers.forEach((h,idx)=> o[h] = (cols[idx] ?? '').trim()); return o;
+  });
+}
+
+/* Normalize gender text */
+function normGender(g){
+  g = (g || '').trim().toLowerCase();
+  if (g === 'boys' || g === 'boy')  return 'Boys';
+  if (g === 'girls' || g === 'girl') return 'Girls';
+  if (g === 'coed' || g === 'co-ed' || g === 'both') return 'Coed';
+  return g ? g[0].toUpperCase() + g.slice(1) : '';
+}
+
+/* -------- Load & normalize rows -------- */
+async function loadRows(){
+  const url = GOOGLE_CSV + '&_cb=' + Date.now(); // cache-bust
+  const res = await fetch(url, {cache:'no-store'});
+  if (!res.ok) throw new Error('CSV fetch failed: ' + res.status);
+  const txt = await res.text();
+  const raw = parseDelimited(txt);
+  const rows = raw.map(r => ({
+    season: (r.Season||'').trim(),
+    gender: normGender(r.Gender),
+    sport:  (r.Sport ||'').trim(),
+    level:  (r.Level ||'').trim(),
+    url:    (r.URL   ||'').trim(),
+    msg:    (r.MessageURL||'').trim()
+  })).filter(r => r.sport && r.level && r.url);
+  console.log(`Loaded ${rows.length} rows from sheet`);
+  return rows;
+}
+
+/* -------- State, filtering, rendering -------- */
+const LEVEL_ORDER = { Varsity:0, JV:1, Freshman:2 };
+let ALL_ROWS = [];
+let SELECTED_SEASON = 'Fall';
+let SELECTED_GENDER = new Set(['Boys']); // single-select
+
+// Season: Fall/Winter/Spring include All Year; "All Year" shows only All Year
+function seasonMatches(r){
+  return SELECTED_SEASON === 'All Year'
+    ? r.season.toLowerCase() === 'all year'
+    : (r.season === SELECTED_SEASON || r.season.toLowerCase() === 'all year');
+}
+// Gender: Coed shows in BOTH Boys and Girls
+function genderMatches(r){
+  if ((r.gender||'').toLowerCase() === 'coed') return true;
+  return SELECTED_GENDER.has(r.gender);
+}
+function groupBySport(rows){
+  const m=new Map();
+  rows.forEach(r=>{ if(!m.has(r.sport)) m.set(r.sport,[]); m.get(r.sport).push(r); });
+  return m;
+}
+
+function renderTeams(){
+  const gridRoot = document.getElementById('teamsGrid');
+  gridRoot.innerHTML = '';
+
+  const filtered = ALL_ROWS.filter(seasonMatches).filter(genderMatches);
+  if(!filtered.length){
+    gridRoot.innerHTML = '<p style="opacity:.85;margin:8px 0 12px;">No teams match these filters yet.</p>';
+    return;
+  }
+  const grouped = groupBySport(filtered);
+  const sports = Array.from(grouped.keys()).sort((a,b)=>a.localeCompare(b));
+
+  sports.forEach(sport=>{
+    const block=document.createElement('div');
+    block.className='section';
+    block.style.margin='0 0 12px';
+    block.innerHTML=`<div class="section-head">${sport}</div><div class="grid"></div>`;
+    const g = block.querySelector('.grid');
+
+    grouped.get(sport)
+      .slice()
+      .sort((a,b)=>(LEVEL_ORDER[a.level]??99)-(LEVEL_ORDER[b.level]??99) || a.level.localeCompare(b.level))
+      .forEach(t=>{
+        const msgURL = t.msg || 'https://www.google.com/search?q=ugly+dog+gif';
+        const card=document.createElement('div');
+        card.className='card';
+        card.innerHTML = `
+          <div><div class="team">${t.level}</div></div>
+          <div class="chips">
+            <a class="round" href="${msgURL}" target="_blank" rel="noopener" aria-label="Message">
+              <img src="${ICONS.message}" alt="Message">
+            </a>
+            <button class="round view" data-url="${t.url}" data-title="${sport} • ${t.level}" aria-label="View">
+              <img src="${ICONS.calendar}" alt="View">
+            </button>
+            <a class="round" href="${t.url}" target="_blank" rel="noopener" aria-label="Subscribe">
+              <img src="${ICONS.apple}" alt="Subscribe">
+            </a>
+          </div>`;
+        g.appendChild(card);
+      });
+
+    gridRoot.appendChild(block);
+  });
+}
+
+/* Chip interactions */
+function setSeasonChip(btn){
+  document.querySelectorAll('[data-season]').forEach(b=>b.classList.toggle('active', b===btn));
+  SELECTED_SEASON = btn.getAttribute('data-season');
+  renderTeams();
+}
+function setGenderChip(btn){
+  document.querySelectorAll('[data-gender]').forEach(b=>b.classList.toggle('active', b===btn));
+  SELECTED_GENDER = new Set([btn.getAttribute('data-gender')]); // single-select
+  renderTeams();
+}
+document.addEventListener('click',(e)=>{
+  const s = e.target.closest('[data-season]');
+  const g = e.target.closest('[data-gender]');
+  const view = e.target.closest('.view');
+  if(s){ setSeasonChip(s); }
+  if(g){ setGenderChip(g); }
+  if(view){
+    e.preventDefault();
+    openIcsModal(view.getAttribute('data-url'), view.getAttribute('data-title') || 'Upcoming');
+  }
+});
+
+/* -------- ICS modal -------- */
+async function fetchIcs(url){ const r=await fetch(url,{cache:'no-store'}); if(!r.ok) throw new Error(r.status); return r.text(); }
+function parseIcs(text){
+  const out=[], lines=text.replace(/\r/g,'').split('\n'); let ev=null;
+  for(let i=1;i<lines.length;i++){ if(/^[ \t]/.test(lines[i])){ lines[i-1]+=lines[i].slice(1); lines[i]=''; } }
+  for(const line of lines){
+    if(!line) continue;
+    if(line.startsWith('BEGIN:VEVENT')){ ev={}; continue; }
+    if(line.startsWith('END:VEVENT')){ if(ev && ev.start && ev.summary) out.push(ev); ev=null; continue; }
+    if(!ev) continue;
+    if(line.startsWith('DTSTART')) ev.start = icsDate(line.split(':').pop());
+    else if(line.startsWith('DTEND')) ev.end = icsDate(line.split(':').pop());
+    else if(line.startsWith('SUMMARY:')) ev.summary = line.slice(8).trim();
+    else if(line.startsWith('LOCATION:')) ev.location = line.slice(9).trim();
+  }
+  return out;
+}
+function icsDate(v){
+  const m=v.match(/^(\d{4})(\d{2})(\d{2})(?:T(\d{2})(\d{2})(\d{2})(Z)?)?$/);
+  if(!m) return null;
+  if(!m[4]) return new Date(`${m[1]}-${m[2]}-${m[3]}T00:00:00`);
+  return new Date(`${m[1]}-${m[2]}-${m[3]}T${m[4]}:${m[5]}:${m[6]}${m[7]?'Z':''}`);
+}
+function fmtDate(dt){ return new Intl.DateTimeFormat(undefined,{weekday:'short',month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}).format(dt); }
+async function openIcsModal(url,title){
+  const backdrop=document.getElementById('icsModalBackdrop');
+  const content=document.getElementById('icsContent');
+  const heading=document.getElementById('icsModalTitle');
+  heading.textContent=title;
+  content.innerHTML='<p style="opacity:.85">Loading events…</p>';
+  backdrop.classList.add('show');
+  try{
+    const text=await fetchIcs(url);
+    const all=parseIcs(text).filter(ev=>ev.start && ev.start>=new Date(Date.now()-86400000)).sort((a,b)=>a.start-b.start).slice(0,30);
+    if(!all.length){ content.innerHTML='<p style="opacity:.85">No upcoming events.</p>'; return; }
+    content.innerHTML=all.map(ev=>`
+      <div class="event">
+        <div class="when">${fmtDate(ev.start)}</div>
+        <div class="what">${ev.summary||''}</div>
+        ${ev.location?`<div class="where">${ev.location}</div>`:''}
+      </div>`).join('');
+  }catch(e){
+    content.innerHTML=`<p style="opacity:.85">Couldn’t load that calendar. You can still open it below:</p>
+      <p><a href="${url}" target="_blank" rel="noopener" style="color:#fff;text-decoration:underline">Open ICS file</a></p>`;
+  }
+}
+function closeIcsModal(){ document.getElementById('icsModalBackdrop').classList.remove('show'); }
+document.getElementById('icsClose')?.addEventListener('click', closeIcsModal);
+document.getElementById('icsModalBackdrop')?.addEventListener('click', (e)=>{ if(e.target.id==='icsModalBackdrop') closeIcsModal(); });
+
+/* -------- Boot -------- */
+(async function init(){
+  try{
+    ALL_ROWS = await loadRows();
+  }catch(err){
+    console.error(err);
+    document.getElementById('teamsGrid').innerHTML = '<p style="opacity:.85">Could not load teams (CSV). See console for details.</p>';
+    return;
+  }
+  renderTeams();
+})();
+</script>
+</body>
+</html>
