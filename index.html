@@ -9,7 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
 
 <style>
-  :root{ --blue:#002d72; --gold:#f1b500; --cardBorder:rgba(255,255,255,.18); --scriptSize:clamp(40px,9vw,72px); }
+  :root{ --blue:#002d72; --gold:#f1b500; --cardBorder:rgba(255,255,255,.18); --scriptSize:clamp(40px,9vw,72px) }
   *{ box-sizing:border-box }
   body{ margin:0; background:var(--blue); color:#fff; font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif }
   .wrap{ max-width:900px; margin:0 auto; padding:18px }
@@ -24,32 +24,44 @@
   .title-script a{ color:inherit; text-decoration:none }
   .title-sub{ margin-top:6px; font-weight:800; text-transform:uppercase; font-size:calc(var(--scriptSize)*.40); letter-spacing:.5em }
 
-  /* Social row (Instagram → X → Facebook → YouTube → Hudl) */
+  /* Social row */
   .social{ display:flex; gap:16px; justify-content:center; flex-wrap:wrap; margin:8px 0 14px }
   .icon-wrap{ width:52px; height:52px; border-radius:12px; background:#fff; display:inline-flex; align-items:center; justify-content:center; box-shadow:0 3px 10px rgba(0,0,0,.12) }
   .icon-wrap img{ width:28px; height:28px; display:block }
-  /* HUDL: keep inside the tile */
-  .icon-wrap.hudl img{ width:auto; height:auto; max-width:70%; max-height:70%; object-fit:contain; filter:none; display:block }
+  .icon-wrap.hudl img{ width:auto; height:auto; max-width:70%; max-height:70%; object-fit:contain }
 
   /* Sections */
   .section{ margin:14px 0; border:1px solid var(--cardBorder); border-radius:14px; background:rgba(255,255,255,.04) }
-  .section-head{ padding:14px 16px; border-bottom:1px solid var(--cardBorder); font-weight:800; color:var(--gold);
-    font-family:"Lobster","Brush Script MT","Segoe Script","Lucida Handwriting","Apple Chancery",cursive;
-    font-size:clamp(28px,4.6vw,43px) }
+  .section-head{ padding:14px 16px; border-bottom:1px solid var(--cardBorder); font-weight:800; color:var(--gold); font-family:"Lobster","Brush Script MT","Segoe Script","Lucida Handwriting","Apple Chancery",cursive; font-size:clamp(28px,4.6vw,43px) }
   .grid{ display:grid; gap:12px; padding:12px }
   @media (min-width:600px){ .grid{ grid-template-columns:1fr 1fr } }
 
   .card{ display:flex; align-items:center; justify-content:space-between; gap:12px; background:rgba(255,255,255,.06); border:1px solid var(--cardBorder); border-radius:12px; padding:14px }
-  .team{ font-weight:700; font-size:clamp(16px,2.6vw,24px) } /* smaller than headers */
-  .tags{ font-size:12px; opacity:.85 }
+  .team{ font-weight:700; font-size:clamp(16px,2.6vw,24px) }
 
-  /* Subscribe chip */
-  .subchip{ width:50px; height:50px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; background:var(--blue); border:2px solid #fff }
-  .subchip img{ width:32px; height:32px; display:block }
+  /* Action chips */
+  .chips{ display:flex; gap:10px; align-items:center }
+  .chip{ width:50px; height:50px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; border:2px solid #fff; background:#fff }
+  .chip img{ width:auto; height:auto; max-width:70%; max-height:70%; object-fit:contain }
+  .viewchip{ background:var(--blue) } /* calendar: white on blue */
+  .msgchip img{ /* your blue chat bubble PNG */ }
+  .subchip img{ /* apple.png is black on transparent */ }
 
-  /* GoFan CTA (image only) */
+  /* ICS modal */
+  .modal-backdrop{ position:fixed; inset:0; background:rgba(0,0,0,.45); display:none; align-items:flex-end; justify-content:center; z-index:999 }
+  .modal{ width:100%; max-width:900px; max-height:80vh; overflow:auto; background:#0b317f; color:#fff; border-radius:16px 16px 0 0; border:1px solid var(--cardBorder); box-shadow:0 -8px 24px rgba(0,0,0,.25) }
+  .modal header{ display:flex; align-items:center; justify-content:space-between; padding:14px 16px; border-bottom:1px solid var(--cardBorder) }
+  .modal header h3{ margin:0; font-size:20px; font-weight:800 }
+  .modal .close{ appearance:none; border:0; background:transparent; color:#fff; font-size:24px; line-height:1; cursor:pointer }
+  .modal .content{ padding:10px 16px 16px }
+  .event{ padding:10px 0; border-bottom:1px solid var(--cardBorder) }
+  .event:last-child{ border-bottom:0 }
+  .event .when{ font-weight:700 }
+  .event .where{ font-size:13px; opacity:.85 }
+  .modal-backdrop.show{ display:flex }
+
+  /* GoFan CTA */
   .gofan-cta{ display:flex; justify-content:center; margin:24px 0 6px }
-  .gofan-btn{ display:inline-flex; align-items:center; background:none; padding:0; border-radius:0 }
   .gofan-btn img{ height:50px; width:auto; display:block }
 
   /* Footer */
@@ -67,28 +79,18 @@
       <div class="title-sub">landing page</div>
 
       <nav class="social" aria-label="Social & Streaming">
-        <a href="https://www.instagram.com/borgiaknight?igsh=dmVvaGVxd2Q5NHI3" target="_blank" rel="noopener" aria-label="Instagram">
-          <span class="icon-wrap"><img src="icons/square-instagram-brands-solid-full.svg" alt="Instagram"></span>
-        </a>
-        <a href="https://x.com/borgiaathletics?s=21&t=rCQlMmtkHbQVpj9pzx_7WA" target="_blank" rel="noopener" aria-label="X">
-          <span class="icon-wrap"><img src="icons/square-x-twitter-brands-solid-full.svg" alt="X"></span>
-        </a>
-        <a href="https://www.facebook.com/share/1EWkjCpFom/?mibextid=wwXIfr" target="_blank" rel="noopener" aria-label="Facebook">
-          <span class="icon-wrap"><img src="icons/square-facebook-brands-solid-full.svg" alt="Facebook"></span>
-        </a>
-        <a href="https://youtube.com/@borgiaathletics8736?si=KXv4ea6yGnFpL9v" target="_blank" rel="noopener" aria-label="YouTube">
-          <span class="icon-wrap"><img src="icons/square-youtube-brands-solid-full.svg" alt="YouTube"></span>
-        </a>
-        <a href="https://fan.hudl.com/usa/mo/washington/organization/3681/st-francis-borgia-h-high-school" target="_blank" rel="noopener" aria-label="Hudl">
-          <span class="icon-wrap hudl"><img src="icons/hudl.png" alt="Hudl"></span>
-        </a>
+        <a href="https://www.instagram.com/borgiaknight?igsh=dmVvaGVxd2Q5NHI3" target="_blank" rel="noopener" aria-label="Instagram"><span class="icon-wrap"><img src="icons/square-instagram-brands-solid-full.svg" alt="Instagram"></span></a>
+        <a href="https://x.com/borgiaathletics?s=21&t=rCQlMmtkHbQVpj9pzx_7WA" target="_blank" rel="noopener" aria-label="X"><span class="icon-wrap"><img src="icons/square-x-twitter-brands-solid-full.svg" alt="X"></span></a>
+        <a href="https://www.facebook.com/share/1EWkjCpFom/?mibextid=wwXIfr" target="_blank" rel="noopener" aria-label="Facebook"><span class="icon-wrap"><img src="icons/square-facebook-brands-solid-full.svg" alt="Facebook"></span></a>
+        <a href="https://youtube.com/@borgiaathletics8736?si=KXv4ea6yGnFpL9v" target="_blank" rel="noopener" aria-label="YouTube"><span class="icon-wrap"><img src="icons/square-youtube-brands-solid-full.svg" alt="YouTube"></span></a>
+        <a href="https://fan.hudl.com/usa/mo/washington/organization/3681/st-francis-borgia-h-high-school" target="_blank" rel="noopener" aria-label="Hudl"><span class="icon-wrap hudl"><img src="icons/hudl.png" alt="Hudl"></span></a>
       </nav>
     </header>
 
-    <!-- ========= SPORTS SECTIONS (rendered from TEAMS below) ========= -->
+    <!-- Sports sections -->
     <div id="sports"></div>
 
-    <!-- GoFan button (image-only) -->
+    <!-- GoFan button -->
     <div class="gofan-cta">
       <a class="gofan-btn" href="https://gofan.co/app/school/MO24174" target="_blank" rel="noopener">
         <img src="icons/gofan.png" alt="GoFan">
@@ -96,75 +98,79 @@
     </div>
 
     <div class="footer-links">
-      <a href="https://www.borgia.com/athletics/borgia-athletics" target="_blank" rel="noopener">Borgia Athletics </a> |
+      <a href="https://www.borgia.com/athletics/borgia-athletics" target="_blank" rel="noopener">Borgia Athletics</a> |
       <a href="https://www.mshsaa.org/MySchool/?s=544" target="_blank" rel="noopener">MSHSAA</a>
     </div>
   </div>
 
+<!-- ICS modal -->
+<div id="icsModalBackdrop" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="icsModalTitle">
+  <div class="modal">
+    <header>
+      <h3 id="icsModalTitle">Upcoming</h3>
+      <button class="close" id="icsClose" aria-label="Close">×</button>
+    </header>
+    <div class="content" id="icsContent"></div>
+  </div>
+</div>
+
 <script>
 /* =======================
-   TEAMS DATA (corrected to match your sheet)
-   - Note: Boys Soccer has TWO JV feeds.
+   CONFIG: Published CSV URL
+   (File → Publish to the web → CSV)
 ======================= */
-const TEAMS = [
-  /* Volleyball (Girls) */
-  {sport:"Volleyball", level:"JV",       url:"http://www2.arbitersports.com/iCal/Team/schedule.ics?id=zUGKVfMAUMDI5ICcRJfPRQ%3d%3d"},
-  {sport:"Volleyball", level:"Varsity",  url:"http://www2.arbitersports.com/iCal/Team/schedule.ics?id=cq2PfPo%2b%2bbmxs6eI2BSHJVWQ%3d%3d"},
-  {sport:"Volleyball", level:"Freshman", url:"http://www2.arbitersports.com/iCal/Team/schedule.ics?id=LGmyIvwW1RLyVXU8PJv0FA%3d%3d"},
+const SHEET_CSV_URL = 'PASTE_YOUR_PUBLISHED_CSV_URL_HERE';
 
-  /* Softball (Girls) */
-  {sport:"Softball",   level:"JV",       url:"http://www2.arbitersports.com/iCal/Team/schedule.ics?id=JCzueDFVhaz6OqLdBtaBgg%3d%3d"},
-  {sport:"Softball",   level:"Varsity",  url:"http://www2.arbitersports.com/iCal/Team/schedule.ics?id=Ue2CoqdpoIJAA2am%2bc7x5nw%3d%3d"},
+/* Placeholder if MessageURL is empty */
+const MESSAGE_FALLBACK = 'https://www.google.com/search?sca_esv=5e51b69b39b86b67&...'; // your funny link
 
-  /* Soccer (Boys) — two JV feeds + Varsity */
-  {sport:"Soccer",     level:"JV",       url:"http://www2.arbitersports.com/iCal/Team/schedule.ics?id=T8q7gRNMDMmQfq0CVwmLbg%3d%3d"},  // Junior Varsity Soccer - JV
-  {sport:"Soccer",     level:"JV",       url:"http://www2.arbitersports.com/iCal/Team/schedule.ics?id=BoB1kHmmu%2fkumYRuQu1xMQ%3d%3d"}, // Junior Varsity Soccer
-  {sport:"Soccer",     level:"Varsity",  url:"http://www2.arbitersports.com/iCal/Team/schedule.ics?id=X3ZZWuzadrxLlL24FwSC%2bA%3d%3d"}, // Varsity Soccer - V
+/* -------- CSV loader -------- */
+function parseCSV(csv) {
+  const lines = csv.replace(/\r/g,'').trim().split('\n');
+  const headers = lines[0].split(',').map(h=>h.trim());
+  return lines.slice(1).map(line=>{
+    // naive split (works if no quoted commas). If you need strict CSV, I can swap in a robust parser.
+    const cols = line.split(',').map(c=>c.trim());
+    const obj = {};
+    headers.forEach((h,i)=> obj[h] = cols[i] || '');
+    return obj;
+  });
+}
+async function loadTeamsFromSheet() {
+  const res = await fetch(SHEET_CSV_URL, {cache:'no-store'});
+  const csv = await res.text();
+  const rows = parseCSV(csv);
+  return rows
+    .map(r => ({
+      sport: (r.Sport || '').trim(),
+      level: (r.Level || '').trim(),
+      url:   (r.URL   || '').trim(),
+      msg:   (r.MessageURL || '').trim()
+    }))
+    .filter(r => r.sport && r.level && r.url);
+}
 
-  /* Football (Boys) */
-  {sport:"Football",   level:"Freshman", url:"http://www2.arbitersports.com/iCal/Team/schedule.ics?id=9xiAExnWVWx08jXer9zZuQ%3d%3d"},
-  {sport:"Football",   level:"JV",       url:"http://www2.arbitersports.com/iCal/Team/schedule.ics?id=tRMiEFda9273mMM3MQBEJQ%3d%3d"},
-  {sport:"Football",   level:"Varsity",  url:"http://www2.arbitersports.com/iCal/Team/schedule.ics?id=03HRccWm%2boO%2bbv54qae0%2f9QAV03d%3d"},
-
-  /* Cross Country (Coed) */
-  {sport:"Cross Country", level:"Varsity", url:"http://www2.arbitersports.com/iCal/Team/schedule.ics?id=SrPlizzejlp8oP43aI55sA%3d%3d"},
-
-  /* Competitive Cheer (Coed) */
-  {sport:"Competitive Cheer", level:"Varsity", url:"http://www2.arbitersports.com/iCal/Team/schedule.ics?id=BjNdM42b4hFs2JXTTCY4qA%3d%3d"},
-
-  /* Dance (Coed) */
-  {sport:"Dance", level:"Varsity", url:"http://www2.arbitersports.com/iCal/Team/schedule.ics?id=mcylqcYIBxb1XfowG1vnQA%3d%3d"},
-
-  /* Marching Band (Coed) */
-  {sport:"Marching Band", level:"Varsity", url:"http://www2.arbitersports.com/iCal/Team/schedule.ics?id=6TAkALSrtvtHgjTTNZP5Ng%3d%3d"},
-];
-
-/* ===== RENDER LOGIC ===== */
+/* Sorting & grouping */
 const LEVEL_ORDER = { "Varsity":0, "JV":1, "Freshman":2 };
 const PRIORITY_SPORTS = ["Volleyball","Football","Soccer","Softball"];
-
 function groupBySport(rows){
   const map = new Map();
   for(const r of rows){
-    const sport = (r.sport||"").trim();
-    const level = (r.level||"").trim();
-    const url   = (r.url||"").trim();
-    if(!sport || !level || !url) continue;
-    if(!map.has(sport)) map.set(sport, []);
-    map.get(sport).push({sport, level, url});
+    if(!map.has(r.sport)) map.set(r.sport, []);
+    map.get(r.sport).push(r);
   }
   return map;
 }
 
-function render(){
+/* Render page */
+async function render(){
+  const TEAMS = await loadTeamsFromSheet();
+
   const container = document.getElementById('sports');
-  container.innerHTML = "";
+  container.innerHTML = '';
 
   const grouped = groupBySport(TEAMS);
-
-  // sport ordering
-  const others = Array.from(grouped.keys())
-    .filter(s=>!PRIORITY_SPORTS.includes(s)).sort((a,b)=>a.localeCompare(b));
+  const others = Array.from(grouped.keys()).filter(s=>!PRIORITY_SPORTS.includes(s)).sort((a,b)=>a.localeCompare(b));
   const order = [...PRIORITY_SPORTS, ...others].filter(s=>grouped.has(s));
 
   for(const sport of order){
@@ -174,32 +180,90 @@ function render(){
     const section = document.createElement('section');
     section.className = 'section';
     section.setAttribute('aria-label', sport);
-
-    section.innerHTML = `
-      <div class="section-head">${sport}</div>
-      <div class="grid"></div>
-    `;
+    section.innerHTML = `<div class="section-head">${sport}</div><div class="grid"></div>`;
     const grid = section.querySelector('.grid');
 
     for(const t of items){
+      const msgURL = t.msg || MESSAGE_FALLBACK;
       const card = document.createElement('div');
       card.className = 'card';
       card.innerHTML = `
-        <div>
-          <div class="team">${t.level}</div>
-          <div class="tags">Subscribe</div>
-        </div>
-        <a class="subchip" href="${t.url}" target="_blank" rel="noopener" aria-label="Subscribe to ${sport} ${t.level}">
-          <img src="icons/calendar.png" alt="Subscribe">
-        </a>
-      `;
+        <div><div class="team">${t.level}</div></div>
+        <div class="chips">
+          <a class="chip msgchip" href="${msgURL}" target="_blank" rel="noopener" aria-label="Message link (placeholder)">
+            <img src="icons/message.png" alt="Message">
+          </a>
+          <button class="chip viewchip"
+                  data-url="${t.url}"
+                  data-title="${sport} • ${t.level}"
+                  aria-label="View ${sport} ${t.level} events">
+            <img src="icons/calendar.png" alt="View">
+          </button>
+          <a class="chip subchip" href="${t.url}" target="_blank" rel="noopener" aria-label="Subscribe to ${sport} ${t.level}">
+            <img src="icons/apple.png" alt="Subscribe">
+          </a>
+        </div>`;
       grid.appendChild(card);
     }
-
     container.appendChild(section);
   }
 }
 render();
+
+/* ---------- ICS viewer (modal) ---------- */
+async function fetchIcs(url){ const r=await fetch(url,{cache:'no-store'}); if(!r.ok) throw new Error(r.status); return r.text(); }
+function parseIcs(text){
+  const events=[], lines=text.replace(/\r/g,'').split('\n'); let ev=null;
+  for(let i=1;i<lines.length;i++){ if(/^[ \t]/.test(lines[i])){ lines[i-1]+=lines[i].slice(1); lines[i]=''; } }
+  for(const line of lines){
+    if(!line) continue;
+    if(line.startsWith('BEGIN:VEVENT')){ ev={}; continue; }
+    if(line.startsWith('END:VEVENT')){ if(ev && ev.start && ev.summary) events.push(ev); ev=null; continue; }
+    if(!ev) continue;
+    if(line.startsWith('DTSTART')) ev.start = icsDate(line.split(':').pop());
+    else if(line.startsWith('DTEND')) ev.end = icsDate(line.split(':').pop());
+    else if(line.startsWith('SUMMARY:')) ev.summary = line.slice(8).trim();
+    else if(line.startsWith('LOCATION:')) ev.location = line.slice(9).trim();
+  }
+  return events;
+}
+function icsDate(v){
+  const m=v.match(/^(\d{4})(\d{2})(\d{2})(?:T(\d{2})(\d{2})(\d{2})(Z)?)?$/);
+  if(!m) return null;
+  if(!m[4]) return new Date(`${m[1]}-${m[2]}-${m[3]}T00:00:00`);
+  return new Date(`${m[1]}-${m[2]}-${m[3]}T${m[4]}:${m[5]}:${m[6]}${m[7]?'Z':''}`);
+}
+function fmtDate(dt){ return new Intl.DateTimeFormat(undefined,{weekday:'short',month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}).format(dt); }
+async function openIcsModal(url,title){
+  const backdrop=document.getElementById('icsModalBackdrop');
+  const content=document.getElementById('icsContent');
+  const heading=document.getElementById('icsModalTitle');
+  heading.textContent=title;
+  content.innerHTML='<p style="opacity:.85">Loading events…</p>';
+  backdrop.classList.add('show');
+  try{
+    const text=await fetchIcs(url);
+    const all=parseIcs(text).filter(ev=>ev.start && ev.start>=new Date(Date.now()-86400000)).sort((a,b)=>a.start-b.start).slice(0,30);
+    if(!all.length){ content.innerHTML='<p style="opacity:.85">No upcoming events.</p>'; return; }
+    content.innerHTML=all.map(ev=>`
+      <div class="event">
+        <div class="when">${fmtDate(ev.start)}</div>
+        <div class="what">${ev.summary||''}</div>
+        ${ev.location?`<div class="where">${ev.location}</div>`:''}
+      </div>`).join('');
+  }catch(e){
+    content.innerHTML=`<p style="opacity:.85">Couldn’t load that calendar (maybe blocked by CORS). You can still open it below:</p>
+      <p><a href="${url}" target="_blank" rel="noopener" style="color:#fff;text-decoration:underline">Open ICS file</a></p>`;
+  }
+}
+function closeIcsModal(){ document.getElementById('icsModalBackdrop').classList.remove('show'); }
+document.addEventListener('click',(e)=>{
+  const btn=e.target.closest('.viewchip');
+  const close=e.target.closest('#icsClose');
+  const bg=e.target.id==='icsModalBackdrop';
+  if(btn){ e.preventDefault(); openIcsModal(btn.getAttribute('data-url'), btn.getAttribute('data-title')||'Upcoming'); }
+  else if(close||bg){ closeIcsModal(); }
+});
 </script>
 </body>
 </html>
