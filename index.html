@@ -9,75 +9,42 @@
 <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
 
 <style>
-  :root{
-    --blue:#002d72;
-    --gold:#f1b500;
-    --cardBorder:rgba(255,255,255,.18);
-    --scriptSize: clamp(40px, 9vw, 72px);
-  }
+  :root{ --blue:#002d72; --gold:#f1b500; --cardBorder:rgba(255,255,255,.18); --scriptSize:clamp(40px,9vw,72px); }
   *{ box-sizing:border-box }
   body{ margin:0; background:var(--blue); color:#fff; font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif }
   .wrap{ max-width:900px; margin:0 auto; padding:18px }
 
   /* Header */
   .head{ display:flex; flex-direction:column; align-items:center; gap:12px; margin:12px 0 14px; text-align:center }
-  .logo-circle{
-    width:170px; height:170px; border-radius:50%; background:#fff;
-    display:flex; align-items:center; justify-content:center;
-    box-shadow:0 4px 16px rgba(0,0,0,.15)
-  }
+  .logo-circle{ width:170px; height:170px; border-radius:50%; background:#fff; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 16px rgba(0,0,0,.15) }
   .logo{ max-width:110px; height:auto; display:block }
 
   /* Titles */
-  .title-script{
-    font-family:"Lobster","Brush Script MT","Segoe Script","Lucida Handwriting","Apple Chancery",cursive;
-    font-size:var(--scriptSize); line-height:1; color:var(--gold);
-    text-shadow:0 1px 0 rgba(0,0,0,.08)
-  }
+  .title-script{ font-family:"Lobster","Brush Script MT","Segoe Script","Lucida Handwriting","Apple Chancery",cursive; font-size:var(--scriptSize); line-height:1; color:var(--gold); text-shadow:0 1px 0 rgba(0,0,0,.08) }
   .title-script a{ color:inherit; text-decoration:none }
   .title-sub{ margin-top:6px; font-weight:800; text-transform:uppercase; font-size:calc(var(--scriptSize)*.40); letter-spacing:.5em }
 
   /* Social row (Instagram → X → Facebook → YouTube → Hudl) */
   .social{ display:flex; gap:16px; justify-content:center; flex-wrap:wrap; margin:8px 0 14px }
-  .icon-wrap{
-    width:52px; height:52px; border-radius:12px; background:#fff;
-    display:inline-flex; align-items:center; justify-content:center;
-    box-shadow:0 3px 10px rgba(0,0,0,.12)
-  }
+  .icon-wrap{ width:52px; height:52px; border-radius:12px; background:#fff; display:inline-flex; align-items:center; justify-content:center; box-shadow:0 3px 10px rgba(0,0,0,.12) }
   .icon-wrap img{ width:28px; height:28px; display:block }
-  /* HUDL: guarantee it stays INSIDE the tile */
-  .icon-wrap.hudl img{
-    width:auto; height:auto;
-    max-width:70%; max-height:70%;
-    object-fit:contain; filter:none;
-    display:block;
-  }
+  /* HUDL: keep inside the tile */
+  .icon-wrap.hudl img{ width:auto; height:auto; max-width:70%; max-height:70%; object-fit:contain; filter:none; display:block }
 
   /* Sections */
   .section{ margin:14px 0; border:1px solid var(--cardBorder); border-radius:14px; background:rgba(255,255,255,.04) }
-  .section-head{
-    padding:14px 16px; border-bottom:1px solid var(--cardBorder);
-    font-weight:800; color:var(--gold);
+  .section-head{ padding:14px 16px; border-bottom:1px solid var(--cardBorder); font-weight:800; color:var(--gold);
     font-family:"Lobster","Brush Script MT","Segoe Script","Lucida Handwriting","Apple Chancery",cursive;
-    font-size:clamp(28px,4.6vw,43px)
-  }
+    font-size:clamp(28px,4.6vw,43px) }
   .grid{ display:grid; gap:12px; padding:12px }
   @media (min-width:600px){ .grid{ grid-template-columns:1fr 1fr } }
 
-  .card{
-    display:flex; align-items:center; justify-content:space-between; gap:12px;
-    background:rgba(255,255,255,.06); border:1px solid var(--cardBorder);
-    border-radius:12px; padding:14px
-  }
+  .card{ display:flex; align-items:center; justify-content:space-between; gap:12px; background:rgba(255,255,255,.06); border:1px solid var(--cardBorder); border-radius:12px; padding:14px }
   .team{ font-weight:700; font-size:clamp(16px,2.6vw,24px) } /* smaller than headers */
   .tags{ font-size:12px; opacity:.85 }
 
   /* Subscribe chip */
-  .subchip{
-    width:50px; height:50px; border-radius:50%;
-    display:inline-flex; align-items:center; justify-content:center;
-    background:var(--blue); border:2px solid #fff
-  }
+  .subchip{ width:50px; height:50px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; background:var(--blue); border:2px solid #fff }
   .subchip img{ width:32px; height:32px; display:block }
 
   /* GoFan CTA (image only) */
@@ -136,38 +103,39 @@
 
 <script>
 /* =======================
-   TEAMS DATA (Fall set)
-   - Any item missing sport, level, or url is ignored (no NaNs).
+   TEAMS DATA (corrected to match your sheet)
+   - Note: Boys Soccer has TWO JV feeds.
 ======================= */
 const TEAMS = [
-  /* Volleyball */
-  {sport:"Volleyball", level:"Varsity",  url:"http://www2.arbitersports.com/iCal/Team/schedule.ics?id=cq2PfPo%2b%2bbmxs6eI2BSHJVWQ%3d%3d"},
+  /* Volleyball (Girls) */
   {sport:"Volleyball", level:"JV",       url:"http://www2.arbitersports.com/iCal/Team/schedule.ics?id=zUGKVfMAUMDI5ICcRJfPRQ%3d%3d"},
+  {sport:"Volleyball", level:"Varsity",  url:"http://www2.arbitersports.com/iCal/Team/schedule.ics?id=cq2PfPo%2b%2bbmxs6eI2BSHJVWQ%3d%3d"},
   {sport:"Volleyball", level:"Freshman", url:"http://www2.arbitersports.com/iCal/Team/schedule.ics?id=LGmyIvwW1RLyVXU8PJv0FA%3d%3d"},
 
-  /* Football */
-  {sport:"Football", level:"Varsity",    url:"http://www2.arbitersports.com/iCal/Team/schedule.ics?id=03HRccWm%2boO%2bbv54qae0%2f9QAV03d%3d"},
-  {sport:"Football", level:"JV",         url:"http://www2.arbitersports.com/iCal/Team/schedule.ics?id=tRMiEFda9273mMM3MQBEJQ%3d%3d"},
-  {sport:"Football", level:"Freshman",   url:"http://www2.arbitersports.com/iCal/Team/schedule.ics?id=9xiAExnWVWx08jXer9zZuQ%3d%3d"},
+  /* Softball (Girls) */
+  {sport:"Softball",   level:"JV",       url:"http://www2.arbitersports.com/iCal/Team/schedule.ics?id=JCzueDFVhaz6OqLdBtaBgg%3d%3d"},
+  {sport:"Softball",   level:"Varsity",  url:"http://www2.arbitersports.com/iCal/Team/schedule.ics?id=Ue2CoqdpoIJAA2am%2bc7x5nw%3d%3d"},
 
-  /* Soccer */
-  {sport:"Soccer", level:"Varsity",      url:"http://www2.arbitersports.com/iCal/Team/schedule.ics?id=X3ZZWuzadrxLlL24FwSC%2bA%3d%3d"},
-  {sport:"Soccer", level:"JV",           url:"http://www2.arbitersports.com/iCal/Team/schedule.ics?id=T8q7gRNMDMmQfq0CVwmLbg%3d%3d"},
+  /* Soccer (Boys) — two JV feeds + Varsity */
+  {sport:"Soccer",     level:"JV",       url:"http://www2.arbitersports.com/iCal/Team/schedule.ics?id=T8q7gRNMDMmQfq0CVwmLbg%3d%3d"},  // Junior Varsity Soccer - JV
+  {sport:"Soccer",     level:"JV",       url:"http://www2.arbitersports.com/iCal/Team/schedule.ics?id=BoB1kHmmu%2fkumYRuQu1xMQ%3d%3d"}, // Junior Varsity Soccer
+  {sport:"Soccer",     level:"Varsity",  url:"http://www2.arbitersports.com/iCal/Team/schedule.ics?id=X3ZZWuzadrxLlL24FwSC%2bA%3d%3d"}, // Varsity Soccer - V
 
-  /* Softball */
-  {sport:"Softball", level:"Varsity",    url:"http://www2.arbitersports.com/iCal/Team/schedule.ics?id=Ue2CoqdpoIJAA2am%2bc7x5nw%3d%3d"},
-  {sport:"Softball", level:"JV",         url:"http://www2.arbitersports.com/iCal/Team/schedule.ics?id=JCzueDFVhaz6OqLdBtaBgg%3d%3d"},
+  /* Football (Boys) */
+  {sport:"Football",   level:"Freshman", url:"http://www2.arbitersports.com/iCal/Team/schedule.ics?id=9xiAExnWVWx08jXer9zZuQ%3d%3d"},
+  {sport:"Football",   level:"JV",       url:"http://www2.arbitersports.com/iCal/Team/schedule.ics?id=tRMiEFda9273mMM3MQBEJQ%3d%3d"},
+  {sport:"Football",   level:"Varsity",  url:"http://www2.arbitersports.com/iCal/Team/schedule.ics?id=03HRccWm%2boO%2bbv54qae0%2f9QAV03d%3d"},
 
-  /* Cross Country */
+  /* Cross Country (Coed) */
   {sport:"Cross Country", level:"Varsity", url:"http://www2.arbitersports.com/iCal/Team/schedule.ics?id=SrPlizzejlp8oP43aI55sA%3d%3d"},
 
-  /* Competitive Cheer */
+  /* Competitive Cheer (Coed) */
   {sport:"Competitive Cheer", level:"Varsity", url:"http://www2.arbitersports.com/iCal/Team/schedule.ics?id=BjNdM42b4hFs2JXTTCY4qA%3d%3d"},
 
-  /* Dance */
-  {sport:"Dance", level:"Varsity",       url:"http://www2.arbitersports.com/iCal/Team/schedule.ics?id=mcylqcYIBxb1XfowG1vnQA%3d%3d"},
+  /* Dance (Coed) */
+  {sport:"Dance", level:"Varsity", url:"http://www2.arbitersports.com/iCal/Team/schedule.ics?id=mcylqcYIBxb1XfowG1vnQA%3d%3d"},
 
-  /* Marching Band */
+  /* Marching Band (Coed) */
   {sport:"Marching Band", level:"Varsity", url:"http://www2.arbitersports.com/iCal/Team/schedule.ics?id=6TAkALSrtvtHgjTTNZP5Ng%3d%3d"},
 ];
 
@@ -181,7 +149,7 @@ function groupBySport(rows){
     const sport = (r.sport||"").trim();
     const level = (r.level||"").trim();
     const url   = (r.url||"").trim();
-    if(!sport || !level || !url) continue;  // skip empties
+    if(!sport || !level || !url) continue;
     if(!map.has(sport)) map.set(sport, []);
     map.get(sport).push({sport, level, url});
   }
