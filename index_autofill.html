@@ -1,0 +1,53 @@
+<!DOCTYPE html><html lang='en'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1'><title>St. Francis Borgia Landing</title><style>
+:root{
+  --blue:#002d72;
+  --gold:#f1b500;
+  --cardBorder:rgba(255,255,255,.18);
+  --scriptSize: clamp(40px, 9vw, 72px);
+}
+*{ box-sizing: border-box; }
+body{
+  margin:0; background:var(--blue); color:#fff;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+}
+.wrap{ max-width:900px; margin:0 auto; padding:18px; }
+
+/* Header */
+.head{ display:flex; flex-direction:column; align-items:center; gap:8px; margin:8px 0 10px; text-align:center; }
+.head img.logo{ height:120px; width:auto; }
+
+/* Title */
+.title-script{
+  font-family: "Brush Script MT","Segoe Script","Lucida Handwriting","Apple Chancery",cursive;
+  font-size: var(--scriptSize); line-height:1; color: var(--gold); text-align:center;
+}
+.title-script a{ color:inherit; text-decoration:none; }
+.title-sub{
+  margin-top:6px; font-weight:800; text-transform:uppercase;
+  font-size: calc(var(--scriptSize) * .40); letter-spacing:.5em; text-align:center;
+}
+
+/* Social row using your SVGs/PNGs */
+.social{ display:flex; gap:18px; justify-content:center; flex-wrap:wrap; margin: 8px 0 14px }
+.social a{ display:inline-flex; align-items:center; justify-content:center }
+.social img{ width:36px; height:36px; display:block; filter: invert(1) brightness(200%); }
+
+/* Sections */
+.section{ margin:14px 0; border:1px solid var(--cardBorder); border-radius:14px; background:rgba(255,255,255,.04) }
+.section-head{ padding:14px 16px; border-bottom:1px solid var(--cardBorder); font-weight:800 }
+.grid{ display:grid; gap:12px; padding:12px }
+@media (min-width:600px){ .grid{ grid-template-columns:1fr 1fr } }
+.card{ display:flex; align-items:center; justify-content:space-between; gap:12px;
+       background:rgba(255,255,255,.06); border:1px solid var(--cardBorder);
+       border-radius:12px; padding:14px }
+.team{ font-weight:700 }
+.tags{ font-size:12px; opacity:.85 }
+
+/* Subscribe chip */
+.subchip{ width:50px; height:50px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; background:var(--blue); border:2px solid #fff }
+.subchip img{ width:32px; height:32px; display:block }
+
+/* Footer */
+.footer-links{ text-align:center; margin:22px 0 }
+.footer-links a{ color:#fff; text-decoration:underline; margin:0 10px }
+</style></head><body><div class='wrap'><header class='head'><a href='https://www.borgia.com' target='_blank' rel='noopener'><img class='logo' src='logo.png' alt='St. Francis Borgia Logo'></a><div class='title-script'><a href='https://www.borgia.com' target='_blank' rel='noopener'>St. Francis Borgia</a></div><div class='title-sub'>Landing</div><nav class='social' aria-label='Social & Streaming'><a href='https://fan.hudl.com/usa/mo/washington/organization/3681/st-francis-borgia-h-high-school' target='_blank' rel='noopener' aria-label='Hudl'><img src='icons/hudl.png' alt='Hudl'></a><a href='https://www.facebook.com/share/1EWkjCpFom/?mibextid=wwXIfr' target='_blank' rel='noopener' aria-label='Facebook'><img src='icons/square-facebook-brands-solid-full.svg' alt='Facebook'></a><a href='https://www.instagram.com/borgiaknight?igsh=dmVvaGVxd2Q5NHI3' target='_blank' rel='noopener' aria-label='Instagram'><img src='icons/square-instagram-brands-solid-full.svg' alt='Instagram'></a><a href='https://x.com/borgiaathletics?s=21&t=rCQlMmtkHbQVpj9pzx_7WA' target='_blank' rel='noopener' aria-label='X'><img src='icons/square-x-twitter-brands-solid-full.svg' alt='X'></a><a href='https://youtube.com/@borgiaathletics8736?si=KXv4ea6yGnFpL9v' target='_blank' rel='noopener' aria-label='YouTube'><img src='icons/square-youtube-brands-solid-full.svg' alt='YouTube'></a></nav></header><section class='section' aria-label='Volleyball'><div class='section-head'>Volleyball</div><div class='grid'><div class='card'><div><div class='team'>Varsity</div><div class='tags'>Girls • Subscribe</div></div><a class='subchip' href='http://www2.arbitersports.com/iCal/Team/schedule.ics?id=cq2PfPo%2b%2bmxs6el2BSHJWQ%3d%3d' target='_blank' rel='noopener'><img src='icons/calendar.png' alt='Subscribe'></a></div><div class='card'><div><div class='team'>JV</div><div class='tags'>Girls • Subscribe</div></div><a class='subchip' href='http://www2.arbitersports.com/iCal/Team/schedule.ics?id=zUGKWfMAUMDi5ICcRJfPRQ%3d%3d' target='_blank' rel='noopener'><img src='icons/calendar.png' alt='Subscribe'></a></div><div class='card'><div><div class='team'>Freshman</div><div class='tags'>Girls • Subscribe</div></div><a class='subchip' href='http://www2.arbitersports.com/iCal/Team/schedule.ics?id=LGmylvwW1RLyVXU8PJv0FA%3d%3d' target='_blank' rel='noopener'><img src='icons/calendar.png' alt='Subscribe'></a></div></div></section><section class='section' aria-label='Football'><div class='section-head'>Football</div><div class='grid'><div class='card'><div><div class='team'>Varsity</div><div class='tags'>Boys • Subscribe</div></div><a class='subchip' href='http://www2.arbitersports.com/iCal/Team/schedule.ics?id=o3hRcWm%2boO%2bv54qae0%2f9QA%3d%3d' target='_blank' rel='noopener'><img src='icons/calendar.png' alt='Subscribe'></a></div><div class='card'><div><div class='team'>JV</div><div class='tags'>Boys • Subscribe</div></div><a class='subchip' href='http://www2.arbitersports.com/iCal/Team/schedule.ics?id=tRMiEFda927m3MM3MQBEjQ%3d%3d' target='_blank' rel='noopener'><img src='icons/calendar.png' alt='Subscribe'></a></div><div class='card'><div><div class='team'>Freshman</div><div class='tags'>Boys • Subscribe</div></div><a class='subchip' href='http://www2.arbitersports.com/iCal/Team/schedule.ics?id=9xiAEXnWVWx08jXer9zZuQ%3d%3d' target='_blank' rel='noopener'><img src='icons/calendar.png' alt='Subscribe'></a></div></div></section><section class='section' aria-label='Soccer'><div class='section-head'>Soccer</div><div class='grid'><div class='card'><div><div class='team'>Varsity</div><div class='tags'>Boys • Subscribe</div></div><a class='subchip' href='http://www2.arbitersports.com/iCal/Team/schedule.ics?id=X3ZZWuazdrxLlL24FwSC%2bA%3d%3d' target='_blank' rel='noopener'><img src='icons/calendar.png' alt='Subscribe'></a></div><div class='card'><div><div class='team'>JV</div><div class='tags'>Boys • Subscribe</div></div><a class='subchip' href='http://www2.arbitersports.com/iCal/Team/schedule.ics?id=T8q7gRNMDMmQfq0CVwmLbg%3d%3d' target='_blank' rel='noopener'><img src='icons/calendar.png' alt='Subscribe'></a></div><div class='card'><div><div class='team'>JV</div><div class='tags'>Boys • Subscribe</div></div><a class='subchip' href='http://www2.arbitersports.com/iCal/Team/schedule.ics?id=BoB1kHmmu%2fkumYRuQu1xMQ%3d%3d' target='_blank' rel='noopener'><img src='icons/calendar.png' alt='Subscribe'></a></div></div></section><section class='section' aria-label='Softball'><div class='section-head'>Softball</div><div class='grid'><div class='card'><div><div class='team'>Varsity</div><div class='tags'>Girls • Subscribe</div></div><a class='subchip' href='http://www2.arbitersports.com/iCal/Team/schedule.ics?id=Ue2CoqdpoIJA2am%2bc7x5nw%3d%3d' target='_blank' rel='noopener'><img src='icons/calendar.png' alt='Subscribe'></a></div><div class='card'><div><div class='team'>JV</div><div class='tags'>Girls • Subscribe</div></div><a class='subchip' href='http://www2.arbitersports.com/iCal/Team/schedule.ics?id=JCzueDFVhaz6OqLdBtaBgg%3d%3d' target='_blank' rel='noopener'><img src='icons/calendar.png' alt='Subscribe'></a></div></div></section><section class='section' aria-label='Competitive Cheer'><div class='section-head'>Competitive Cheer</div><div class='grid'><div class='card'><div><div class='team'>Varsity</div><div class='tags'>Coed • Subscribe</div></div><a class='subchip' href='http://www2.arbitersports.com/iCal/Team/schedule.ics?id=BjNdM42b4hFs2JXTTCY4qA%3d%3d' target='_blank' rel='noopener'><img src='icons/calendar.png' alt='Subscribe'></a></div></div></section><section class='section' aria-label='Cross Country'><div class='section-head'>Cross Country</div><div class='grid'><div class='card'><div><div class='team'>Varsity</div><div class='tags'>Coed • Subscribe</div></div><a class='subchip' href='http://www2.arbitersports.com/iCal/Team/schedule.ics?id=SrPIiZejlpI8oP43aI55sA%3d%3d' target='_blank' rel='noopener'><img src='icons/calendar.png' alt='Subscribe'></a></div></div></section><section class='section' aria-label='Dance'><div class='section-head'>Dance</div><div class='grid'><div class='card'><div><div class='team'>Varsity</div><div class='tags'>Coed • Subscribe</div></div><a class='subchip' href='http://www2.arbitersports.com/iCal/Team/schedule.ics?id=mcylqcYIBxb1XfowG1vnQA%3d%3d' target='_blank' rel='noopener'><img src='icons/calendar.png' alt='Subscribe'></a></div></div></section><section class='section' aria-label='Marching Band'><div class='section-head'>Marching Band</div><div class='grid'><div class='card'><div><div class='team'>Varsity</div><div class='tags'>Coed • Subscribe</div></div><a class='subchip' href='http://www2.arbitersports.com/iCal/Team/schedule.ics?id=6TAkALSrtvtHgjTTNZP5Ng%3d%3d' target='_blank' rel='noopener'><img src='icons/calendar.png' alt='Subscribe'></a></div></div></section><div class='footer-links'><a href='https://www.borgia.com/athletics/borgia-athletics' target='_blank' rel='noopener'>Athletics page</a> | <a href='https://www.mshsaa.org/MySchool/?s=544' target='_blank' rel='noopener'>MSHSAA</a></div></div></body></html>
