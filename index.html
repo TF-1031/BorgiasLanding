@@ -113,75 +113,119 @@
 </div>
 
 <script>
-/* =======================
-   CONFIG: Published CSV URL
-======================= */
+/* ---------- Data sources ---------- */
+const GOOGLE_CSV =
+  'https://docs.google.com/spreadsheets/d/e/2PACX-1vSgj_XcnDHDe51Ddm5n2egn_ic8K19z8ZDA8z6bmLFcCTF0GLiEKIWiSQ-kNEF4Ss4aS1EHk63nFSfx/pub?gid=757997764&single=true&output=csv';
+const LOCAL_CSV  = 'data/teams.csv';
 
+/* Fallback link when MessageURL is empty */
+const MESSAGE_FALLBACK = 'https://www.google.com/search?q=ugly+dog+gif';
 
-  /* CONFIG: Published CSV URL */
-const SHEET_CSV_URL = 'data/teams.csv';
+/* Tiny on-page status (remove later if you want) */
+const dbg=document.createElement('div');
+dbg.style.cssText='position:fixed;left:8px;bottom:8px;background:rgba(0,0,0,.55);color:#fff;padding:6px 8px;border-radius:8px;font:12px system-ui;z-index:9999';
+dbg.textContent='CSV: loading…'; document.addEventListener('DOMContentLoaded',()=>document.body.appendChild(dbg));
 
-/* Placeholder if MessageURL is empty */
-const MESSAGE_FALLBACK = 'https://www.google.com/search?sca_esv=5e51b69b39b86b67&...';
+/* Cache-busted fetch */
+async function fetchText(url){
+  const bust = (url.includes('?') ? '&' : '?') + 'v=' + Date.now();
+  const r = await fetch(url + bust, { cache:'no-store', mode:'cors' });
+  if(!r.ok) throw new Error(`HTTP ${r.status}`);
+  return r.text();
+}
 
-/* -------- CSV loader -------- */
-function parseCSV(csv) {
-  const lines = csv.replace(/\r/g,'').trim().split('\n');
-  const headers = lines[0].split(',').map(h=>h.trim());
-  return lines.slice(1).map(line=>{
-    const cols = line.split(',').map(c=>c.trim());
-    const obj = {};
-    headers.forEach((h,i)=> obj[h] = cols[i] || '');
+/* Sturdy CSV parser (handles quoted commas/quotes) */
+function parseCSV(csv){
+  csv = csv.replace(/\r/g,'').trim();
+  const lines = csv.split('\n');
+  const split = line => {
+    const out=[]; let cur=''; let q=false;
+    for(let i=0;i<line.length;i++){
+      const c=line[i];
+      if(c === '"'){ q = !q; continue; }
+      if(c === ',' && !q){ out.push(cur); cur=''; continue; }
+      cur += c;
+    }
+    out.push(cur);
+    return out.map(s=>s.trim());
+  };
+  const headers = split(lines[0]);
+  return lines.slice(1).filter(Boolean).map(line=>{
+    const cols = split(line);
+    const obj={};
+    headers.forEach((h,i)=> obj[h]= (cols[i] ?? '').trim());
     return obj;
   });
 }
-async function loadTeamsFromSheet() {
-  const res = await fetch(SHEET_CSV_URL, {cache:'no-store'});
-  const csv = await res.text();
+
+/* Load CSV with Google→Local fallback */
+async function loadCsvText(){
+  try {
+    const t = await fetchText(GOOGLE_CSV);
+    dbg.textContent='CSV: Google ✅'; return t;
+  } catch(e1){
+    console.warn('Google CSV failed', e1);
+    try {
+      const t = await fetchText(LOCAL_CSV);
+      dbg.textContent='CSV: Local ✅'; return t;
+    } catch(e2){
+      dbg.textContent='CSV: failed ❌'; throw e2;
+    }
+  }
+}
+
+/* Map rows used by renderer */
+async function loadTeamsFromSheet(){
+  const csv = await loadCsvText();
   const rows = parseCSV(csv);
+
+  // header sanity check
+  const headerLine = csv.split('\n')[0];
+  const needed = ['Sport','Level','URL','MessageURL'];
+  const ok = needed.every(h => headerLine.includes(h));
+  if(!ok) dbg.textContent += ' (header mismatch)';
+
+  // show sample
+  dbg.textContent += ` • rows: ${rows.length}`;
+
   return rows
     .map(r => ({
-      sport: (r.Sport || '').trim(),
-      level: (r.Level || '').trim(),
-      url:   (r.URL   || '').trim(),
-      msg:   (r.MessageURL || '').trim()
+      sport: (r.Sport||'').trim(),
+      level: (r.Level||'').trim(),
+      url:   (r.URL||'').trim(),
+      msg:   (r.MessageURL||'').trim(),
     }))
     .filter(r => r.sport && r.level && r.url);
 }
 
-/* Sorting & grouping */
+/* ---- Existing render & ICS code below remains unchanged ---- */
 const LEVEL_ORDER = { "Varsity":0, "JV":1, "Freshman":2 };
 const PRIORITY_SPORTS = ["Volleyball","Football","Soccer","Softball"];
 function groupBySport(rows){
-  const map = new Map();
-  for(const r of rows){
-    if(!map.has(r.sport)) map.set(r.sport, []);
-    map.get(r.sport).push(r);
-  }
+  const map=new Map();
+  for(const r of rows){ if(!map.has(r.sport)) map.set(r.sport,[]); map.get(r.sport).push(r); }
   return map;
 }
-
-/* Render page */
 async function render(){
   const TEAMS = await loadTeamsFromSheet();
   const container = document.getElementById('sports');
-  container.innerHTML = '';
+  container.innerHTML='';
   const grouped = groupBySport(TEAMS);
-  const others = Array.from(grouped.keys()).filter(s=>!PRIORITY_SPORTS.includes(s)).sort((a,b)=>a.localeCompare(b));
-  const order = [...PRIORITY_SPORTS, ...others].filter(s=>grouped.has(s));
+  const others = Array.from(grouped.keys()).filter(s=>!PRIORITY_SPORTS.includes(s)).sort();
+  const order=[...PRIORITY_SPORTS,...others].filter(s=>grouped.has(s));
   for(const sport of order){
     const items = grouped.get(sport).slice()
-      .sort((a,b)=>(LEVEL_ORDER[a.level]??99)-(LEVEL_ORDER[b.level]??99) || a.level.localeCompare(b.level));
-    const section = document.createElement('section');
-    section.className = 'section';
-    section.setAttribute('aria-label', sport);
-    section.innerHTML = `<div class="section-head">${sport}</div><div class="grid"></div>`;
-    const grid = section.querySelector('.grid');
+      .sort((a,b)=>(LEVEL_ORDER[a.level]??99)-(LEVEL_ORDER[b.level]??99)||a.level.localeCompare(b.level));
+    const section=document.createElement('section');
+    section.className='section';
+    section.setAttribute('aria-label',sport);
+    section.innerHTML=`<div class="section-head">${sport}</div><div class="grid"></div>`;
+    const grid=section.querySelector('.grid');
     for(const t of items){
-      const msgURL = t.msg || MESSAGE_FALLBACK;
-      const card = document.createElement('div');
-      card.className = 'card';
-      card.innerHTML = `
+      const msgURL=t.msg||MESSAGE_FALLBACK;
+      const card=document.createElement('div');
+      card.className='card';
+      card.innerHTML=`
         <div><div class="team">${t.level}</div></div>
         <div class="chips">
           <a class="chip msgchip" href="${msgURL}" target="_blank" rel="noopener"><img src="icons/message.png" alt="Message"></a>
@@ -195,7 +239,7 @@ async function render(){
 }
 render();
 
-/* ---------- ICS viewer (modal) ---------- */
+/* ---------- ICS viewer (unchanged) ---------- */
 async function fetchIcs(url){ const r=await fetch(url,{cache:'no-store'}); if(!r.ok) throw new Error(r.status); return r.text(); }
 function parseIcs(text){
   const events=[], lines=text.replace(/\r/g,'').split('\n'); let ev=null;
@@ -205,10 +249,10 @@ function parseIcs(text){
     if(line.startsWith('BEGIN:VEVENT')){ ev={}; continue; }
     if(line.startsWith('END:VEVENT')){ if(ev && ev.start && ev.summary) events.push(ev); ev=null; continue; }
     if(!ev) continue;
-    if(line.startsWith('DTSTART')) ev.start = icsDate(line.split(':').pop());
-    else if(line.startsWith('DTEND')) ev.end = icsDate(line.split(':').pop());
-    else if(line.startsWith('SUMMARY:')) ev.summary = line.slice(8).trim();
-    else if(line.startsWith('LOCATION:')) ev.location = line.slice(9).trim();
+    if(line.startsWith('DTSTART')) ev.start=icsDate(line.split(':').pop());
+    else if(line.startsWith('DTEND')) ev.end=icsDate(line.split(':').pop());
+    else if(line.startsWith('SUMMARY:')) ev.summary=line.slice(8).trim();
+    else if(line.startsWith('LOCATION:')) ev.location=line.slice(9).trim();
   }
   return events;
 }
