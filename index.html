@@ -30,7 +30,7 @@
     }
     /* Bigger white circle without scaling the logo image */
     .logo-circle{
-      width:170px; height:170px;           /* was 150px — more breathing room */
+      width:170px; height:170px;       /* more breathing room so corners don't protrude */
       border-radius:50%; background:#fff;
       display:flex; align-items:center; justify-content:center;
       box-shadow:0 4px 16px rgba(0,0,0,.15);
@@ -51,7 +51,7 @@
       font-size: calc(var(--scriptSize) * .40); letter-spacing:.5em; text-align:center;
     }
 
-    /* Social row */
+    /* Social row (ORDER: Instagram, X, Facebook, YouTube, Hudl) */
     .social{ display:flex; gap:16px; justify-content:center; flex-wrap:wrap; margin:8px 0 14px; }
     .icon-wrap{
       width:52px; height:52px; border-radius:12px; background:#fff;
@@ -59,8 +59,10 @@
       box-shadow:0 3px 10px rgba(0,0,0,.12);
     }
     .icon-wrap img{ width:28px; height:28px; display:block; }
-    /* Hudl is a white PNG; invert so it appears dark like brand SVGs and bump size to fit tile */
-    .icon-wrap.hudl img{ filter: invert(1); height:34px; width:auto; } /* taller so "hudl" fills */
+    /* HUDL is black-on-transparent; bump its height a bit to fit wordmark cleanly */
+    .icon-wrap.hudl img{
+      width:auto; height:30px; filter:none;
+    }
 
     /* Sections */
     .section{
@@ -71,7 +73,7 @@
       padding:14px 16px; border-bottom:1px solid var(--cardBorder);
       font-weight:800; color:var(--gold);
       font-family:"Lobster","Brush Script MT","Segoe Script","Lucida Handwriting","Apple Chancery",cursive;
-      font-size: clamp(28px, 4.6vw, 43px); /* ~20% larger than before */
+      font-size: clamp(28px, 4.6vw, 43px); /* larger than team levels */
     }
     .grid{ display:grid; gap:12px; padding:12px }
     @media (min-width:600px){ .grid{ grid-template-columns:1fr 1fr } }
@@ -81,7 +83,8 @@
       background:rgba(255,255,255,.06); border:1px solid var(--cardBorder);
       border-radius:12px; padding:14px
     }
-    .team{ font-weight:700; font-size: clamp(16px, 2.6vw, 24px) } /* smaller than headers */
+    /* Team level smaller than headers */
+    .team{ font-weight:700; font-size: clamp(16px, 2.6vw, 24px) }
     .tags{ font-size:12px; opacity:.85 }
 
     /* Subscribe chip */
@@ -114,7 +117,6 @@
       </div>
       <div class="title-sub">landing page</div>
 
-      <!-- Social (ORDER: Instagram, X, Facebook, YouTube, Hudl) -->
       <nav class="social" aria-label="Social & Streaming">
         <a href="https://www.instagram.com/borgiaknight?igsh=dmVvaGVxd2Q5NHI3" target="_blank" rel="noopener" aria-label="Instagram">
           <span class="icon-wrap"><img src="icons/square-instagram-brands-solid-full.svg" alt="Instagram"></span>
@@ -134,11 +136,8 @@
       </nav>
     </header>
 
-    <!-- ======== PASTE YOUR AUTO-FILLED SPORT SECTIONS HERE ========
-         (The fully generated cards from your spreadsheet.) 
-         Keep them as-is; header/css above already matches your spec. -->
-
-    <!-- Example of one section/card (remove when you paste real ones):
+    <!-- =================== START SPORTS (paste your sections here) =================== -->
+    <!-- Example (remove this after pasting your generated sections):
     <section class="section" aria-label="Volleyball">
       <div class="section-head">Volleyball</div>
       <div class="grid">
@@ -154,6 +153,7 @@
       </div>
     </section>
     -->
+    <!-- ==================== END SPORTS ==================== -->
 
     <!-- GoFan button (image only) -->
     <div class="gofan-cta">
