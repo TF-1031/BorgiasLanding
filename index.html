@@ -1,49 +1,171 @@
-<!DOCTYPE html><html lang='en'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1'><title>St. Francis Borgia • Landing Page</title><link rel='preconnect' href='https://fonts.gstatic.com' crossorigin><link href='https://fonts.googleapis.com/css2?family=Lobster&display=swap' rel='stylesheet'><style>
-:root{
-  --blue:#002d72;
-  --gold:#f1b500;
-  --cardBorder:rgba(255,255,255,.18);
-  --scriptSize: clamp(40px, 9vw, 72px);
-}
-*{ box-sizing:border-box; }
-body{ margin:0; background:var(--blue); color:#fff; font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; }
-.wrap{ max-width:900px; margin:0 auto; padding:18px; }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>St. Francis Borgia • Landing Page</title>
 
-/* Header */
-.head{ display:flex; flex-direction:column; align-items:center; gap:12px; margin:12px 0 14px; text-align:center; }
-.logo-circle{ width:150px; height:150px; border-radius:50%; background:#fff; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 16px rgba(0,0,0,.15); }
-.logo{ max-width:110px; height:auto; display:block; }
+  <!-- Thicker script font -->
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
 
-/* Titles */
-.title-script{ font-family:"Lobster","Brush Script MT","Segoe Script","Lucida Handwriting","Apple Chancery",cursive; font-size:var(--scriptSize); line-height:1; color:var(--gold); text-align:center; text-shadow:0 1px 0 rgba(0,0,0,.08); }
-.title-script a{ color:inherit; text-decoration:none; }
-.title-sub{ margin-top:6px; font-weight:800; text-transform:uppercase; font-size: calc(var(--scriptSize) * .40); letter-spacing:.5em; text-align:center; }
+  <style>
+    :root{
+      --blue:#002d72;
+      --gold:#f1b500;
+      --cardBorder:rgba(255,255,255,.18);
+      --scriptSize: clamp(40px, 9vw, 72px);
+    }
+    *{ box-sizing:border-box; }
+    body{
+      margin:0; background:var(--blue); color:#fff;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    }
+    .wrap{ max-width:900px; margin:0 auto; padding:18px; }
 
-/* Social row */
-.social{ display:flex; gap:16px; justify-content:center; flex-wrap:wrap; margin:8px 0 14px; }
-.icon-wrap{ width:52px; height:52px; border-radius:12px; background:#fff; display:inline-flex; align-items:center; justify-content:center; box-shadow:0 3px 10px rgba(0,0,0,.12); }
-.icon-wrap img{ width:28px; height:28px; display:block; }
-.icon-wrap.hudl img{ filter: invert(1); }
+    /* Header */
+    .head{
+      display:flex; flex-direction:column; align-items:center; gap:12px;
+      margin:12px 0 14px; text-align:center;
+    }
+    /* Bigger white circle without scaling the logo image */
+    .logo-circle{
+      width:170px; height:170px;           /* was 150px — more breathing room */
+      border-radius:50%; background:#fff;
+      display:flex; align-items:center; justify-content:center;
+      box-shadow:0 4px 16px rgba(0,0,0,.15);
+    }
+    .logo{
+      max-width:110px; height:auto; display:block; /* logo size unchanged */
+    }
 
-/* Sections */
-.section{ margin:14px 0; border:1px solid var(--cardBorder); border-radius:14px; background:rgba(255,255,255,.04); }
-.section-head{ padding:14px 16px; border-bottom:1px solid var(--cardBorder); font-weight:800; font-family:"Lobster","Brush Script MT","Segoe Script","Lucida Handwriting","Apple Chancery",cursive; color: var(--gold); font-size: clamp(28px, 4.6vw, 43px); }
-.grid{ display:grid; gap:12px; padding:12px; }
-@media (min-width:600px){ .grid{ grid-template-columns:1fr 1fr; } }
-.card{ display:flex; align-items:center; justify-content:space-between; gap:12px; background:rgba(255,255,255,.06); border:1px solid var(--cardBorder); border-radius:12px; padding:14px; }
-.team{ font-weight:700; font-size: clamp(16px, 2.6vw, 24px); }
-.tags{ font-size:12px; opacity:.85; }
+    /* Titles */
+    .title-script{
+      font-family:"Lobster","Brush Script MT","Segoe Script","Lucida Handwriting","Apple Chancery",cursive;
+      font-size:var(--scriptSize); line-height:1; color:var(--gold); text-align:center;
+      text-shadow:0 1px 0 rgba(0,0,0,.08);
+    }
+    .title-script a{ color:inherit; text-decoration:none; }
+    .title-sub{
+      margin-top:6px; font-weight:800; text-transform:uppercase;
+      font-size: calc(var(--scriptSize) * .40); letter-spacing:.5em; text-align:center;
+    }
 
-/* Subscribe chip */
-.subchip{ width:50px; height:50px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; background:var(--blue); border:2px solid #fff; }
-.subchip img{ width:32px; height:32px; display:block; }
+    /* Social row */
+    .social{ display:flex; gap:16px; justify-content:center; flex-wrap:wrap; margin:8px 0 14px; }
+    .icon-wrap{
+      width:52px; height:52px; border-radius:12px; background:#fff;
+      display:inline-flex; align-items:center; justify-content:center;
+      box-shadow:0 3px 10px rgba(0,0,0,.12);
+    }
+    .icon-wrap img{ width:28px; height:28px; display:block; }
+    /* Hudl is a white PNG; invert so it appears dark like brand SVGs and bump size to fit tile */
+    .icon-wrap.hudl img{ filter: invert(1); height:34px; width:auto; } /* taller so "hudl" fills */
 
-/* GoFan CTA */
-.gofan-cta{ display:flex; justify-content:center; margin: 24px 0 6px; }
-.gofan-btn{ display:inline-flex; align-items:center; background:none; padding:0; border-radius:0; }
-.gofan-btn img{ height:50px; width:auto; display:block; }
+    /* Sections */
+    .section{
+      margin:14px 0; border:1px solid var(--cardBorder);
+      border-radius:14px; background:rgba(255,255,255,.04)
+    }
+    .section-head{
+      padding:14px 16px; border-bottom:1px solid var(--cardBorder);
+      font-weight:800; color:var(--gold);
+      font-family:"Lobster","Brush Script MT","Segoe Script","Lucida Handwriting","Apple Chancery",cursive;
+      font-size: clamp(28px, 4.6vw, 43px); /* ~20% larger than before */
+    }
+    .grid{ display:grid; gap:12px; padding:12px }
+    @media (min-width:600px){ .grid{ grid-template-columns:1fr 1fr } }
 
-/* Footer */
-.footer-links{ text-align:center; margin:22px 0; }
-.footer-links a{ color:#fff; text-decoration:underline; margin:0 10px; }
-</style></head><body><div class='wrap'><header class='head'><a href='https://www.borgia.com' target='_blank' rel='noopener' class='logo-circle' aria-label='SFB website'><img class='logo' src='logo.png' alt='St. Francis Borgia Logo'></a><div class='title-script'><a href='https://www.borgia.com' target='_blank' rel='noopener'>St. Francis Borgia</a></div><div class='title-sub'>landing page</div><nav class='social' aria-label='Social & Streaming'><a href='https://fan.hudl.com/usa/mo/washington/organization/3681/st-francis-borgia-h-high-school' target='_blank' rel='noopener' aria-label='Hudl'><span class='icon-wrap hudl'><img src='icons/hudl.png' alt='Hudl'></span></a><a href='https://www.facebook.com/share/1EWkjCpFom/?mibextid=wwXIfr' target='_blank' rel='noopener' aria-label='Facebook'><span class='icon-wrap'><img src='icons/square-facebook-brands-solid-full.svg' alt='Facebook'></span></a><a href='https://www.instagram.com/borgiaknight?igsh=dmVvaGVxd2Q5NHI3' target='_blank' rel='noopener' aria-label='Instagram'><span class='icon-wrap'><img src='icons/square-instagram-brands-solid-full.svg' alt='Instagram'></span></a><a href='https://x.com/borgiaathletics?s=21&t=rCQlMmtkHbQVpj9pzx_7WA' target='_blank' rel='noopener' aria-label='X'><span class='icon-wrap'><img src='icons/square-x-twitter-brands-solid-full.svg' alt='X'></span></a><a href='https://youtube.com/@borgiaathletics8736?si=KXv4ea6yGnFpL9v' target='_blank' rel='noopener' aria-label='YouTube'><span class='icon-wrap'><img src='icons/square-youtube-brands-solid-full.svg' alt='YouTube'></span></a></nav></header><section class='section' aria-label='Volleyball'><div class='section-head'>Volleyball</div><div class='grid'><div class='card'><div><div class='team'>Varsity</div><div class='tags'>Girls • Subscribe</div></div><a class='subchip' href='http://www2.arbitersports.com/iCal/Team/schedule.ics?id=cq2PfPo%2b%2bmxs6el2BSHJWQ%3d%3d' target='_blank' rel='noopener'><img src='icons/calendar.png' alt='Subscribe'></a></div><div class='card'><div><div class='team'>JV</div><div class='tags'>Girls • Subscribe</div></div><a class='subchip' href='http://www2.arbitersports.com/iCal/Team/schedule.ics?id=zUGKWfMAUMDi5ICcRJfPRQ%3d%3d' target='_blank' rel='noopener'><img src='icons/calendar.png' alt='Subscribe'></a></div><div class='card'><div><div class='team'>Freshman</div><div class='tags'>Girls • Subscribe</div></div><a class='subchip' href='http://www2.arbitersports.com/iCal/Team/schedule.ics?id=LGmylvwW1RLyVXU8PJv0FA%3d%3d' target='_blank' rel='noopener'><img src='icons/calendar.png' alt='Subscribe'></a></div></div></section><section class='section' aria-label='Football'><div class='section-head'>Football</div><div class='grid'><div class='card'><div><div class='team'>Varsity</div><div class='tags'>Boys • Subscribe</div></div><a class='subchip' href='http://www2.arbitersports.com/iCal/Team/schedule.ics?id=o3hRcWm%2boO%2bv54qae0%2f9QA%3d%3d' target='_blank' rel='noopener'><img src='icons/calendar.png' alt='Subscribe'></a></div><div class='card'><div><div class='team'>JV</div><div class='tags'>Boys • Subscribe</div></div><a class='subchip' href='http://www2.arbitersports.com/iCal/Team/schedule.ics?id=tRMiEFda927m3MM3MQBEjQ%3d%3d' target='_blank' rel='noopener'><img src='icons/calendar.png' alt='Subscribe'></a></div><div class='card'><div><div class='team'>Freshman</div><div class='tags'>Boys • Subscribe</div></div><a class='subchip' href='http://www2.arbitersports.com/iCal/Team/schedule.ics?id=9xiAEXnWVWx08jXer9zZuQ%3d%3d' target='_blank' rel='noopener'><img src='icons/calendar.png' alt='Subscribe'></a></div></div></section><section class='section' aria-label='Soccer'><div class='section-head'>Soccer</div><div class='grid'><div class='card'><div><div class='team'>Varsity</div><div class='tags'>Boys • Subscribe</div></div><a class='subchip' href='http://www2.arbitersports.com/iCal/Team/schedule.ics?id=X3ZZWuazdrxLlL24FwSC%2bA%3d%3d' target='_blank' rel='noopener'><img src='icons/calendar.png' alt='Subscribe'></a></div><div class='card'><div><div class='team'>JV</div><div class='tags'>Boys • Subscribe</div></div><a class='subchip' href='http://www2.arbitersports.com/iCal/Team/schedule.ics?id=T8q7gRNMDMmQfq0CVwmLbg%3d%3d' target='_blank' rel='noopener'><img src='icons/calendar.png' alt='Subscribe'></a></div><div class='card'><div><div class='team'>JV</div><div class='tags'>Boys • Subscribe</div></div><a class='subchip' href='http://www2.arbitersports.com/iCal/Team/schedule.ics?id=BoB1kHmmu%2fkumYRuQu1xMQ%3d%3d' target='_blank' rel='noopener'><img src='icons/calendar.png' alt='Subscribe'></a></div></div></section><section class='section' aria-label='Softball'><div class='section-head'>Softball</div><div class='grid'><div class='card'><div><div class='team'>Varsity</div><div class='tags'>Girls • Subscribe</div></div><a class='subchip' href='http://www2.arbitersports.com/iCal/Team/schedule.ics?id=Ue2CoqdpoIJA2am%2bc7x5nw%3d%3d' target='_blank' rel='noopener'><img src='icons/calendar.png' alt='Subscribe'></a></div><div class='card'><div><div class='team'>JV</div><div class='tags'>Girls • Subscribe</div></div><a class='subchip' href='http://www2.arbitersports.com/iCal/Team/schedule.ics?id=JCzueDFVhaz6OqLdBtaBgg%3d%3d' target='_blank' rel='noopener'><img src='icons/calendar.png' alt='Subscribe'></a></div></div></section><section class='section' aria-label='Competitive Cheer'><div class='section-head'>Competitive Cheer</div><div class='grid'><div class='card'><div><div class='team'>Varsity</div><div class='tags'>Coed • Subscribe</div></div><a class='subchip' href='http://www2.arbitersports.com/iCal/Team/schedule.ics?id=BjNdM42b4hFs2JXTTCY4qA%3d%3d' target='_blank' rel='noopener'><img src='icons/calendar.png' alt='Subscribe'></a></div></div></section><section class='section' aria-label='Cross Country'><div class='section-head'>Cross Country</div><div class='grid'><div class='card'><div><div class='team'>Varsity</div><div class='tags'>Coed • Subscribe</div></div><a class='subchip' href='http://www2.arbitersports.com/iCal/Team/schedule.ics?id=SrPIiZejlpI8oP43aI55sA%3d%3d' target='_blank' rel='noopener'><img src='icons/calendar.png' alt='Subscribe'></a></div></div></section><section class='section' aria-label='Dance'><div class='section-head'>Dance</div><div class='grid'><div class='card'><div><div class='team'>Varsity</div><div class='tags'>Coed • Subscribe</div></div><a class='subchip' href='http://www2.arbitersports.com/iCal/Team/schedule.ics?id=mcylqcYIBxb1XfowG1vnQA%3d%3d' target='_blank' rel='noopener'><img src='icons/calendar.png' alt='Subscribe'></a></div></div></section><section class='section' aria-label='Marching Band'><div class='section-head'>Marching Band</div><div class='grid'><div class='card'><div><div class='team'>Varsity</div><div class='tags'>Coed • Subscribe</div></div><a class='subchip' href='http://www2.arbitersports.com/iCal/Team/schedule.ics?id=6TAkALSrtvtHgjTTNZP5Ng%3d%3d' target='_blank' rel='noopener'><img src='icons/calendar.png' alt='Subscribe'></a></div></div></section><div class='gofan-cta'><a class='gofan-btn' href='https://gofan.co/app/school/MO24174' target='_blank' rel='noopener'><img src='icons/gofan.png' alt='GoFan'></a></div><div class='footer-links'><a href='https://www.borgia.com/athletics/borgia-athletics' target='_blank' rel='noopener'>Athletics page</a> | <a href='https://www.mshsaa.org/MySchool/?s=544' target='_blank' rel='noopener'>MSHSAA</a></div></div></body></html>
+    .card{
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      background:rgba(255,255,255,.06); border:1px solid var(--cardBorder);
+      border-radius:12px; padding:14px
+    }
+    .team{ font-weight:700; font-size: clamp(16px, 2.6vw, 24px) } /* smaller than headers */
+    .tags{ font-size:12px; opacity:.85 }
+
+    /* Subscribe chip */
+    .subchip{
+      width:50px; height:50px; border-radius:50%;
+      display:inline-flex; align-items:center; justify-content:center;
+      background:var(--blue); border:2px solid #fff
+    }
+    .subchip img{ width:32px; height:32px; display:block }
+
+    /* GoFan CTA (image only) */
+    .gofan-cta{ display:flex; justify-content:center; margin:24px 0 6px }
+    .gofan-btn{ display:inline-flex; align-items:center; background:none; padding:0; border-radius:0; }
+    .gofan-btn img{ height:50px; width:auto; display:block }
+
+    /* Footer */
+    .footer-links{ text-align:center; margin:22px 0 }
+    .footer-links a{ color:#fff; text-decoration:underline; margin:0 10px }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="head">
+      <a href="https://www.borgia.com" target="_blank" rel="noopener" class="logo-circle" aria-label="SFB website">
+        <img class="logo" src="logo.png" alt="St. Francis Borgia Logo">
+      </a>
+
+      <div class="title-script">
+        <a href="https://www.borgia.com" target="_blank" rel="noopener">St. Francis Borgia</a>
+      </div>
+      <div class="title-sub">landing page</div>
+
+      <!-- Social (ORDER: Instagram, X, Facebook, YouTube, Hudl) -->
+      <nav class="social" aria-label="Social & Streaming">
+        <a href="https://www.instagram.com/borgiaknight?igsh=dmVvaGVxd2Q5NHI3" target="_blank" rel="noopener" aria-label="Instagram">
+          <span class="icon-wrap"><img src="icons/square-instagram-brands-solid-full.svg" alt="Instagram"></span>
+        </a>
+        <a href="https://x.com/borgiaathletics?s=21&t=rCQlMmtkHbQVpj9pzx_7WA" target="_blank" rel="noopener" aria-label="X">
+          <span class="icon-wrap"><img src="icons/square-x-twitter-brands-solid-full.svg" alt="X"></span>
+        </a>
+        <a href="https://www.facebook.com/share/1EWkjCpFom/?mibextid=wwXIfr" target="_blank" rel="noopener" aria-label="Facebook">
+          <span class="icon-wrap"><img src="icons/square-facebook-brands-solid-full.svg" alt="Facebook"></span>
+        </a>
+        <a href="https://youtube.com/@borgiaathletics8736?si=KXv4ea6yGnFpL9v" target="_blank" rel="noopener" aria-label="YouTube">
+          <span class="icon-wrap"><img src="icons/square-youtube-brands-solid-full.svg" alt="YouTube"></span>
+        </a>
+        <a href="https://fan.hudl.com/usa/mo/washington/organization/3681/st-francis-borgia-h-high-school" target="_blank" rel="noopener" aria-label="Hudl">
+          <span class="icon-wrap hudl"><img src="icons/hudl.png" alt="Hudl"></span>
+        </a>
+      </nav>
+    </header>
+
+    <!-- ======== PASTE YOUR AUTO-FILLED SPORT SECTIONS HERE ========
+         (The fully generated cards from your spreadsheet.) 
+         Keep them as-is; header/css above already matches your spec. -->
+
+    <!-- Example of one section/card (remove when you paste real ones):
+    <section class="section" aria-label="Volleyball">
+      <div class="section-head">Volleyball</div>
+      <div class="grid">
+        <div class="card">
+          <div>
+            <div class="team">Varsity</div>
+            <div class="tags">Girls • Subscribe</div>
+          </div>
+          <a class="subchip" href="ICal-URL" target="_blank" rel="noopener">
+            <img src="icons/calendar.png" alt="Subscribe">
+          </a>
+        </div>
+      </div>
+    </section>
+    -->
+
+    <!-- GoFan button (image only) -->
+    <div class="gofan-cta">
+      <a class="gofan-btn" href="https://gofan.co/app/school/MO24174" target="_blank" rel="noopener">
+        <img src="icons/gofan.png" alt="GoFan">
+      </a>
+    </div>
+
+    <div class="footer-links">
+      <a href="https://www.borgia.com/athletics/borgia-athletics" target="_blank" rel="noopener">Athletics page</a> |
+      <a href="https://www.mshsaa.org/MySchool/?s=544" target="_blank" rel="noopener">MSHSAA</a>
+    </div>
+  </div>
+</body>
+</html>
