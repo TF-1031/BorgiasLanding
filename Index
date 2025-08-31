@@ -29,11 +29,11 @@
 
   /* Social */
   .social{ display:flex; gap:16px; justify-content:center; flex-wrap:wrap; margin:8px 0 18px }
-  .icon-tile{ width:56px; height:56px; border-radius:14px; background:#fff; display:inline-flex; align-items:center; justify-content:center; box-shadow:0 3px 10px rgba(0,0,0,.12) }
-  .icon-tile img{ width:30px; height:30px; display:block }
-  .icon-tile.hudl img{ max-width:76%; max-height:76%; width:auto; height:auto; object-fit:contain }
+  .icon-wrap{ width:56px; height:56px; border-radius:14px; background:#fff; display:inline-flex; align-items:center; justify-content:center; box-shadow:0 3px 10px rgba(0,0,0,.12) }
+  .icon-wrap img{ width:30px; height:30px; display:block }
+  .icon-wrap.hudl img{ max-width:76%; max-height:76%; width:auto; height:auto; object-fit:contain }
 
-  /* Chips row */
+  /* Chips */
   .chipbar{ display:flex; gap:14px; justify-content:center; flex-wrap:wrap; margin:8px 0 8px }
   .chip{ appearance:none; border:2px solid #fff; background:transparent; color:#fff; padding:10px 18px; border-radius:26px; font-weight:700; cursor:pointer }
   .chip.active{ background:var(--gold); border-color:var(--gold); color:#0a214f }
@@ -47,13 +47,13 @@
   .card{ display:flex; align-items:center; justify-content:space-between; gap:12px; background:rgba(255,255,255,.06); border:1px solid var(--cardBorder); border-radius:12px; padding:14px }
   .team{ font-weight:800; font-size:clamp(16px,2.6vw,24px) }
 
-  /* Action chips (message, view, subscribe) */
+  /* Action chips */
   .chips{ display:flex; gap:10px; align-items:center }
   .round{ width:50px; height:50px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; border:2px solid #fff; background:#fff }
   .round.view{ background:var(--blue) } /* white calendar on blue */
   .round img{ max-width:70%; max-height:70%; width:auto; height:auto; display:block; object-fit:contain }
 
-  /* GoFan CTA */
+  /* GoFan */
   .gofan-cta{ display:flex; justify-content:center; margin:22px 0 10px }
   .gofan-cta img{ height:54px; width:auto; display:block }
 
@@ -87,25 +87,25 @@
 
       <!-- Social -->
       <nav class="social" aria-label="Social & Streaming">
-        <a class="icon-tile" href="https://www.instagram.com/borgiaknight?igsh=dmVvaGVxd2Q5NHI3" target="_blank" rel="noopener" aria-label="Instagram"><img src="icons/square-instagram-brands-solid-full.svg" alt="Instagram"></a>
-        <a class="icon-tile" href="https://x.com/borgiaathletics?s=21&t=rCQlMmtkHbQVpj9pzx_7WA" target="_blank" rel="noopener" aria-label="X"><img src="icons/square-x-twitter-brands-solid-full.svg" alt="X"></a>
-        <a class="icon-tile" href="https://www.facebook.com/share/1EWkjCpFom/?mibextid=wwXIfr" target="_blank" rel="noopener" aria-label="Facebook"><img src="icons/square-facebook-brands-solid-full.svg" alt="Facebook"></a>
-        <a class="icon-tile" href="https://youtube.com/@borgiaathletics8736?si=KXv4ea6yGnFpL9v" target="_blank" rel="noopener" aria-label="YouTube"><img src="icons/square-youtube-brands-solid-full.svg" alt="YouTube"></a>
-        <a class="icon-tile hudl" href="https://fan.hudl.com/usa/mo/washington/organization/3681/st-francis-borgia-h-high-school" target="_blank" rel="noopener" aria-label="Hudl"><img src="icons/hudl-black.png" alt="Hudl"></a>
+        <a href="https://www.instagram.com/borgiaknight?igsh=dmVvaGVxd2Q5NHI3" target="_blank" rel="noopener" aria-label="Instagram"><span class="icon-wrap"><img src="icons/square-instagram-brands-solid-full.svg" alt="Instagram"></span></a>
+        <a href="https://x.com/borgiaathletics?s=21&t=rCQlMmtkHbQVpj9pzx_7WA" target="_blank" rel="noopener" aria-label="X"><span class="icon-wrap"><img src="icons/square-x-twitter-brands-solid-full.svg" alt="X"></span></a>
+        <a href="https://www.facebook.com/share/1EWkjCpFom/?mibextid=wwXIfr" target="_blank" rel="noopener" aria-label="Facebook"><span class="icon-wrap"><img src="icons/square-facebook-brands-solid-full.svg" alt="Facebook"></span></a>
+        <a href="https://youtube.com/@borgiaathletics8736?si=KXv4ea6yGnFpL9v" target="_blank" rel="noopener" aria-label="YouTube"><span class="icon-wrap"><img src="icons/square-youtube-brands-solid-full.svg" alt="YouTube"></span></a>
+        <a href="https://fan.hudl.com/usa/mo/washington/organization/3681/st-francis-borgia-h-high-school" target="_blank" rel="noopener" aria-label="Hudl"><span class="icon-wrap hudl"><img src="icons/hudl.png" alt="Hudl"></span></a>
       </nav>
     </header>
 
-    <!-- Filters -->
+    <!-- Season chips -->
     <div class="chipbar" id="seasonBar" role="tablist" aria-label="Season">
       <button class="chip active" data-season="Fall">Fall</button>
       <button class="chip" data-season="Winter">Winter</button>
       <button class="chip" data-season="Spring">Spring</button>
       <button class="chip" data-season="All Year">All Year</button>
     </div>
+    <!-- Gender chips (no Coed chip; Coed always included) -->
     <div class="chipbar" id="genderBar" role="tablist" aria-label="Gender">
       <button class="chip active" data-gender="Boys">Boys</button>
       <button class="chip" data-gender="Girls">Girls</button>
-      <button class="chip" data-gender="Coed">Coed</button>
     </div>
 
     <!-- Teams under chips -->
@@ -140,81 +140,62 @@
   </div>
 
 <script>
-/* =======================
-   DATA SOURCE (Google Sheet - Published CSV)
-   (You can switch to output=tsv; this parser handles both)
-======================= */
+/* ========= Published CSV from Google Sheets =========
+   Replace this with your sheet's "Publish to the web" CSV link if it changes.
+*/
 const GOOGLE_CSV =
   'https://docs.google.com/spreadsheets/d/e/2PACX-1vT5Ly_7rP62i_7vtVWkC_oiWDQM6E9I0c6-kRtKRaoJIAfNDiFq2k5cQ3nwiuoB-cNKFrb5k3XUQeB1/pub?gid=1131242995&single=true&output=csv';
 
-/* Icons inside action chips */
+/* Icons used inside action chips */
 const ICONS = {
   message:  'icons/message-solid-full.svg',
-  calendar: 'icons/calendar-white-17.png',
-  apple:    'icons/apple.png'
+  calendar: 'icons/calendar-white-17.png', // middle “View” chip
+  apple:    'icons/apple.png'              // right “Subscribe” chip
 };
 
-/* -------- Robust CSV/TSV parser (handles quotes) -------- */
+/* -------- Robust CSV/TSV parser (quoted fields supported) -------- */
 function parseDelimited(text){
-  // detect delimiter by header line: prefer tab if present, else comma
   const firstLine = text.split(/\r?\n/)[0] || '';
   const delim = firstLine.includes('\t') ? '\t' : ',';
-
-  // RFC4180-ish parse: walk chars, honor quotes, keep empty fields
   const rows = [];
   let row = [], field = '', i = 0, inQuotes = false;
-
   while (i < text.length) {
     const ch = text[i];
-
     if (inQuotes) {
-      if (ch === '"') {
-        // double quote inside quoted field → escape
-        if (text[i+1] === '"') { field += '"'; i += 2; continue; }
-        inQuotes = false; i++; continue;
-      }
+      if (ch === '"') { if (text[i+1] === '"') { field += '"'; i += 2; } else { inQuotes = false; i++; } continue; }
       field += ch; i++; continue;
     } else {
       if (ch === '"') { inQuotes = true; i++; continue; }
       if (ch === delim) { row.push(field); field = ''; i++; continue; }
       if (ch === '\n') { row.push(field); rows.push(row); row = []; field = ''; i++; continue; }
-      if (ch === '\r') { i++; continue; } // skip CR
+      if (ch === '\r') { i++; continue; }
       field += ch; i++; continue;
     }
   }
-  // push last field/row
   row.push(field); rows.push(row);
-
-  // trim trailing blank rows
-  while (rows.length && rows[rows.length-1].every(c => c === '')) rows.pop();
-
-  // map to objects using header row
-  const headers = (rows.shift() || []).map(h => h.trim());
+  while (rows.length && rows[rows.length-1].every(c=>c==='')) rows.pop();
+  const headers = (rows.shift() || []).map(h=>h.trim());
   return rows.map(cols => {
-    const obj = {};
-    headers.forEach((h, idx) => { obj[h] = (cols[idx] ?? '').trim(); });
-    return obj;
+    const o={}; headers.forEach((h,idx)=> o[h] = (cols[idx] ?? '').trim()); return o;
   });
 }
 
 /* -------- Load & normalize rows -------- */
 async function loadRows(){
-  const url = GOOGLE_CSV + '&_cb=' + Date.now(); // cache-bust
+  const url = GOOGLE_CSV + '&_cb=' + Date.now(); // cache-bust GitHub Pages
   const res = await fetch(url, {cache:'no-store'});
   if (!res.ok) throw new Error('CSV fetch failed: ' + res.status);
   const txt = await res.text();
   const raw = parseDelimited(txt);
-
   const rows = raw.map(r => ({
-    season: (r.Season || '').trim(),
-    gender: (r.Gender || '').trim(),
-    sport:  (r.Sport  || '').trim(),
-    level:  (r.Level  || '').trim(),
-    url:    (r.URL    || '').trim(),
-    msg:    (r.MessageURL || '').trim()
+    season: (r.Season||'').trim(),
+    gender: (r.Gender||'').trim(),
+    sport:  (r.Sport ||'').trim(),
+    level:  (r.Level ||'').trim(),
+    url:    (r.URL   ||'').trim(),
+    msg:    (r.MessageURL||'').trim()
   })).filter(r => r.sport && r.level && r.url);
-
-  console.log(`Loaded ${rows.length} rows from sheet`, rows);
+  console.log(`Loaded ${rows.length} rows from sheet`);
   return rows;
 }
 
@@ -224,11 +205,20 @@ let ALL_ROWS = [];
 let SELECTED_SEASON = 'Fall';
 let SELECTED_GENDER = new Set(['Boys']); // single-select
 
-function seasonMatches(r){ return r.season === 'All Year' || r.season === SELECTED_SEASON; }
-function genderMatches(r){ return SELECTED_GENDER.has(r.gender); }
+// Season: Fall/Winter/Spring include All Year; "All Year" shows only All Year
+function seasonMatches(r){
+  return SELECTED_SEASON === 'All Year'
+    ? r.season.toLowerCase() === 'all year'
+    : (r.season === SELECTED_SEASON || r.season.toLowerCase() === 'all year');
+}
+// Gender: Coed shows in BOTH Boys and Girls
+function genderMatches(r){
+  if ((r.gender||'').toLowerCase() === 'coed') return true;
+  return SELECTED_GENDER.has(r.gender);
+}
 function groupBySport(rows){
-  const m = new Map();
-  rows.forEach(r => { if (!m.has(r.sport)) m.set(r.sport, []); m.get(r.sport).push(r); });
+  const m=new Map();
+  rows.forEach(r=>{ if(!m.has(r.sport)) m.set(r.sport,[]); m.get(r.sport).push(r); });
   return m;
 }
 
@@ -237,11 +227,10 @@ function renderTeams(){
   gridRoot.innerHTML = '';
 
   const filtered = ALL_ROWS.filter(seasonMatches).filter(genderMatches);
-  if (!filtered.length) {
+  if(!filtered.length){
     gridRoot.innerHTML = '<p style="opacity:.85;margin:8px 0 12px;">No teams match these filters yet.</p>';
     return;
   }
-
   const grouped = groupBySport(filtered);
   const sports = Array.from(grouped.keys()).sort((a,b)=>a.localeCompare(b));
 
@@ -302,7 +291,7 @@ document.addEventListener('click',(e)=>{
   }
 });
 
-/* -------- ICS modal (unchanged) -------- */
+/* -------- ICS modal -------- */
 async function fetchIcs(url){ const r=await fetch(url,{cache:'no-store'}); if(!r.ok) throw new Error(r.status); return r.text(); }
 function parseIcs(text){
   const out=[], lines=text.replace(/\r/g,'').split('\n'); let ev=null;
