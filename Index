@@ -142,59 +142,105 @@
 <script>
 /* =======================
    DATA SOURCE (Google Sheet - Published CSV)
+   (You can switch to output=tsv; this parser handles both)
 ======================= */
 const GOOGLE_CSV =
   'https://docs.google.com/spreadsheets/d/e/2PACX-1vT5Ly_7rP62i_7vtVWkC_oiWDQM6E9I0c6-kRtKRaoJIAfNDiFq2k5cQ3nwiuoB-cNKFrb5k3XUQeB1/pub?gid=1131242995&single=true&output=csv';
 
-/* Icons inside action chips (use your files) */
+/* Icons inside action chips */
 const ICONS = {
   message:  'icons/message-solid-full.svg',
   calendar: 'icons/calendar-white-17.png',
   apple:    'icons/apple.png'
 };
 
-/* CSV helpers (simple, no embedded commas) */
-function parseCSV(csv){
-  const lines = csv.replace(/\r/g,'').trim().split('\n');
-  const headers = lines[0].split(',').map(h=>h.trim());
-  return lines.slice(1).map(line=>{
-    const cols = line.split(',').map(c=>c.trim());
-    const o={}; headers.forEach((h,i)=>o[h]=cols[i]??''); return o;
+/* -------- Robust CSV/TSV parser (handles quotes) -------- */
+function parseDelimited(text){
+  // detect delimiter by header line: prefer tab if present, else comma
+  const firstLine = text.split(/\r?\n/)[0] || '';
+  const delim = firstLine.includes('\t') ? '\t' : ',';
+
+  // RFC4180-ish parse: walk chars, honor quotes, keep empty fields
+  const rows = [];
+  let row = [], field = '', i = 0, inQuotes = false;
+
+  while (i < text.length) {
+    const ch = text[i];
+
+    if (inQuotes) {
+      if (ch === '"') {
+        // double quote inside quoted field → escape
+        if (text[i+1] === '"') { field += '"'; i += 2; continue; }
+        inQuotes = false; i++; continue;
+      }
+      field += ch; i++; continue;
+    } else {
+      if (ch === '"') { inQuotes = true; i++; continue; }
+      if (ch === delim) { row.push(field); field = ''; i++; continue; }
+      if (ch === '\n') { row.push(field); rows.push(row); row = []; field = ''; i++; continue; }
+      if (ch === '\r') { i++; continue; } // skip CR
+      field += ch; i++; continue;
+    }
+  }
+  // push last field/row
+  row.push(field); rows.push(row);
+
+  // trim trailing blank rows
+  while (rows.length && rows[rows.length-1].every(c => c === '')) rows.pop();
+
+  // map to objects using header row
+  const headers = (rows.shift() || []).map(h => h.trim());
+  return rows.map(cols => {
+    const obj = {};
+    headers.forEach((h, idx) => { obj[h] = (cols[idx] ?? '').trim(); });
+    return obj;
   });
 }
+
+/* -------- Load & normalize rows -------- */
 async function loadRows(){
-  const res = await fetch(GOOGLE_CSV, {cache:'no-store'});
-  if(!res.ok) throw new Error('CSV fetch failed: ' + res.status);
-  const csv = await res.text();
-  return parseCSV(csv).map(r=>({
-    season: (r.Season||'').trim(),
-    gender: (r.Gender||'').trim(),
-    sport:  (r.Sport ||'').trim(),
-    level:  (r.Level ||'').trim(),
-    url:    (r.URL   ||'').trim(),
-    msg:    (r.MessageURL||'').trim()
-  })).filter(r=>r.sport && r.level && r.url);
+  const url = GOOGLE_CSV + '&_cb=' + Date.now(); // cache-bust
+  const res = await fetch(url, {cache:'no-store'});
+  if (!res.ok) throw new Error('CSV fetch failed: ' + res.status);
+  const txt = await res.text();
+  const raw = parseDelimited(txt);
+
+  const rows = raw.map(r => ({
+    season: (r.Season || '').trim(),
+    gender: (r.Gender || '').trim(),
+    sport:  (r.Sport  || '').trim(),
+    level:  (r.Level  || '').trim(),
+    url:    (r.URL    || '').trim(),
+    msg:    (r.MessageURL || '').trim()
+  })).filter(r => r.sport && r.level && r.url);
+
+  console.log(`Loaded ${rows.length} rows from sheet`, rows);
+  return rows;
 }
 
-/* State & filters */
+/* -------- State, filtering, rendering -------- */
 const LEVEL_ORDER = { Varsity:0, JV:1, Freshman:2 };
 let ALL_ROWS = [];
 let SELECTED_SEASON = 'Fall';
-let SELECTED_GENDER = new Set(['Boys']); // default
+let SELECTED_GENDER = new Set(['Boys']); // single-select
 
-function seasonMatches(r){ return r.season==='All Year' || r.season===SELECTED_SEASON; }
+function seasonMatches(r){ return r.season === 'All Year' || r.season === SELECTED_SEASON; }
 function genderMatches(r){ return SELECTED_GENDER.has(r.gender); }
 function groupBySport(rows){
-  const m=new Map(); rows.forEach(r=>{ if(!m.has(r.sport)) m.set(r.sport,[]); m.get(r.sport).push(r); }); return m;
+  const m = new Map();
+  rows.forEach(r => { if (!m.has(r.sport)) m.set(r.sport, []); m.get(r.sport).push(r); });
+  return m;
 }
 
-/* Render teams under chips */
 function renderTeams(){
   const gridRoot = document.getElementById('teamsGrid');
   gridRoot.innerHTML = '';
 
   const filtered = ALL_ROWS.filter(seasonMatches).filter(genderMatches);
-  if(!filtered.length){ gridRoot.innerHTML='<p style="opacity:.85;margin:8px 0 12px;">No teams match these filters yet.</p>'; return; }
+  if (!filtered.length) {
+    gridRoot.innerHTML = '<p style="opacity:.85;margin:8px 0 12px;">No teams match these filters yet.</p>';
+    return;
+  }
 
   const grouped = groupBySport(filtered);
   const sports = Array.from(grouped.keys()).sort((a,b)=>a.localeCompare(b));
@@ -206,34 +252,34 @@ function renderTeams(){
     block.innerHTML=`<div class="section-head">${sport}</div><div class="grid"></div>`;
     const g = block.querySelector('.grid');
 
-    const levels = grouped.get(sport).slice()
-      .sort((a,b)=>(LEVEL_ORDER[a.level]??99)-(LEVEL_ORDER[b.level]??99) || a.level.localeCompare(b.level));
-
-    levels.forEach(t=>{
-      const msgURL = t.msg || 'https://www.google.com/search?q=ugly+dog+gif';
-      const card=document.createElement('div');
-      card.className='card';
-      card.innerHTML = `
-        <div><div class="team">${t.level}</div></div>
-        <div class="chips">
-          <a class="round" href="${msgURL}" target="_blank" rel="noopener" aria-label="Message">
-            <img src="${ICONS.message}" alt="Message">
-          </a>
-          <button class="round view" data-url="${t.url}" data-title="${sport} • ${t.level}" aria-label="View">
-            <img src="${ICONS.calendar}" alt="View">
-          </button>
-          <a class="round" href="${t.url}" target="_blank" rel="noopener" aria-label="Subscribe">
-            <img src="${ICONS.apple}" alt="Subscribe">
-          </a>
-        </div>`;
-      g.appendChild(card);
-    });
+    grouped.get(sport)
+      .slice()
+      .sort((a,b)=>(LEVEL_ORDER[a.level]??99)-(LEVEL_ORDER[b.level]??99) || a.level.localeCompare(b.level))
+      .forEach(t=>{
+        const msgURL = t.msg || 'https://www.google.com/search?q=ugly+dog+gif';
+        const card=document.createElement('div');
+        card.className='card';
+        card.innerHTML = `
+          <div><div class="team">${t.level}</div></div>
+          <div class="chips">
+            <a class="round" href="${msgURL}" target="_blank" rel="noopener" aria-label="Message">
+              <img src="${ICONS.message}" alt="Message">
+            </a>
+            <button class="round view" data-url="${t.url}" data-title="${sport} • ${t.level}" aria-label="View">
+              <img src="${ICONS.calendar}" alt="View">
+            </button>
+            <a class="round" href="${t.url}" target="_blank" rel="noopener" aria-label="Subscribe">
+              <img src="${ICONS.apple}" alt="Subscribe">
+            </a>
+          </div>`;
+        g.appendChild(card);
+      });
 
     gridRoot.appendChild(block);
   });
 }
 
-/* Chip behavior */
+/* Chip interactions */
 function setSeasonChip(btn){
   document.querySelectorAll('[data-season]').forEach(b=>b.classList.toggle('active', b===btn));
   SELECTED_SEASON = btn.getAttribute('data-season');
@@ -244,7 +290,6 @@ function setGenderChip(btn){
   SELECTED_GENDER = new Set([btn.getAttribute('data-gender')]); // single-select
   renderTeams();
 }
-
 document.addEventListener('click',(e)=>{
   const s = e.target.closest('[data-season]');
   const g = e.target.closest('[data-gender]');
@@ -257,7 +302,7 @@ document.addEventListener('click',(e)=>{
   }
 });
 
-/* ICS modal */
+/* -------- ICS modal (unchanged) -------- */
 async function fetchIcs(url){ const r=await fetch(url,{cache:'no-store'}); if(!r.ok) throw new Error(r.status); return r.text(); }
 function parseIcs(text){
   const out=[], lines=text.replace(/\r/g,'').split('\n'); let ev=null;
@@ -307,13 +352,13 @@ function closeIcsModal(){ document.getElementById('icsModalBackdrop').classList.
 document.getElementById('icsClose')?.addEventListener('click', closeIcsModal);
 document.getElementById('icsModalBackdrop')?.addEventListener('click', (e)=>{ if(e.target.id==='icsModalBackdrop') closeIcsModal(); });
 
-/* Boot */
+/* -------- Boot -------- */
 (async function init(){
   try{
     ALL_ROWS = await loadRows();
   }catch(err){
     console.error(err);
-    document.getElementById('teamsGrid').innerHTML = '<p style="opacity:.85">Could not load teams (CSV).</p>';
+    document.getElementById('teamsGrid').innerHTML = '<p style="opacity:.85">Could not load teams (CSV). See console for details.</p>';
     return;
   }
   renderTeams();
