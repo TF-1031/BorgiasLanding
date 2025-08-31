@@ -1,109 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>St. Francis Borgia • Landing Page</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>St. Francis Borgia • Landing Page</title>
 
-  <!-- Thicker script font -->
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
 
-  <style>
-    :root{
-      --blue:#002d72;
-      --gold:#f1b500;
-      --cardBorder:rgba(255,255,255,.18);
-      --scriptSize: clamp(40px, 9vw, 72px);
-    }
-    *{ box-sizing:border-box; }
-    body{
-      margin:0; background:var(--blue); color:#fff;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-    }
-    .wrap{ max-width:900px; margin:0 auto; padding:18px; }
+<style>
+  :root{
+    --blue:#002d72;
+    --gold:#f1b500;
+    --cardBorder:rgba(255,255,255,.18);
+    --scriptSize: clamp(40px, 9vw, 72px);
+  }
+  *{ box-sizing:border-box }
+  body{ margin:0; background:var(--blue); color:#fff; font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif }
+  .wrap{ max-width:900px; margin:0 auto; padding:18px }
 
-    /* Header */
-    .head{
-      display:flex; flex-direction:column; align-items:center; gap:12px;
-      margin:12px 0 14px; text-align:center;
-    }
-    /* Bigger white circle without scaling the logo image */
-    .logo-circle{
-      width:170px; height:170px;       /* more breathing room so corners don't protrude */
-      border-radius:50%; background:#fff;
-      display:flex; align-items:center; justify-content:center;
-      box-shadow:0 4px 16px rgba(0,0,0,.15);
-    }
-    .logo{
-      max-width:110px; height:auto; display:block; /* logo size unchanged */
-    }
+  /* Header */
+  .head{ display:flex; flex-direction:column; align-items:center; gap:12px; margin:12px 0 14px; text-align:center }
+  .logo-circle{ width:170px; height:170px; border-radius:50%; background:#fff; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 16px rgba(0,0,0,.15) }
+  .logo{ max-width:110px; height:auto; display:block }
 
-    /* Titles */
-    .title-script{
-      font-family:"Lobster","Brush Script MT","Segoe Script","Lucida Handwriting","Apple Chancery",cursive;
-      font-size:var(--scriptSize); line-height:1; color:var(--gold); text-align:center;
-      text-shadow:0 1px 0 rgba(0,0,0,.08);
-    }
-    .title-script a{ color:inherit; text-decoration:none; }
-    .title-sub{
-      margin-top:6px; font-weight:800; text-transform:uppercase;
-      font-size: calc(var(--scriptSize) * .40); letter-spacing:.5em; text-align:center;
-    }
+  /* Titles */
+  .title-script{ font-family:"Lobster","Brush Script MT","Segoe Script","Lucida Handwriting","Apple Chancery",cursive; font-size:var(--scriptSize); line-height:1; color:var(--gold); text-shadow:0 1px 0 rgba(0,0,0,.08) }
+  .title-script a{ color:inherit; text-decoration:none }
+  .title-sub{ margin-top:6px; font-weight:800; text-transform:uppercase; font-size:calc(var(--scriptSize)*.40); letter-spacing:.5em }
 
-    /* Social row (ORDER: Instagram, X, Facebook, YouTube, Hudl) */
-    .social{ display:flex; gap:16px; justify-content:center; flex-wrap:wrap; margin:8px 0 14px; }
-    .icon-wrap{
-      width:52px; height:52px; border-radius:12px; background:#fff;
-      display:inline-flex; align-items:center; justify-content:center;
-      box-shadow:0 3px 10px rgba(0,0,0,.12);
-    }
-    .icon-wrap img{ width:28px; height:28px; display:block; }
-    /* HUDL is black-on-transparent; bump its height a bit to fit wordmark cleanly */
-    .icon-wrap.hudl img{
-      width:auto; height:30px; filter:none;
-    }
+  /* Social row  (Instagram → X → Facebook → YouTube → Hudl) */
+  .social{ display:flex; gap:16px; justify-content:center; flex-wrap:wrap; margin:8px 0 14px }
+  .icon-wrap{ width:52px; height:52px; border-radius:12px; background:#fff; display:inline-flex; align-items:center; justify-content:center; box-shadow:0 3px 10px rgba(0,0,0,.12) }
+  .icon-wrap img{ width:28px; height:28px; display:block }
+  /* Hudl wordmark: keep black and ensure it fits the tile */
+  .icon-wrap.hudl img{ max-width:75%; height:auto; filter:none }
 
-    /* Sections */
-    .section{
-      margin:14px 0; border:1px solid var(--cardBorder);
-      border-radius:14px; background:rgba(255,255,255,.04)
-    }
-    .section-head{
-      padding:14px 16px; border-bottom:1px solid var(--cardBorder);
-      font-weight:800; color:var(--gold);
-      font-family:"Lobster","Brush Script MT","Segoe Script","Lucida Handwriting","Apple Chancery",cursive;
-      font-size: clamp(28px, 4.6vw, 43px); /* larger than team levels */
-    }
-    .grid{ display:grid; gap:12px; padding:12px }
-    @media (min-width:600px){ .grid{ grid-template-columns:1fr 1fr } }
+  /* Sections */
+  .section{ margin:14px 0; border:1px solid var(--cardBorder); border-radius:14px; background:rgba(255,255,255,.04) }
+  .section-head{ padding:14px 16px; border-bottom:1px solid var(--cardBorder); font-weight:800; color:var(--gold);
+    font-family:"Lobster","Brush Script MT","Segoe Script","Lucida Handwriting","Apple Chancery",cursive;
+    font-size:clamp(28px,4.6vw,43px) }
+  .grid{ display:grid; gap:12px; padding:12px }
+  @media (min-width:600px){ .grid{ grid-template-columns:1fr 1fr } }
 
-    .card{
-      display:flex; align-items:center; justify-content:space-between; gap:12px;
-      background:rgba(255,255,255,.06); border:1px solid var(--cardBorder);
-      border-radius:12px; padding:14px
-    }
-    /* Team level smaller than headers */
-    .team{ font-weight:700; font-size: clamp(16px, 2.6vw, 24px) }
-    .tags{ font-size:12px; opacity:.85 }
+  .card{ display:flex; align-items:center; justify-content:space-between; gap:12px; background:rgba(255,255,255,.06);
+    border:1px solid var(--cardBorder); border-radius:12px; padding:14px }
+  .team{ font-weight:700; font-size:clamp(16px,2.6vw,24px) } /* smaller than headers */
+  .tags{ font-size:12px; opacity:.85 }
 
-    /* Subscribe chip */
-    .subchip{
-      width:50px; height:50px; border-radius:50%;
-      display:inline-flex; align-items:center; justify-content:center;
-      background:var(--blue); border:2px solid #fff
-    }
-    .subchip img{ width:32px; height:32px; display:block }
+  /* Subscribe chip */
+  .subchip{ width:50px; height:50px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; background:var(--blue); border:2px solid #fff }
+  .subchip img{ width:32px; height:32px; display:block }
 
-    /* GoFan CTA (image only) */
-    .gofan-cta{ display:flex; justify-content:center; margin:24px 0 6px }
-    .gofan-btn{ display:inline-flex; align-items:center; background:none; padding:0; border-radius:0; }
-    .gofan-btn img{ height:50px; width:auto; display:block }
+  /* GoFan CTA (image only) */
+  .gofan-cta{ display:flex; justify-content:center; margin:24px 0 6px }
+  .gofan-btn{ display:inline-flex; align-items:center; background:none; padding:0; border-radius:0 }
+  .gofan-btn img{ height:50px; width:auto; display:block }
 
-    /* Footer */
-    .footer-links{ text-align:center; margin:22px 0 }
-    .footer-links a{ color:#fff; text-decoration:underline; margin:0 10px }
-  </style>
+  /* Footer */
+  .footer-links{ text-align:center; margin:22px 0 }
+  .footer-links a{ color:#fff; text-decoration:underline; margin:0 10px }
+</style>
 </head>
 <body>
   <div class="wrap">
@@ -111,10 +69,7 @@
       <a href="https://www.borgia.com" target="_blank" rel="noopener" class="logo-circle" aria-label="SFB website">
         <img class="logo" src="logo.png" alt="St. Francis Borgia Logo">
       </a>
-
-      <div class="title-script">
-        <a href="https://www.borgia.com" target="_blank" rel="noopener">St. Francis Borgia</a>
-      </div>
+      <div class="title-script"><a href="https://www.borgia.com" target="_blank" rel="noopener">St. Francis Borgia</a></div>
       <div class="title-sub">landing page</div>
 
       <nav class="social" aria-label="Social & Streaming">
@@ -136,26 +91,10 @@
       </nav>
     </header>
 
-    <!-- =================== START SPORTS (paste your sections here) =================== -->
-    <!-- Example (remove this after pasting your generated sections):
-    <section class="section" aria-label="Volleyball">
-      <div class="section-head">Volleyball</div>
-      <div class="grid">
-        <div class="card">
-          <div>
-            <div class="team">Varsity</div>
-            <div class="tags">Girls • Subscribe</div>
-          </div>
-          <a class="subchip" href="ICal-URL" target="_blank" rel="noopener">
-            <img src="icons/calendar.png" alt="Subscribe">
-          </a>
-        </div>
-      </div>
-    </section>
-    -->
-    <!-- ==================== END SPORTS ==================== -->
+    <!-- ========= SPORTS SECTIONS (auto-rendered from TEAMS below) ========= -->
+    <div id="sports"></div>
 
-    <!-- GoFan button (image only) -->
+    <!-- GoFan button (image-only) -->
     <div class="gofan-cta">
       <a class="gofan-btn" href="https://gofan.co/app/school/MO24174" target="_blank" rel="noopener">
         <img src="icons/gofan.png" alt="GoFan">
@@ -167,5 +106,107 @@
       <a href="https://www.mshsaa.org/MySchool/?s=544" target="_blank" rel="noopener">MSHSAA</a>
     </div>
   </div>
+
+<script>
+/* =======================
+   TEAMS DATA
+   - Fill/adjust this list from your latest sheet.
+   - Any item missing sport, level, or url is ignored.
+   - Order within a sport is Varsity, JV, Freshman by default.
+======================= */
+const TEAMS = [
+  /* Volleyball */
+  {sport:"Volleyball", level:"Varsity",  url:"http://www2.arbitersports.com/iCal/Team/schedule.ics?id=cq2PfPo%2b%2bbmxs6eI2BSHJVWQ%3d%3d"},
+  {sport:"Volleyball", level:"JV",        url:"http://www2.arbitersports.com/iCal/Team/schedule.ics?id=zUGKVfMAUMDI5ICcRJfPRQ%3d%3d"},
+  {sport:"Volleyball", level:"Freshman",  url:"http://www2.arbitersports.com/iCal/Team/schedule.ics?id=LGmyIvwW1RLyVXU8PJv0FA%3d%3d"},
+
+  /* Football */
+  {sport:"Football", level:"Varsity",     url:"http://www2.arbitersports.com/iCal/Team/schedule.ics?id=03HRccWm%2boO%2bbv54qae0%2f9QAV03d%3d"},
+  {sport:"Football", level:"JV",          url:"http://www2.arbitersports.com/iCal/Team/schedule.ics?id=tRMiEFda9273mMM3MQBEJQ%3d%3d"},
+  {sport:"Football", level:"Freshman",    url:"http://www2.arbitersports.com/iCal/Team/schedule.ics?id=9xiAExnWVWx08jXer9zZuQ%3d%3d"},
+
+  /* Soccer */
+  {sport:"Soccer", level:"Varsity",       url:"http://www2.arbitersports.com/iCal/Team/schedule.ics?id=X3ZZWuzadrxLlL24FwSC%2bA%3d%3d"},
+  {sport:"Soccer", level:"JV",            url:"http://www2.arbitersports.com/iCal/Team/schedule.ics?id=T8q7gRNMDMmQfq0CVwmLbg%3d%3d"},
+
+  /* Softball */
+  {sport:"Softball", level:"Varsity",     url:"http://www2.arbitersports.com/iCal/Team/schedule.ics?id=Ue2CoqdpoIJAA2am%2bc7x5nw%3d%3d"},
+  {sport:"Softball", level:"JV",          url:"http://www2.arbitersports.com/iCal/Team/schedule.ics?id=JCzueDFVhaz6OqLdBtaBgg%3d%3d"},
+
+  /* Cross Country */
+  {sport:"Cross Country", level:"Varsity",url:"http://www2.arbitersports.com/iCal/Team/schedule.ics?id=SrPlizzejlp8oP43aI55sA%3d%3d"},
+
+  /* Competitive Cheer */
+  {sport:"Competitive Cheer", level:"Varsity", url:"http://www2.arbitersports.com/iCal/Team/schedule.ics?id=BjNdM42b4hFs2JXTTCY4qA%3d%3d"},
+
+  /* Dance */
+  {sport:"Dance", level:"Varsity",        url:"http://www2.arbitersports.com/iCal/Team/schedule.ics?id=mcylqcYIBxb1XfowG1vnQA%3d%3d"},
+
+  /* Marching Band */
+  {sport:"Marching Band", level:"Varsity", url:"http://www2.arbitersports.com/iCal/Team/schedule.ics?id=6TAkALSrtvtHgjTTNZP5Ng%3d%3d"},
+];
+
+/* ===== RENDER LOGIC ===== */
+const LEVEL_ORDER = { "Varsity":0, "JV":1, "Freshman":2 };
+const PRIORITY_SPORTS = ["Volleyball","Football","Soccer","Softball"];
+
+function groupBySport(rows){
+  const map = new Map();
+  for(const r of rows){
+    const sport = (r.sport||"").trim();
+    const level = (r.level||"").trim();
+    const url   = (r.url||"").trim();
+    if(!sport || !level || !url) continue;
+    if(!map.has(sport)) map.set(sport, []);
+    map.get(sport).push({sport, level, url});
+  }
+  return map;
+}
+
+function render(){
+  const container = document.getElementById('sports');
+  container.innerHTML = "";
+
+  const grouped = groupBySport(TEAMS);
+
+  // sport ordering
+  const others = Array.from(grouped.keys())
+    .filter(s=>!PRIORITY_SPORTS.includes(s)).sort((a,b)=>a.localeCompare(b));
+  const order = [...PRIORITY_SPORTS, ...others].filter(s=>grouped.has(s));
+
+  for(const sport of order){
+    const items = grouped.get(sport).slice()
+      .sort((a,b)=>(LEVEL_ORDER[a.level]??99)-(LEVEL_ORDER[b.level]??99) || a.level.localeCompare(b.level));
+
+    const section = document.createElement('section');
+    section.className = 'section';
+    section.setAttribute('aria-label', sport);
+
+    section.innerHTML = `
+      <div class="section-head">${sport}</div>
+      <div class="grid"></div>
+    `;
+    const grid = section.querySelector('.grid');
+
+    for(const t of items){
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <div>
+          <div class="team">${t.level}</div>
+          <div class="tags">Subscribe</div>
+        </div>
+        <a class="subchip" href="${t.url}" target="_blank" rel="noopener" aria-label="Subscribe to ${sport} ${t.level}">
+          <img src="icons/calendar.png" alt="Subscribe">
+        </a>
+      `;
+      grid.appendChild(card);
+    }
+
+    container.appendChild(section);
+  }
+}
+render();
+</script>
 </body>
 </html>
