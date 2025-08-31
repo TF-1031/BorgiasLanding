@@ -41,7 +41,7 @@
   .chips{ display:flex; gap:10px; align-items:center }
   .chip{ width:50px; height:50px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; border:2px solid #fff; background:#fff }
   .chip img{ width:auto; height:auto; max-width:70%; max-height:70%; object-fit:contain }
-  .viewchip{ background:var(--blue) } /* calendar is white-on-blue */
+  .viewchip{ background:var(--blue) } /* calendar icon is white-on-blue */
 
   /* Modal */
   .modal-backdrop{ position:fixed; inset:0; background:rgba(0,0,0,.45); display:none; align-items:flex-end; justify-content:center; z-index:999 }
@@ -72,18 +72,18 @@
 
     <!-- Filters -->
     <div class="filters" id="filters">
-      <!-- Season group -->
+      <!-- Season -->
       <div class="filter active" data-season="All">All</div>
       <div class="filter" data-season="Fall">Fall</div>
       <div class="filter" data-season="Winter">Winter</div>
       <div class="filter" data-season="Spring">Spring</div>
       <div class="filter" data-season="All Year">All Year</div>
       <div class="divider"></div>
-      <!-- Gender group -->
+      <!-- Gender -->
       <div class="filter" data-gender="Boys">Boys</div>
       <div class="filter" data-gender="Girls">Girls</div>
       <div class="filter" data-gender="Coed">Coed</div>
-      <div class="filter" data-gender="Any">Any</div>
+      <div class="filter active" data-gender="Any">Any</div>
     </div>
 
     <div id="sports"></div>
@@ -102,59 +102,66 @@
 
 <script>
 /* ========= Data sources ========= */
-const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTu0D5YGXPko8e3C2CfouVUVdMtc56g_xV1735-zqPvuwuEAyXG2rT1blGHDQj2cg/pub?gid=1131242995&single=true&output=csv';
-  
+const GOOGLE_CSV =
+  'https://docs.google.com/spreadsheets/d/e/2PACX-1vT5Ly_7rP62i_7vtVWkC_oiWDQM6E9I0c6-kRtKRaoJIAfNDiFq2k5cQ3nwiuoB-cNKFrb5k3XUQeB1/pub?gid=1131242995&single=true&output=csv';
 const LOCAL_CSV  = 'data/teams_with_placeholders.csv';
 const MESSAGE_FALLBACK = 'https://www.google.com/search?q=ugly+dog+gif';
 
-/* Optional debug badge (comment out to hide) */
+/* Debug badge (optional) */
 const dbg=document.createElement('div');
 dbg.className='dbg';
 dbg.textContent='CSV: loading…';
 document.addEventListener('DOMContentLoaded',()=>document.body.appendChild(dbg));
 
-/* Cache-busted fetch */
-async function fetchText(url){
+/* Fetch w/ timeout + cache-bust */
+function fetchWithTimeout(url, ms=8000){
   const bust = (url.includes('?') ? '&' : '?') + 'v=' + Date.now();
-  const r = await fetch(url + bust, { cache:'no-store', mode:'cors' });
-  if(!r.ok) throw new Error(`HTTP ${r.status}`);
+  return Promise.race([
+    fetch(url + bust, {cache:'no-store', mode:'cors'}),
+    new Promise((_, rej)=> setTimeout(()=> rej(new Error('timeout')), ms))
+  ]);
+}
+async function fetchTextOrThrow(url){
+  const r = await fetchWithTimeout(url);
+  if(!r || !r.ok) throw new Error(r ? `HTTP ${r.status}` : 'no response');
   return r.text();
 }
 
-/* CSV parser (handles quoted commas) */
-function parseCSV(csv){
-  csv = csv.replace(/\r/g,'').trim();
-  const lines = csv.split('\n');
-  const split = line => {
+/* CSV/TSV parser (auto-detects delimiter, handles quotes) */
+function parseTable(text){
+  text = text.replace(/^\uFEFF/, '').replace(/\r/g,'').trim();
+  const lines = text.split('\n').filter(Boolean);
+  const headerLine = lines[0];
+  const delim = (headerLine.indexOf('\t') > headerLine.indexOf(',')) ? '\t' : ',';
+  const split = (line) => {
     const out=[]; let cur=''; let q=false;
     for (let i=0;i<line.length;i++){
       const c=line[i];
       if (c === '"'){ q = !q; continue; }
-      if (c === ',' && !q){ out.push(cur); cur=''; continue; }
+      if (c === delim && !q){ out.push(cur); cur=''; continue; }
       cur += c;
     }
     out.push(cur);
     return out.map(s=>s.trim());
   };
-  const headers = split(lines[0]);
-  return lines.slice(1).filter(Boolean).map(line=>{
+  const headers = split(headerLine);
+  return lines.slice(1).map(line=>{
     const cols = split(line);
-    const obj={};
-    headers.forEach((h,i)=> obj[h]= (cols[i] ?? '').trim());
+    const obj={}; headers.forEach((h,i)=> obj[h]= (cols[i] ?? '').trim());
     return obj;
   });
 }
 
 /* Load data with Google->Local fallback */
 async function loadCsv(){
-  try { const t=await fetchText(GOOGLE_CSV); dbg.textContent='CSV: Google ✅'; return t; }
-  catch { const t=await fetchText(LOCAL_CSV); dbg.textContent='CSV: Local ✅'; return t; }
+  try { const t=await fetchTextOrThrow(GOOGLE_CSV); dbg.textContent='CSV: Google ✅'; return t; }
+  catch (e) { dbg.textContent=`CSV: Google ❌ (${e.message||e}) → local`; const t=await fetchTextOrThrow(LOCAL_CSV); dbg.textContent+=' • Local ✅'; return t; }
 }
 async function loadTeams(){
-  const csv = await loadCsv();
-  const rows = parseCSV(csv);
+  const csvText = await loadCsv();
+  const rows = parseTable(csvText);
   dbg.textContent += ` • rows: ${rows.length}`;
-  // Expect: Season,Gender,Sport,Level,URL,MessageURL
+  // Expect headers: Season,Gender,Sport,Level,URL,MessageURL
   return rows.map(r=>({
     season:(r.Season||'').trim(),
     gender:(r.Gender||'').trim(),
@@ -165,7 +172,7 @@ async function loadTeams(){
   })).filter(r=>r.sport && r.level && r.url);
 }
 
-/* Group/sort helpers */
+/* Group/sort */
 const LEVEL_ORDER = { "Varsity":0, "JV":1, "Freshman":2 };
 const PRIORITY_SPORTS = ["Volleyball","Football","Soccer","Softball"];
 function groupBySport(rows){
@@ -210,9 +217,7 @@ async function openIcsModal(url,title){
   backdrop.classList.add('show');
   try{
     const text=await fetchIcs(url);
-    const all=parseIcs(text)
-      .filter(ev=>ev.start && ev.start>=new Date(Date.now()-86400000))
-      .sort((a,b)=>a.start-b.start).slice(0,30);
+    const all=parseIcs(text).filter(ev=>ev.start && ev.start>=new Date(Date.now()-86400000)).sort((a,b)=>a.start-b.start).slice(0,30);
     if(!all.length){ content.innerHTML='<p style="opacity:.85">No upcoming events.</p>'; return; }
     content.innerHTML=all.map(ev=>`
       <div class="event">
@@ -221,8 +226,7 @@ async function openIcsModal(url,title){
         ${ev.location?`<div class="where">${ev.location}</div>`:''}
       </div>`).join('');
   }catch(e){
-    // CORS or error -> just open ICS directly
-    backdrop.classList.remove('show');
+    backdrop.classList.remove('show'); // CORS or error → open raw
     window.open(url, '_blank', 'noopener');
   }
 }
@@ -235,27 +239,23 @@ document.addEventListener('click',(e)=>{
     e.preventDefault();
     const url=viewBtn.getAttribute('href') || viewBtn.dataset.url;
     const title=viewBtn.getAttribute('data-title') || 'Upcoming';
-    // Try inline; if blocked, a new tab opens in openIcsModal()
     openIcsModal(url, title);
   } else if(close || bg){
     closeIcsModal();
   }
 });
 
-/* Render with filters */
+/* Filters + render */
 let ALL_TEAMS=[];
 const filters = { season:'All', gender:'Any' };
 
 function applyFilters(list){
   return list.filter(r=>{
-    // Season logic: when a specific season is chosen (Fall/Winter/Spring),
-    // include that season + "All Year".
     if(filters.season !== 'All' && filters.season !== 'All Year'){
       if(!(r.season === filters.season || r.season.toLowerCase() === 'all year')) return false;
     } else if(filters.season === 'All Year'){
       if(r.season.toLowerCase() !== 'all year') return false;
     }
-    // Gender logic
     if(filters.gender !== 'Any' && r.gender !== filters.gender) return false;
     return true;
   });
@@ -266,7 +266,6 @@ function render(){
   container.innerHTML='';
 
   const rows = applyFilters(ALL_TEAMS);
-
   const grouped = groupBySport(rows);
   const others = Array.from(grouped.keys()).filter(s=>!PRIORITY_SPORTS.includes(s)).sort((a,b)=>a.localeCompare(b));
   const order = [...PRIORITY_SPORTS, ...others].filter(s=>grouped.has(s));
@@ -310,13 +309,10 @@ function render(){
   ALL_TEAMS = await loadTeams();
   render();
 
-  // filter interactions
   document.getElementById('filters').addEventListener('click',(e)=>{
     const chip = e.target.closest('.filter'); if(!chip) return;
     const season = chip.dataset.season;
     const gender = chip.dataset.gender;
-
-    // toggle active class in its group
     if(season !== undefined){
       document.querySelectorAll('[data-season]').forEach(el=>el.classList.remove('active'));
       chip.classList.add('active');
