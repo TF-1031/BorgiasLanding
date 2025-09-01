@@ -6,13 +6,15 @@
   <title>Subscribe</title>
   <meta name="theme-color" content="#002d72" />
   <style>
-    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:0;background:#f7f8fb;color:#0d1b2a}
+    :root{ --blue:#002d72; --ink:#0d1b2a; --line:#e5e9f2; --bg:#f7f8fb; }
+    *{box-sizing:border-box}
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:0;background:var(--bg);color:var(--ink)}
     .wrap{max-width:720px;margin:0 auto;padding:24px}
-    header{padding:20px 0}
+    header{padding:14px 0 10px}
     h1{margin:0 0 6px;font-size:22px}
     h3{margin:6px 0 8px}
-    .card{background:#fff;border:1px solid #e5e9f2;border-radius:10px;padding:16px 16px 18px;margin:14px 0;box-shadow:0 2px 6px rgba(8,24,74,.04)}
-    .btn{display:inline-block;padding:10px 14px;border-radius:8px;border:1px solid #d6dff2;background:#002d72;color:#fff;text-decoration:none;font-weight:600}
+    .card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:16px 16px 18px;margin:14px 0;box-shadow:0 2px 6px rgba(8,24,74,.04)}
+    .btn{display:inline-block;padding:10px 14px;border-radius:8px;border:1px solid #d6dff2;background:var(--blue);color:#fff;text-decoration:none;font-weight:600}
     .btn.secondary{background:#fff;color:#102a43}
     .row{display:flex;gap:8px;flex-wrap:wrap}
     .copy{display:flex;gap:8px;align-items:center;margin-top:10px}

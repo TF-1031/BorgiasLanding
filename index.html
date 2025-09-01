@@ -3,59 +3,174 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Borgia • Team Calendars</title>
+  <title>St. Francis Borgia • Teams</title>
   <meta name="theme-color" content="#002d72" />
   <style>
-    :root{ --blue:#002d72; --ink:#0d1b2a; --bg:#f7f8fb; }
+    :root{ --blue:#002d72; --ink:#0d1b2a; --bg:#f5f7fb; --line:#e5e9f2; }
     *{box-sizing:border-box}
     body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink);background:var(--bg)}
-    header{padding:16px 20px;background:var(--blue);color:#fff;display:flex;align-items:center}
-    header h1{font-size:18px;margin:0}
-    .wrap{max-width:1100px;margin:0 auto;padding:20px}
+    header{padding:28px 18px;background:var(--blue);color:#fff;text-align:center}
+    header h1{margin:8px 0 0;font-weight:800;font-size:28px}
+    .sub{opacity:.9;margin-top:6px;letter-spacing:.04em}
+
+    .wrap{max-width:1100px;margin:0 auto;padding:18px}
+
+    .chips{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:16px 0 22px}
+    .chip{
+      border:1.5px solid var(--blue);
+      background:#fff;
+      color:var(--blue);
+      padding:8px 16px;
+      border-radius:999px; cursor:pointer; font-size:14px; font-weight:600;
+      transition:.15s ease;
+    }
+    .chip[aria-pressed="true"]{background:var(--blue);color:#fff}
+
     .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
-    .card{background:#fff;border:1px solid #e5e9f2;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px}
-    .card h4{margin:0;font-size:16px}
+    .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:10px}
+    .card h4{margin:0;font-size:18px}
     .row{display:flex;gap:8px;flex-wrap:wrap}
-    .btn{display:inline-block;padding:8px 12px;border-radius:8px;border:1px solid #e5e9f2;text-decoration:none;color:#123;font-size:14px;background:#fff;cursor:pointer}
+    .btn{display:inline-block;padding:10px 12px;border-radius:10px;border:1px solid var(--line);text-decoration:none;color:#123;font-size:14px;background:#fff}
     .btn.primary{background:var(--blue);color:#fff;border-color:var(--blue)}
-    .muted{color:#5a677d;font-size:13px}
+    .hint{color:#566;font-size:13px;text-align:center;margin:10px 0 0}
+
+    .message{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border:1px solid var(--line);border-radius:10px;text-decoration:none;color:#123;background:#fff}
+    .message svg{width:18px;height:18px;display:block}
   </style>
 </head>
 <body>
   <header>
-    <h1>Borgia • Team Calendars</h1>
+    <h1>St. Francis Borgia</h1>
+    <div class="sub">TEAMS</div>
   </header>
 
   <div class="wrap">
-    <p class="muted">Tap <strong>Subscribe</strong> to add a team’s live schedule to your calendar. You can also <strong>View Schedule</strong> on ArbiterLive (once linked).</p>
+    <div class="chips" id="chipsSeason"></div>
+    <div class="chips" id="chipsGender"></div>
+    <div class="chips" id="chipsType"></div>
+
     <section class="grid" id="cards"></section>
+    <div class="hint" id="hint">Loading…</div>
   </div>
 
-  <script src="data.js"></script>
   <script>
+    // Published CSV URL
+    const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSgj_XcnDHDe51Ddm5n2egn_ic8K19z8ZDA8z6bmLFcCTF0GLiEKIWiSQ-kNEF4Ss4aS1EHk63nFSfx/pub?gid=1575260612&single=true&output=csv";
+
+    const chipsSeason = document.getElementById('chipsSeason');
+    const chipsGender = document.getElementById('chipsGender');
+    const chipsType   = document.getElementById('chipsType');
     const cards = document.getElementById('cards');
+    const hint  = document.getElementById('hint');
+
+    let DATA = [];
+    let filters = { Season:'', Gender:'', Type:'' };
+
+    // CSV parser with quoted fields
+    function parseCSV(text){
+      const rows = [];
+      let cur = [''];
+      let inQ = false;
+      for (let i=0;i<text.length;i++){
+        const c = text[i], n = text[i+1];
+        if (c === '"' && inQ && n === '"'){ cur[cur.length-1] += '"'; i++; continue; }
+        if (c === '"'){ inQ = !inQ; continue; }
+        if (c === ',' && !inQ){ cur.push(''); continue; }
+        if ((c === '\n' || c === '\r') && !inQ){ if (cur.length>1 || cur[0] !== '') { rows.push(cur); } cur = ['']; continue; }
+        cur[cur.length-1] += c;
+      }
+      if (cur.length>1 || cur[0] !== '') rows.push(cur);
+
+      const header = rows.shift().map(h=>h.trim());
+      return rows.map(r => {
+        const obj = {};
+        header.forEach((h,idx) => obj[h] = (r[idx]||'').trim());
+        return obj;
+      });
+    }
+
+    function uniq(list){ return [...new Set(list.filter(Boolean))]; }
+
+    function buildChips(){
+      const seasons = uniq(DATA.map(d=>d.Season)).filter(s => s !== 'All Year');
+      const genders = uniq(DATA.map(d=>d.Gender));
+      const types   = uniq(DATA.map(d=>d.Type));
+
+      chipsSeason.innerHTML = seasons.map(s=>`<button class="chip" data-k="Season" data-v="${s}">${s}</button>`).join('') + 
+                              `<button class="chip" data-k="Season" data-v="">Clear</button>`;
+      chipsGender.innerHTML = genders.map(s=>`<button class="chip" data-k="Gender" data-v="${s}">${s}</button>`).join('') +
+                              `<button class="chip" data-k="Gender" data-v="">Clear</button>`;
+      chipsType.innerHTML   = types.map(s=>`<button class="chip" data-k="Type" data-v="${s}">${s}</button>`).join('') + 
+                              `<button class="chip" data-k="Type" data-v="">Clear</button>`;
+
+      [chipsSeason, chipsGender, chipsType].forEach(group => {
+        group.addEventListener('click', e => {
+          const btn = e.target.closest('.chip'); if (!btn) return;
+          const k = btn.getAttribute('data-k'); const v = btn.getAttribute('data-v');
+          filters[k] = (filters[k] === v) ? '' : v;
+          setPressed(group, filters[k]);
+          render();
+        });
+      });
+    }
+
+    function setPressed(container, value){
+      [...container.querySelectorAll('.chip')].forEach(b => {
+        const v = b.getAttribute('data-v');
+        b.setAttribute('aria-pressed', v === value ? 'true' : 'false');
+      });
+    }
+
+    function matchFilters(item){
+      if (filters.Season){
+        if (!(item.Season === filters.Season || item.Season === 'All Year')) return false;
+      }
+      if (filters.Gender && item.Gender !== filters.Gender) return false;
+      if (filters.Type && item.Type !== filters.Type) return false;
+      return true;
+    }
+
     function subscribeHref(teamName, icsUrl, auto=true){
       const p = new URLSearchParams({ name: teamName, ics: icsUrl, auto: auto ? '1' : '0' });
       return 'subscribe.html?' + p.toString();
     }
-    function render(list){
-      cards.innerHTML='';
-      list.forEach(d => {
-        const el = document.createElement('div');
-        el.className = 'card';
-        const href = subscribeHref(d.name, d.ics, true);
-        const hasSched = d.schedule && d.schedule.length > 0;
-        el.innerHTML = `
-          <h4>${d.name}</h4>
+
+    function render(){
+      const list = DATA.filter(matchFilters);
+      cards.innerHTML = list.map(d => {
+        const subs = subscribeHref(d.Team || 'Team', d.ICS || '', true);
+        const viewBtn = d.ScheduleURL ? `<a class="btn" href="${d.ScheduleURL}" target="_blank" rel="noopener">View Schedule</a>` : '';
+        const msgBtn  = d.MessageURL ? `<a class="message" href="${d.MessageURL}" target="_blank" rel="noopener" title="Message">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M4 5h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H9l-5 4v-4H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+            Message
+          </a>` : '';
+        return `<div class="card">
+          <h4>${d.Team || 'Team'}</h4>
           <div class="row">
-            <a class="btn primary" href="${href}">Subscribe</a>
-            ${hasSched ? `<a class="btn" href="${d.schedule}" target="_blank" rel="noopener">View Schedule</a>` : ''}
+            <a class="btn primary" href="${subs}">Subscribe</a>
+            ${viewBtn}
+            ${msgBtn}
           </div>
-        `;
-        cards.appendChild(el);
-      });
+        </div>`;
+      }).join('');
+
+      hint.textContent = list.length ? `${list.length} team${list.length>1?'s':''} shown` : 'No teams match those filters.';
     }
-    render(window.BORGIA_TEAMS || []);
+
+    async function init(){
+      try{
+        const res = await fetch(CSV_URL);
+        const text = await res.text();
+        DATA = parseCSV(text);
+        buildChips();
+        render();
+      }catch(e){
+        hint.textContent = 'Could not load published CSV. Check that the link is public and correct.';
+        console.error(e);
+      }
+    }
+
+    init();
   </script>
 </body>
 </html>
