@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>St. Francis Borgia • Teams</title>
+  <title>Borgia Athletics • Teams</title>
   <meta name="theme-color" content="#002d72" />
   <style>
     :root{ --blue:#002d72; --ink:#0d1b2a; --bg:#f5f7fb; --line:#e5e9f2; }
@@ -12,20 +12,12 @@
     header{padding:28px 18px;background:var(--blue);color:#fff;text-align:center}
     header h1{margin:8px 0 0;font-weight:800;font-size:28px}
     .sub{opacity:.9;margin-top:6px;letter-spacing:.04em}
-
+    .socials{display:flex;justify-content:center;gap:20px;padding:16px;background:#fff;border-bottom:1px solid var(--line)}
+    .socials a img{height:32px;width:auto;display:block}
     .wrap{max-width:1100px;margin:0 auto;padding:18px}
-
     .chips{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:16px 0 22px}
-    .chip{
-      border:1.5px solid var(--blue);
-      background:#fff;
-      color:var(--blue);
-      padding:8px 16px;
-      border-radius:999px; cursor:pointer; font-size:14px; font-weight:600;
-      transition:.15s ease;
-    }
+    .chip{border:1.5px solid var(--blue);background:#fff;color:var(--blue);padding:8px 16px;border-radius:999px;cursor:pointer;font-size:14px;font-weight:600;transition:.15s ease;}
     .chip[aria-pressed="true"]{background:var(--blue);color:#fff}
-
     .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
     .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:10px}
     .card h4{margin:0;font-size:18px}
@@ -33,143 +25,101 @@
     .btn{display:inline-block;padding:10px 12px;border-radius:10px;border:1px solid var(--line);text-decoration:none;color:#123;font-size:14px;background:#fff}
     .btn.primary{background:var(--blue);color:#fff;border-color:var(--blue)}
     .hint{color:#566;font-size:13px;text-align:center;margin:10px 0 0}
-
     .message{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border:1px solid var(--line);border-radius:10px;text-decoration:none;color:#123;background:#fff}
     .message svg{width:18px;height:18px;display:block}
+    footer{margin-top:40px;padding:20px;text-align:center;background:#fff;border-top:1px solid var(--line)}
+    footer a{margin:0 10px;color:var(--blue);text-decoration:none;font-weight:600}
+    footer .tagline{margin-top:10px;font-size:12px;color:#777}
   </style>
 </head>
 <body>
   <header>
     <h1>St. Francis Borgia</h1>
-    <div class="sub">TEAMS</div>
+    <div class="sub">ATHLETICS</div>
   </header>
-
+  <div class="socials">
+    <a href="#"><img src="icons/calendar.png" alt="Calendar"></a>
+    <a href="#"><img src="icons/hudl.png" alt="Hudl"></a>
+    <a href="#"><img src="icons/message.png" alt="Message"></a>
+  </div>
   <div class="wrap">
     <div class="chips" id="chipsSeason"></div>
     <div class="chips" id="chipsGender"></div>
     <div class="chips" id="chipsType"></div>
-
     <section class="grid" id="cards"></section>
     <div class="hint" id="hint">Loading…</div>
   </div>
-
+  <footer>
+    <a href="https://www.mshsaa.org/">MSHSAA</a> | 
+    <a href="https://www.borgia.com/athletics">Borgia Athletics</a>
+    <div class="tagline">a problematic website</div>
+  </footer>
   <script>
-    // Published CSV URL
     const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSgj_XcnDHDe51Ddm5n2egn_ic8K19z8ZDA8z6bmLFcCTF0GLiEKIWiSQ-kNEF4Ss4aS1EHk63nFSfx/pub?gid=1575260612&single=true&output=csv";
-
     const chipsSeason = document.getElementById('chipsSeason');
     const chipsGender = document.getElementById('chipsGender');
     const chipsType   = document.getElementById('chipsType');
     const cards = document.getElementById('cards');
     const hint  = document.getElementById('hint');
-
-    let DATA = [];
-    let filters = { Season:'', Gender:'', Type:'' };
-
-    // CSV parser with quoted fields
+    let DATA = []; let filters = { Season:'', Gender:'', Type:'' };
     function parseCSV(text){
-      const rows = [];
-      let cur = [''];
-      let inQ = false;
-      for (let i=0;i<text.length;i++){
-        const c = text[i], n = text[i+1];
-        if (c === '"' && inQ && n === '"'){ cur[cur.length-1] += '"'; i++; continue; }
-        if (c === '"'){ inQ = !inQ; continue; }
-        if (c === ',' && !inQ){ cur.push(''); continue; }
-        if ((c === '\n' || c === '\r') && !inQ){ if (cur.length>1 || cur[0] !== '') { rows.push(cur); } cur = ['']; continue; }
-        cur[cur.length-1] += c;
-      }
-      if (cur.length>1 || cur[0] !== '') rows.push(cur);
-
-      const header = rows.shift().map(h=>h.trim());
-      return rows.map(r => {
-        const obj = {};
-        header.forEach((h,idx) => obj[h] = (r[idx]||'').trim());
-        return obj;
-      });
+      const rows=[]; let cur=['']; let inQ=false;
+      for(let i=0;i<text.length;i++){const c=text[i],n=text[i+1];
+        if(c=='"'&&inQ&&n=='"'){cur[cur.length-1]+='"';i++;continue;}
+        if(c=='"'){inQ=!inQ;continue;}
+        if(c==','&&!inQ){cur.push('');continue;}
+        if((c=='\n'||c=='\r')&&!inQ){if(cur.length>1||cur[0]!=='')rows.push(cur);cur=[''];continue;}
+        cur[cur.length-1]+=c;
+      } if(cur.length>1||cur[0]!=='')rows.push(cur);
+      const header=rows.shift().map(h=>h.trim());
+      return rows.map(r=>{const o={};header.forEach((h,i)=>o[h]=(r[i]||'').trim());return o;});
     }
-
-    function uniq(list){ return [...new Set(list.filter(Boolean))]; }
-
+    const uniq=l=>[...new Set(l.filter(Boolean))];
     function buildChips(){
-      const seasons = uniq(DATA.map(d=>d.Season)).filter(s => s !== 'All Year');
-      const genders = uniq(DATA.map(d=>d.Gender));
-      const types   = uniq(DATA.map(d=>d.Type));
-
-      chipsSeason.innerHTML = seasons.map(s=>`<button class="chip" data-k="Season" data-v="${s}">${s}</button>`).join('') + 
-                              `<button class="chip" data-k="Season" data-v="">Clear</button>`;
-      chipsGender.innerHTML = genders.map(s=>`<button class="chip" data-k="Gender" data-v="${s}">${s}</button>`).join('') +
-                              `<button class="chip" data-k="Gender" data-v="">Clear</button>`;
-      chipsType.innerHTML   = types.map(s=>`<button class="chip" data-k="Type" data-v="${s}">${s}</button>`).join('') + 
-                              `<button class="chip" data-k="Type" data-v="">Clear</button>`;
-
-      [chipsSeason, chipsGender, chipsType].forEach(group => {
-        group.addEventListener('click', e => {
-          const btn = e.target.closest('.chip'); if (!btn) return;
-          const k = btn.getAttribute('data-k'); const v = btn.getAttribute('data-v');
-          filters[k] = (filters[k] === v) ? '' : v;
-          setPressed(group, filters[k]);
-          render();
+      const seasons=uniq(DATA.map(d=>d.Season)).filter(s=>s!=='All Year');
+      const genders=uniq(DATA.map(d=>d.Gender));
+      const types=uniq(DATA.map(d=>d.Type));
+      chipsSeason.innerHTML=seasons.map(s=>`<button class="chip" data-k="Season" data-v="\${s}">\${s}</button>`).join('')+`<button class="chip" data-k="Season" data-v="">Clear</button>`;
+      chipsGender.innerHTML=genders.map(s=>`<button class="chip" data-k="Gender" data-v="\${s}">\${s}</button>`).join('')+`<button class="chip" data-k="Gender" data-v="">Clear</button>`;
+      chipsType.innerHTML=types.map(s=>`<button class="chip" data-k="Type" data-v="\${s}">\${s}</button>`).join('')+`<button class="chip" data-k="Type" data-v="">Clear</button>`;
+      [chipsSeason,chipsGender,chipsType].forEach(group=>{
+        group.addEventListener('click',e=>{
+          const btn=e.target.closest('.chip'); if(!btn)return;
+          const k=btn.getAttribute('data-k'); const v=btn.getAttribute('data-v');
+          filters[k]=(filters[k]===v)?'':v; setPressed(group,filters[k]); render();
         });
       });
     }
-
-    function setPressed(container, value){
-      [...container.querySelectorAll('.chip')].forEach(b => {
-        const v = b.getAttribute('data-v');
-        b.setAttribute('aria-pressed', v === value ? 'true' : 'false');
+    function setPressed(container,value){
+      [...container.querySelectorAll('.chip')].forEach(b=>{
+        const v=b.getAttribute('data-v'); b.setAttribute('aria-pressed',v===value?'true':'false');
       });
     }
-
     function matchFilters(item){
-      if (filters.Season){
-        if (!(item.Season === filters.Season || item.Season === 'All Year')) return false;
-      }
-      if (filters.Gender && item.Gender !== filters.Gender) return false;
-      if (filters.Type && item.Type !== filters.Type) return false;
+      if(filters.Season){ if(!(item.Season===filters.Season||item.Season==='All Year')) return false; }
+      if(filters.Gender&&item.Gender!==filters.Gender) return false;
+      if(filters.Type&&item.Type!==filters.Type) return false;
       return true;
     }
-
-    function subscribeHref(teamName, icsUrl, auto=true){
-      const p = new URLSearchParams({ name: teamName, ics: icsUrl, auto: auto ? '1' : '0' });
-      return 'subscribe.html?' + p.toString();
+    function subscribeHref(teamName,icsUrl,auto=true){
+      const p=new URLSearchParams({name:teamName,ics:icsUrl,auto:auto?'1':'0'});
+      return 'subscribe.html?'+p.toString();
     }
-
     function render(){
-      const list = DATA.filter(matchFilters);
-      cards.innerHTML = list.map(d => {
-        const subs = subscribeHref(d.Team || 'Team', d.ICS || '', true);
-        const viewBtn = d.ScheduleURL ? `<a class="btn" href="${d.ScheduleURL}" target="_blank" rel="noopener">View Schedule</a>` : '';
-        const msgBtn  = d.MessageURL ? `<a class="message" href="${d.MessageURL}" target="_blank" rel="noopener" title="Message">
+      const list=DATA.filter(matchFilters);
+      cards.innerHTML=list.map(d=>{
+        const subs=subscribeHref(d.Team||'Team',d.ICS||'',true);
+        const viewBtn=d.ScheduleURL?`<a class="btn" href="\${d.ScheduleURL}" target="_blank" rel="noopener">View Schedule</a>`:'';
+        const msgBtn=d.MessageURL?`<a class="message" href="\${d.MessageURL}" target="_blank" rel="noopener" title="Message">
             <svg viewBox="0 0 24 24" fill="none"><path d="M4 5h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H9l-5 4v-4H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
-            Message
-          </a>` : '';
-        return `<div class="card">
-          <h4>${d.Team || 'Team'}</h4>
-          <div class="row">
-            <a class="btn primary" href="${subs}">Subscribe</a>
-            ${viewBtn}
-            ${msgBtn}
-          </div>
-        </div>`;
+            Message</a>`:'';
+        return `<div class="card"><h4>\${d.Team||'Team'}</h4><div class="row"><a class="btn primary" href="\${subs}">Subscribe</a>\${viewBtn}\${msgBtn}</div></div>`;
       }).join('');
-
-      hint.textContent = list.length ? `${list.length} team${list.length>1?'s':''} shown` : 'No teams match those filters.';
+      hint.textContent=list.length?`\${list.length} team\${list.length>1?'s':''} shown`:'No teams match those filters.';
     }
-
-    async function init(){
-      try{
-        const res = await fetch(CSV_URL);
-        const text = await res.text();
-        DATA = parseCSV(text);
-        buildChips();
-        render();
-      }catch(e){
-        hint.textContent = 'Could not load published CSV. Check that the link is public and correct.';
-        console.error(e);
-      }
-    }
-
+    async function init(){ try{
+      const res=await fetch(CSV_URL); const text=await res.text(); DATA=parseCSV(text); buildChips(); render();
+    } catch(e){ hint.textContent='Could not load published CSV.'; console.error(e); } }
     init();
   </script>
 </body>

@@ -29,7 +29,6 @@
       <h1 id="title">Subscribe</h1>
       <div class="hint" id="subhint"></div>
     </header>
-
     <div class="card" id="iosCard" style="display:none">
       <h3>Apple Calendar (iPhone / iPad / Mac)</h3>
       <p>Tap to subscribe in Apple Calendar:</p>
@@ -38,7 +37,6 @@
       </div>
       <div class="small">This opens the Calendar subscribe sheet. Choose how often to refresh.</div>
     </div>
-
     <div class="card">
       <h3>Google Calendar</h3>
       <p>One-click link to add this calendar in Google:</p>
@@ -52,7 +50,6 @@
         <button class="btn secondary" id="copyBtn" type="button">Copy ICS</button>
       </div>
     </div>
-
     <div class="card">
       <h3>Outlook</h3>
       <p>In Outlook, go to <strong>Add calendar → Subscribe from web</strong>, then paste the ICS link:</p>
@@ -63,44 +60,30 @@
       <div class="small">Works for Outlook on the web and the new Outlook app.</div>
     </div>
   </div>
-
   <script>
     const params = new URLSearchParams(location.search);
     const name = params.get('name') || 'Team Calendar';
     const icsUrl = params.get('ics') || '';
     const auto = params.get('auto') === '1';
-
     const title = document.getElementById('title');
     title.textContent = `Subscribe • ${name}`;
     document.getElementById('subhint').textContent = icsUrl ? 'Ready when you are.' : 'Missing calendar URL.';
-
     function appleWebcal(u){ return 'webcal://' + u.replace(/^https?:\/\//,''); }
     function googleQuickAdd(u){ return 'https://calendar.google.com/calendar/r?cid=' + encodeURIComponent(u); }
-
     const apple = appleWebcal(icsUrl);
     const google = googleQuickAdd(icsUrl);
-
     const isAppleDevice = /iPhone|iPad|Macintosh/.test(navigator.userAgent) || (!!navigator.platform && /Mac/.test(navigator.platform));
     const iosCard = document.getElementById('iosCard');
     const appleLink = document.getElementById('appleLink');
     const googleLink = document.getElementById('googleLink');
     const rawIcs = document.getElementById('rawIcs');
     const rawIcs2 = document.getElementById('rawIcs2');
-
-    appleLink.href = apple;
-    googleLink.href = google;
-    rawIcs.value = icsUrl;
-    rawIcs2.value = icsUrl;
-
+    appleLink.href = apple; googleLink.href = google; rawIcs.value = icsUrl; rawIcs2.value = icsUrl;
     if (isAppleDevice) iosCard.style.display = '';
-
     function copy(text){ navigator.clipboard.writeText(text).then(()=>alert('Copied!')); }
     document.getElementById('copyBtn').onclick  = () => copy(rawIcs.value);
     document.getElementById('copyBtn2').onclick = () => copy(rawIcs2.value);
-
-    if (auto && isAppleDevice && icsUrl) {
-      setTimeout(()=>{ location.href = apple; }, 120);
-    }
+    if (auto && isAppleDevice && icsUrl) { setTimeout(()=>{ location.href = apple; }, 120); }
   </script>
 </body>
 </html>
