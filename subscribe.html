@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Subscribe</title>
+  <meta name="theme-color" content="#002d72" />
+  <style>
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:0;background:#f7f8fb;color:#0d1b2a}
+    .wrap{max-width:720px;margin:0 auto;padding:24px}
+    header{padding:20px 0}
+    h1{margin:0 0 6px;font-size:22px}
+    h3{margin:6px 0 8px}
+    .card{background:#fff;border:1px solid #e5e9f2;border-radius:10px;padding:16px 16px 18px;margin:14px 0;box-shadow:0 2px 6px rgba(8,24,74,.04)}
+    .btn{display:inline-block;padding:10px 14px;border-radius:8px;border:1px solid #d6dff2;background:#002d72;color:#fff;text-decoration:none;font-weight:600}
+    .btn.secondary{background:#fff;color:#102a43}
+    .row{display:flex;gap:8px;flex-wrap:wrap}
+    .copy{display:flex;gap:8px;align-items:center;margin-top:10px}
+    .copy input{flex:1;padding:10px;border:1px solid #ccd2e0;border-radius:8px;font-size:14px}
+    .small{color:#5a677d;font-size:13px;margin-top:8px}
+    .hint{font-size:13px;color:#334}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1 id="title">Subscribe</h1>
+      <div class="hint" id="subhint"></div>
+    </header>
+
+    <div class="card" id="iosCard" style="display:none">
+      <h3>Apple Calendar (iPhone / iPad / Mac)</h3>
+      <p>Tap to subscribe in Apple Calendar:</p>
+      <div class="row">
+        <a class="btn" id="appleLink" href="#">Subscribe on Apple</a>
+      </div>
+      <div class="small">This opens the Calendar subscribe sheet. Choose how often to refresh.</div>
+    </div>
+
+    <div class="card">
+      <h3>Google Calendar</h3>
+      <p>One-click link to add this calendar in Google:</p>
+      <div class="row">
+        <a class="btn" id="googleLink" target="_blank" rel="noopener">Add to Google Calendar</a>
+        <a class="btn secondary" id="googleOpen" target="_blank" rel="noopener" href="https://calendar.google.com/calendar/">Open Google Calendar</a>
+      </div>
+      <div class="small">If the add page doesn’t appear, use “Other calendars → From URL” and paste the link below.</div>
+      <div class="copy">
+        <input id="rawIcs" readonly>
+        <button class="btn secondary" id="copyBtn" type="button">Copy ICS</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Outlook</h3>
+      <p>In Outlook, go to <strong>Add calendar → Subscribe from web</strong>, then paste the ICS link:</p>
+      <div class="copy">
+        <input id="rawIcs2" readonly>
+        <button class="btn secondary" id="copyBtn2" type="button">Copy ICS</button>
+      </div>
+      <div class="small">Works for Outlook on the web and the new Outlook app.</div>
+    </div>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(location.search);
+    const name = params.get('name') || 'Team Calendar';
+    const icsUrl = params.get('ics') || '';
+    const auto = params.get('auto') === '1';
+
+    const title = document.getElementById('title');
+    title.textContent = `Subscribe • ${name}`;
+    document.getElementById('subhint').textContent = icsUrl ? 'Ready when you are.' : 'Missing calendar URL.';
+
+    function appleWebcal(u){ return 'webcal://' + u.replace(/^https?:\/\//,''); }
+    function googleQuickAdd(u){ return 'https://calendar.google.com/calendar/r?cid=' + encodeURIComponent(u); }
+
+    const apple = appleWebcal(icsUrl);
+    const google = googleQuickAdd(icsUrl);
+
+    const isAppleDevice = /iPhone|iPad|Macintosh/.test(navigator.userAgent) || (!!navigator.platform && /Mac/.test(navigator.platform));
+    const iosCard = document.getElementById('iosCard');
+    const appleLink = document.getElementById('appleLink');
+    const googleLink = document.getElementById('googleLink');
+    const rawIcs = document.getElementById('rawIcs');
+    const rawIcs2 = document.getElementById('rawIcs2');
+
+    appleLink.href = apple;
+    googleLink.href = google;
+    rawIcs.value = icsUrl;
+    rawIcs2.value = icsUrl;
+
+    if (isAppleDevice) iosCard.style.display = '';
+
+    function copy(text){ navigator.clipboard.writeText(text).then(()=>alert('Copied!')); }
+    document.getElementById('copyBtn').onclick  = () => copy(rawIcs.value);
+    document.getElementById('copyBtn2').onclick = () => copy(rawIcs2.value);
+
+    if (auto && isAppleDevice && icsUrl) {
+      setTimeout(()=>{ location.href = apple; }, 120);
+    }
+  </script>
+</body>
+</html>

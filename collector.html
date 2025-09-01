@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Arbiter Schedule URL Collector</title>
+  <style>
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:0;background:#f7f8fb;color:#0d1b2a}
+    .wrap{max-width:900px;margin:0 auto;padding:24px}
+    h1{margin:0 0 10px;font-size:22px}
+    table{width:100%;border-collapse:collapse}
+    th,td{border:1px solid #e5e9f2;padding:8px;font-size:14px}
+    th{background:#eef3ff;text-align:left}
+    input[type="text"]{width:100%;padding:6px}
+    .row{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
+    .btn{padding:8px 12px;border:1px solid #d6dff2;border-radius:8px;background:#002d72;color:#fff;text-decoration:none;cursor:pointer}
+    .btn.secondary{background:#fff;color:#102a43}
+    .muted{color:#5a677d;font-size:13px}
+    .code{white-space:pre; background:#0b1220; color:#cbe3ff; padding:12px;border-radius:8px; overflow:auto; max-height:240px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Arbiter Schedule URL Collector</h1>
+    <p class="muted">Paste the ArbiterLive “View Schedule” URLs for each team. Export will give you an updated <code>data.js</code> and a CSV.</p>
+    <div id="app"></div>
+
+    <div class="row">
+      <button class="btn" id="downloadData">Download data.js</button>
+      <button class="btn secondary" id="downloadCsv">Download CSV</button>
+    </div>
+    <div class="muted">Tip: The schedule URL format is <code>https://www.arbiterlive.com/Teams/Schedule/&lt;teamID&gt;?activeEntityId=19986#tabSchedule</code></div>
+  </div>
+
+  <script src="data.js"></script>
+  <script>
+    const app = document.getElementById('app');
+    const teams = (window.BORGIA_TEAMS || []).map(t => ({...t}));
+
+    function render(){
+      const rows = teams.map((t,i)=>`
+        <tr>
+          <td>${t.name}</td>
+          <td><input type="text" value="${t.schedule||''}" data-idx="${i}" placeholder="https://www.arbiterlive.com/Teams/Schedule/1234567?activeEntityId=19986#tabSchedule"></td>
+          <td><a href="${t.ics}" target="_blank" rel="noopener">ICS</a></td>
+        </tr>
+      `).join('');
+      app.innerHTML = `
+        <table>
+          <thead><tr><th>Team</th><th>ArbiterLive Schedule URL</th><th>ICS</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      `;
+      app.querySelectorAll('input[type="text"]').forEach(inp => {
+        inp.addEventListener('input', e => {
+          const i = +e.target.dataset.idx;
+          teams[i].schedule = e.target.value.trim();
+        });
+      });
+    }
+    render();
+
+    function download(filename, text){
+      const blob = new Blob([text], {type: 'application/json;charset=utf-8'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = filename; a.click();
+      setTimeout(()=>URL.revokeObjectURL(url), 500);
+    }
+
+    document.getElementById('downloadData').onclick = () => {
+      const js = "window.BORGIA_TEAMS = " + JSON.stringify(teams, null, 2) + ";";
+      download('data.js', js);
+    };
+    document.getElementById('downloadCsv').onclick = () => {
+      const header = "Team,ICS,SCHEDULE\n";
+      const lines = teams.map(t => `"${t.name.replace(/"/g,'""')}","${t.ics}","${t.schedule||''}"`).join("\n");
+      download('teams.csv', header + lines + "\n");
+    };
+  </script>
+</body>
+</html>
