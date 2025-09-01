@@ -6,17 +6,17 @@
   <title>Borgia • Team Calendars</title>
   <meta name="theme-color" content="#002d72" />
   <style>
-    :root{ --blue:#002d72; --gold:#f1b500; --ink:#0d1b2a; --bg:#f5f7fb; }
+    :root{ --blue:#002d72; --ink:#0d1b2a; --bg:#f7f8fb; }
     *{box-sizing:border-box}
     body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink);background:var(--bg)}
-    header{padding:16px 20px;background:var(--blue);color:#fff;display:flex;align-items:center;gap:12px}
+    header{padding:16px 20px;background:var(--blue);color:#fff;display:flex;align-items:center}
     header h1{font-size:18px;margin:0}
     .wrap{max-width:1100px;margin:0 auto;padding:20px}
     .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
     .card{background:#fff;border:1px solid #e5e9f2;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px}
     .card h4{margin:0;font-size:16px}
     .row{display:flex;gap:8px;flex-wrap:wrap}
-    .btn{display:inline-block;padding:8px 10px;border-radius:8px;border:1px solid #e5e9f2;text-decoration:none;color:#123;font-size:14px;background:#fff}
+    .btn{display:inline-block;padding:8px 12px;border-radius:8px;border:1px solid #e5e9f2;text-decoration:none;color:#123;font-size:14px;background:#fff;cursor:pointer}
     .btn.primary{background:var(--blue);color:#fff;border-color:var(--blue)}
     .muted{color:#5a677d;font-size:13px}
   </style>
@@ -27,21 +27,17 @@
   </header>
 
   <div class="wrap">
-    <p class="muted">
-      Tap <strong>Subscribe</strong> to add a team’s live schedule. You can also <strong>View Schedule</strong> on ArbiterLive (when available).
-    </p>
+    <p class="muted">Tap <strong>Subscribe</strong> to add a team’s live schedule to your calendar. You can also <strong>View Schedule</strong> on ArbiterLive (once linked).</p>
     <section class="grid" id="cards"></section>
   </div>
 
   <script src="data.js"></script>
   <script>
     const cards = document.getElementById('cards');
-
     function subscribeHref(teamName, icsUrl, auto=true){
       const p = new URLSearchParams({ name: teamName, ics: icsUrl, auto: auto ? '1' : '0' });
       return 'subscribe.html?' + p.toString();
     }
-
     function render(list){
       cards.innerHTML='';
       list.forEach(d => {
@@ -53,14 +49,12 @@
           <h4>${d.name}</h4>
           <div class="row">
             <a class="btn primary" href="${href}">Subscribe</a>
-            <a class="btn" href="${d.ics}" target="_blank" rel="noopener">Open ICS</a>
             ${hasSched ? `<a class="btn" href="${d.schedule}" target="_blank" rel="noopener">View Schedule</a>` : ''}
           </div>
         `;
         cards.appendChild(el);
       });
     }
-
     render(window.BORGIA_TEAMS || []);
   </script>
 </body>
