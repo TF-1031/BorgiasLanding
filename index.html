@@ -1,126 +1,110 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Borgia Athletics • Teams</title>
-  <meta name="theme-color" content="#002d72" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Borgia Athletics Landing Page</title>
   <style>
-    :root{ --blue:#002d72; --ink:#0d1b2a; --bg:#f5f7fb; --line:#e5e9f2; }
-    *{box-sizing:border-box}
-    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink);background:var(--bg)}
-    header{padding:28px 18px;background:var(--blue);color:#fff;text-align:center}
-    header h1{margin:8px 0 0;font-weight:800;font-size:28px}
-    .sub{opacity:.9;margin-top:6px;letter-spacing:.04em}
-    .socials{display:flex;justify-content:center;gap:20px;padding:16px;background:#fff;border-bottom:1px solid var(--line)}
-    .socials a img{height:32px;width:auto;display:block}
-    .wrap{max-width:1100px;margin:0 auto;padding:18px}
-    .chips{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:16px 0 22px}
-    .chip{border:1.5px solid var(--blue);background:#fff;color:var(--blue);padding:8px 16px;border-radius:999px;cursor:pointer;font-size:14px;font-weight:600;transition:.15s ease;}
-    .chip[aria-pressed="true"]{background:var(--blue);color:#fff}
-    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
-    .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:10px}
-    .card h4{margin:0;font-size:18px}
-    .row{display:flex;gap:8px;flex-wrap:wrap}
-    .btn{display:inline-block;padding:10px 12px;border-radius:10px;border:1px solid var(--line);text-decoration:none;color:#123;font-size:14px;background:#fff}
-    .btn.primary{background:var(--blue);color:#fff;border-color:var(--blue)}
-    .hint{color:#566;font-size:13px;text-align:center;margin:10px 0 0}
-    .message{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border:1px solid var(--line);border-radius:10px;text-decoration:none;color:#123;background:#fff}
-    .message svg{width:18px;height:18px;display:block}
-    footer{margin-top:40px;padding:20px;text-align:center;background:#fff;border-top:1px solid var(--line)}
-    footer a{margin:0 10px;color:var(--blue);text-decoration:none;font-weight:600}
-    footer .tagline{margin-top:10px;font-size:12px;color:#777}
+    body { font-family: Arial, sans-serif; margin:0; padding:0; background:#f8f9fa; }
+    header { background:#0d2b57; color:#fff; text-align:center; padding:1rem; }
+    .sport { background:#fff; margin:1rem; padding:1rem; border-radius:8px; }
+    .team-card { margin:0.5rem 0; padding:0.5rem; border:1px solid #ddd; border-radius:6px; }
+    .btn { display:inline-block; margin:0.25rem; padding:0.5rem 1rem; border-radius:6px;
+           text-decoration:none; background:#0d2b57; color:#fff; font-weight:bold; }
+    .btn.secondary { background:#f4c542; color:#000; }
+    footer { background:#eee; padding:1rem; text-align:center; }
+    .footer-link { margin:0 0.5rem; color:#0d2b57; text-decoration:none; font-weight:bold; }
+    #social-icons img { height:28px; width:auto; }
   </style>
 </head>
 <body>
   <header>
-    <h1>St. Francis Borgia</h1>
-    <div class="sub">ATHLETICS</div>
+    <h1>St. Francis Borgia Athletics</h1>
+    <p>Washington, MO</p>
   </header>
-  <div class="socials">
-    <a href="#"><img src="icons/calendar.png" alt="Calendar"></a>
-    <a href="#"><img src="icons/hudl.png" alt="Hudl"></a>
-    <a href="#"><img src="icons/message.png" alt="Message"></a>
-  </div>
-  <div class="wrap">
-    <div class="chips" id="chipsSeason"></div>
-    <div class="chips" id="chipsGender"></div>
-    <div class="chips" id="chipsType"></div>
-    <section class="grid" id="cards"></section>
-    <div class="hint" id="hint">Loading…</div>
-  </div>
+  <main>
+    <div id="teams"></div>
+  </main>
   <footer>
-    <a href="https://www.mshsaa.org/">MSHSAA</a> | 
-    <a href="https://www.borgia.com/athletics">Borgia Athletics</a>
-    <div class="tagline">a problematic website</div>
+    <div id="websites-text"></div>
+    <div id="social-icons"></div>
   </footer>
-  <script>
-    const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSgj_XcnDHDe51Ddm5n2egn_ic8K19z8ZDA8z6bmLFcCTF0GLiEKIWiSQ-kNEF4Ss4aS1EHk63nFSfx/pub?gid=1575260612&single=true&output=csv";
-    const chipsSeason = document.getElementById('chipsSeason');
-    const chipsGender = document.getElementById('chipsGender');
-    const chipsType   = document.getElementById('chipsType');
-    const cards = document.getElementById('cards');
-    const hint  = document.getElementById('hint');
-    let DATA = []; let filters = { Season:'', Gender:'', Type:'' };
-    function parseCSV(text){
-      const rows=[]; let cur=['']; let inQ=false;
-      for(let i=0;i<text.length;i++){const c=text[i],n=text[i+1];
-        if(c=='"'&&inQ&&n=='"'){cur[cur.length-1]+='"';i++;continue;}
-        if(c=='"'){inQ=!inQ;continue;}
-        if(c==','&&!inQ){cur.push('');continue;}
-        if((c=='\n'||c=='\r')&&!inQ){if(cur.length>1||cur[0]!=='')rows.push(cur);cur=[''];continue;}
-        cur[cur.length-1]+=c;
-      } if(cur.length>1||cur[0]!=='')rows.push(cur);
-      const header=rows.shift().map(h=>h.trim());
-      return rows.map(r=>{const o={};header.forEach((h,i)=>o[h]=(r[i]||'').trim());return o;});
-    }
-    const uniq=l=>[...new Set(l.filter(Boolean))];
-    function buildChips(){
-      const seasons=uniq(DATA.map(d=>d.Season)).filter(s=>s!=='All Year');
-      const genders=uniq(DATA.map(d=>d.Gender));
-      const types=uniq(DATA.map(d=>d.Type));
-      chipsSeason.innerHTML=seasons.map(s=>`<button class="chip" data-k="Season" data-v="\${s}">\${s}</button>`).join('')+`<button class="chip" data-k="Season" data-v="">Clear</button>`;
-      chipsGender.innerHTML=genders.map(s=>`<button class="chip" data-k="Gender" data-v="\${s}">\${s}</button>`).join('')+`<button class="chip" data-k="Gender" data-v="">Clear</button>`;
-      chipsType.innerHTML=types.map(s=>`<button class="chip" data-k="Type" data-v="\${s}">\${s}</button>`).join('')+`<button class="chip" data-k="Type" data-v="">Clear</button>`;
-      [chipsSeason,chipsGender,chipsType].forEach(group=>{
-        group.addEventListener('click',e=>{
-          const btn=e.target.closest('.chip'); if(!btn)return;
-          const k=btn.getAttribute('data-k'); const v=btn.getAttribute('data-v');
-          filters[k]=(filters[k]===v)?'':v; setPressed(group,filters[k]); render();
-        });
-      });
-    }
-    function setPressed(container,value){
-      [...container.querySelectorAll('.chip')].forEach(b=>{
-        const v=b.getAttribute('data-v'); b.setAttribute('aria-pressed',v===value?'true':'false');
-      });
-    }
-    function matchFilters(item){
-      if(filters.Season){ if(!(item.Season===filters.Season||item.Season==='All Year')) return false; }
-      if(filters.Gender&&item.Gender!==filters.Gender) return false;
-      if(filters.Type&&item.Type!==filters.Type) return false;
-      return true;
-    }
-    function subscribeHref(teamName,icsUrl,auto=true){
-      const p=new URLSearchParams({name:teamName,ics:icsUrl,auto:auto?'1':'0'});
-      return 'subscribe.html?'+p.toString();
-    }
-    function render(){
-      const list=DATA.filter(matchFilters);
-      cards.innerHTML=list.map(d=>{
-        const subs=subscribeHref(d.Team||'Team',d.ICS||'',true);
-        const viewBtn=d.ScheduleURL?`<a class="btn" href="\${d.ScheduleURL}" target="_blank" rel="noopener">View Schedule</a>`:'';
-        const msgBtn=d.MessageURL?`<a class="message" href="\${d.MessageURL}" target="_blank" rel="noopener" title="Message">
-            <svg viewBox="0 0 24 24" fill="none"><path d="M4 5h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H9l-5 4v-4H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
-            Message</a>`:'';
-        return `<div class="card"><h4>\${d.Team||'Team'}</h4><div class="row"><a class="btn primary" href="\${subs}">Subscribe</a>\${viewBtn}\${msgBtn}</div></div>`;
-      }).join('');
-      hint.textContent=list.length?`\${list.length} team\${list.length>1?'s':''} shown`:'No teams match those filters.';
-    }
-    async function init(){ try{
-      const res=await fetch(CSV_URL); const text=await res.text(); DATA=parseCSV(text); buildChips(); render();
-    } catch(e){ hint.textContent='Could not load published CSV.'; console.error(e); } }
-    init();
-  </script>
+
+<script>
+const DOC_ID = "2PACX-1vRyUAmM6RN1RGM0conwd_6-3nRI6vHk70bpw7sfykf9GoKq_4xDDq1j_fsKrHdkbYbVnTful0z7koip";
+const csvUrl = (sheet) =>
+  `https://docs.google.com/spreadsheets/d/e/${DOC_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sheet)}`;
+
+async function getCSV(sheet) {
+  const res = await fetch(csvUrl(sheet));
+  const text = await res.text();
+  return csvToObjects(text);
+}
+
+function csvToObjects(csv) {
+  const rows = csv.trim().split(/\r?\n/).map(r =>
+    r.split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/).map(c => c.replace(/^"|"$/g, "").trim())
+  );
+  const headers = rows.shift();
+  return rows.map(r => Object.fromEntries(headers.map((h,i)=>[h, r[i] ?? ""])));
+}
+
+async function renderTeams() {
+  const data = await getCSV("Teams");
+  const bySport = {};
+  data.forEach(row => {
+    if (!row.Sport || !row.Level || !row.URL) return;
+    const key = `${row.Gender ? row.Gender + " " : ""}${row.Sport}`.trim();
+    (bySport[key] ||= []).push(row);
+  });
+
+  const wrap = document.getElementById("teams");
+  wrap.innerHTML = "";
+  Object.entries(bySport).forEach(([sport, rows]) => {
+    const section = document.createElement("section");
+    section.className = "sport";
+    section.innerHTML = `<h3>${sport}</h3>`;
+    rows.forEach(r => {
+      const card = document.createElement("div");
+      card.className = "team-card";
+      card.innerHTML = `
+        <div><strong>${r.Level}</strong></div>
+        <div class="actions">
+          <a class="btn" href="${r.URL}" target="_blank">📅 View / Subscribe</a>
+          ${r.MessageURL ? `<a class="btn secondary" href="${r.MessageURL}" target="_blank">💬 Messages</a>` : ""}
+        </div>`;
+      section.appendChild(card);
+    });
+    wrap.appendChild(section);
+  });
+}
+
+async function renderWebsitesAndSocial() {
+  const data = await getCSV("Websites-Social");
+  const websitesText = data.filter(r => r.Platform && r.URL && /^(MSHSAA|Borgia Athletics)$/i.test(r.Platform.trim()));
+  const socials = data.filter(r => r.Platform && r.URL && !/^(MSHSAA|Borgia Athletics)$/i.test(r.Platform.trim()));
+
+  const wt = document.getElementById("websites-text");
+  wt.innerHTML = websitesText.map(r => `<a href="${r.URL}" target="_blank" class="footer-link">${r.Platform}</a>`).join(" | ");
+
+  const iconMap = {
+    "facebook": "facebook.png",
+    "instagram": "instagram.png",
+    "x (twitter)": "x.png",
+    "twitter": "x.png",
+    "hudl": "hudl.png"
+  };
+  const si = document.getElementById("social-icons");
+  si.innerHTML = socials.map(r => {
+    const key = r.Platform.trim().toLowerCase();
+    const file = iconMap[key] || "link.png";
+    return `<a href="${r.URL}" target="_blank"><img src="icons/${file}" alt="${r.Platform}"></a>`;
+  }).join("");
+}
+
+(async function init(){
+  await Promise.all([renderTeams(), renderWebsitesAndSocial()]);
+})();
+</script>
 </body>
 </html>
