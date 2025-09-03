@@ -30,3 +30,15 @@ Use one row per team level (e.g., Boys Basketball Varsity).
 - Update the Google Sheet (Teams or Websites-Social tab).  
 - Changes appear automatically on the landing page after refresh — no need to edit HTML.
 
+
+
+## Optional: Icon column (Websites-Social)
+If you add an `Icon` column to the **Websites-Social** sheet:
+- If `Icon` has a filename (e.g., `facebook.png`), the page will show that icon from `/icons/`.
+- If `Icon` is blank, the page will show the Platform name as a text link.
+
+See `sample-sheets/Websites-Social.csv` for an example with icons specified.
+
+## Sample CSVs
+- `sample-sheets/Teams.csv` — copy into your Google Sheet tab named **Teams**.
+- `sample-sheets/Websites-Social.csv` — copy into your tab named **Websites-Social**.
