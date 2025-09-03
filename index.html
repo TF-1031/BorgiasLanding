@@ -1,330 +1,109 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>St. Francis Borgia • Teams</title>
-
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
-
-<style>
-  :root{ --blue:#002d72; --gold:#f1b500; --cardBorder:rgba(255,255,255,.18); --scriptSize:clamp(40px,9vw,72px) }
-  *{ box-sizing:border-box }
-  body{ margin:0; background:var(--blue); color:#fff; font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif }
-  .wrap{ max-width:900px; margin:0 auto; padding:18px }
-
-  /* Header */
-  .head{ display:flex; flex-direction:column; align-items:center; gap:12px; margin:12px 0 14px; text-align:center }
-  .logo-circle{ width:170px; height:170px; border-radius:50%; background:#fff; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 16px rgba(0,0,0,.15) }
-  .logo{ max-width:110px; height:auto }
-  .title-script{ font-family:"Lobster",cursive; font-size:var(--scriptSize); line-height:1; color:var(--gold); text-shadow:0 1px 0 rgba(0,0,0,.08) }
-  .title-sub{ margin-top:6px; font-weight:800; text-transform:uppercase; font-size:calc(var(--scriptSize)*.40); letter-spacing:.5em }
-
-  /* Filters */
-  .filters{ display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin:14px 0 }
-  .filter{ padding:8px 14px; border:1px solid var(--gold); border-radius:20px; cursor:pointer; font-weight:700; user-select:none }
-  .filter.active{ background:var(--gold); color:var(--blue) }
-  .filters .divider{ width:100%; height:0; margin:4px 0 }
-
-  /* Sections & cards */
-  .section{ margin:14px 0; border:1px solid var(--cardBorder); border-radius:14px; background:rgba(255,255,255,.04) }
-  .section-head{ padding:14px 16px; border-bottom:1px solid var(--cardBorder); font-weight:800; color:var(--gold); font-family:"Lobster",cursive; font-size:clamp(28px,4.6vw,43px) }
-  .grid{ display:grid; gap:12px; padding:12px }
-  @media (min-width:600px){ .grid{ grid-template-columns:1fr 1fr } }
-
-  .card{ display:flex; align-items:center; justify-content:space-between; gap:12px; background:rgba(255,255,255,.06); border:1px solid var(--cardBorder); border-radius:12px; padding:14px }
-  .team{ font-weight:700; font-size:clamp(16px,2.6vw,24px) }
-  .tags{ font-size:12px; opacity:.9 }
-
-  /* Chips */
-  .chips{ display:flex; gap:10px; align-items:center }
-  .chip{ width:50px; height:50px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; border:2px solid #fff; background:#fff }
-  .chip img{ width:auto; height:auto; max-width:70%; max-height:70%; object-fit:contain }
-  .viewchip{ background:var(--blue) } /* calendar icon is white-on-blue */
-
-  /* Modal */
-  .modal-backdrop{ position:fixed; inset:0; background:rgba(0,0,0,.45); display:none; align-items:flex-end; justify-content:center; z-index:999 }
-  .modal{ width:100%; max-width:900px; max-height:80vh; overflow:auto; background:#0b317f; color:#fff; border-radius:16px 16px 0 0; border:1px solid var(--cardBorder); box-shadow:0 -8px 24px rgba(0,0,0,.25) }
-  .modal header{ display:flex; align-items:center; justify-content:space-between; padding:14px 16px; border-bottom:1px solid var(--cardBorder) }
-  .modal header h3{ margin:0; font-size:20px; font-weight:800 }
-  .modal .close{ appearance:none; border:0; background:transparent; color:#fff; font-size:24px; line-height:1; cursor:pointer }
-  .modal .content{ padding:10px 16px 16px }
-  .event{ padding:10px 0; border-bottom:1px solid var(--cardBorder) }
-  .event:last-child{ border-bottom:0 }
-  .event .when{ font-weight:700 }
-  .event .where{ font-size:13px; opacity:.85 }
-  .modal-backdrop.show{ display:flex }
-
-  /* Optional tiny debug badge */
-  .dbg{ position:fixed; left:8px; bottom:8px; background:rgba(0,0,0,.55); color:#fff; padding:6px 8px; border-radius:8px; font:12px system-ui; z-index:9999 }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Borgia Athletics Landing Page</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin:0; padding:0; background:#f8f9fa; }
+    header { background:#0d2b57; color:#fff; text-align:center; padding:1rem; }
+    .sport { background:#fff; margin:1rem; padding:1rem; border-radius:8px; }
+    .team-card { margin:0.5rem 0; padding:0.5rem; border:1px solid #ddd; border-radius:6px; }
+    .btn { display:inline-block; margin:0.25rem; padding:0.5rem 1rem; border-radius:6px;
+           text-decoration:none; background:#0d2b57; color:#fff; font-weight:bold; }
+    .btn.secondary { background:#f4c542; color:#000; }
+    footer { background:#eee; padding:1rem; text-align:center; }
+    .footer-link { margin:0 0.5rem; color:#0d2b57; text-decoration:none; font-weight:bold; }
+    #social-icons img { height:28px; width:auto; }
+  </style>
 </head>
 <body>
-  <div class="wrap">
-    <header class="head">
-      <a href="https://www.borgia.com" target="_blank" rel="noopener" class="logo-circle" aria-label="SFB website">
-        <img class="logo" src="logo.png" alt="St. Francis Borgia Logo">
-      </a>
-      <div class="title-script">St. Francis Borgia</div>
-      <div class="title-sub">teams</div>
-    </header>
-
-    <!-- Filters -->
-    <div class="filters" id="filters">
-      <!-- Season -->
-      <div class="filter active" data-season="All">All</div>
-      <div class="filter" data-season="Fall">Fall</div>
-      <div class="filter" data-season="Winter">Winter</div>
-      <div class="filter" data-season="Spring">Spring</div>
-      <div class="filter" data-season="All Year">All Year</div>
-      <div class="divider"></div>
-      <!-- Gender -->
-      <div class="filter" data-gender="Boys">Boys</div>
-      <div class="filter" data-gender="Girls">Girls</div>
-      <div class="filter" data-gender="Coed">Coed</div>
-      <div class="filter active" data-gender="Any">Any</div>
-    </div>
-
-    <div id="sports"></div>
-  </div>
-
-  <!-- ICS Modal -->
-  <div id="icsModalBackdrop" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="icsModalTitle">
-    <div class="modal">
-      <header>
-        <h3 id="icsModalTitle">Upcoming</h3>
-        <button class="close" id="icsClose" aria-label="Close">×</button>
-      </header>
-      <div class="content" id="icsContent"></div>
-    </div>
-  </div>
+  <header>
+    <h1>St. Francis Borgia Athletics</h1>
+    <p>Washington, MO</p>
+  </header>
+  <main>
+    <div id="teams"></div>
+  </main>
+  <footer>
+    <div id="websites-text"></div>
+    <div id="social-icons"></div>
+  </footer>
 
 <script>
-/* ========= Data sources ========= */
-const GOOGLE_CSV =
-  'https://docs.google.com/spreadsheets/d/e/2PACX-1vT5Ly_7rP62i_7vtVWkC_oiWDQM6E9I0c6-kRtKRaoJIAfNDiFq2k5cQ3nwiuoB-cNKFrb5k3XUQeB1/pub?gid=1131242995&single=true&output=csv';
-const LOCAL_CSV  = 'data/teams_with_placeholders.csv';
-const MESSAGE_FALLBACK = 'https://www.google.com/search?q=ugly+dog+gif';
+const DOC_ID = "2PACX-1vRyUAmM6RN1RGM0conwd_6-3nRI6vHk70bpw7sfykf9GoKq_4xDDq1j_fsKrHdkbYbVnTful0z7koip";
+const csvUrl = (sheet) =>
+  `https://docs.google.com/spreadsheets/d/e/${DOC_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sheet)}`;
 
-/* Debug badge (optional) */
-const dbg=document.createElement('div');
-dbg.className='dbg';
-dbg.textContent='CSV: loading…';
-document.addEventListener('DOMContentLoaded',()=>document.body.appendChild(dbg));
-
-/* Fetch w/ timeout + cache-bust */
-function fetchWithTimeout(url, ms=8000){
-  const bust = (url.includes('?') ? '&' : '?') + 'v=' + Date.now();
-  return Promise.race([
-    fetch(url + bust, {cache:'no-store', mode:'cors'}),
-    new Promise((_, rej)=> setTimeout(()=> rej(new Error('timeout')), ms))
-  ]);
-}
-async function fetchTextOrThrow(url){
-  const r = await fetchWithTimeout(url);
-  if(!r || !r.ok) throw new Error(r ? `HTTP ${r.status}` : 'no response');
-  return r.text();
+async function getCSV(sheet) {
+  const res = await fetch(csvUrl(sheet));
+  const text = await res.text();
+  return csvToObjects(text);
 }
 
-/* CSV/TSV parser (auto-detects delimiter, handles quotes) */
-function parseTable(text){
-  text = text.replace(/^\uFEFF/, '').replace(/\r/g,'').trim();
-  const lines = text.split('\n').filter(Boolean);
-  const headerLine = lines[0];
-  const delim = (headerLine.indexOf('\t') > headerLine.indexOf(',')) ? '\t' : ',';
-  const split = (line) => {
-    const out=[]; let cur=''; let q=false;
-    for (let i=0;i<line.length;i++){
-      const c=line[i];
-      if (c === '"'){ q = !q; continue; }
-      if (c === delim && !q){ out.push(cur); cur=''; continue; }
-      cur += c;
-    }
-    out.push(cur);
-    return out.map(s=>s.trim());
-  };
-  const headers = split(headerLine);
-  return lines.slice(1).map(line=>{
-    const cols = split(line);
-    const obj={}; headers.forEach((h,i)=> obj[h]= (cols[i] ?? '').trim());
-    return obj;
+function csvToObjects(csv) {
+  const rows = csv.trim().split(/\r?\n/).map(r =>
+    r.split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/).map(c => c.replace(/^"|"$/g, "").trim())
+  );
+  const headers = rows.shift();
+  return rows.map(r => Object.fromEntries(headers.map((h,i)=>[h, r[i] ?? ""])));
+}
+
+async function renderTeams() {
+  const data = await getCSV("Teams");
+  const bySport = {};
+  data.forEach(row => {
+    if (!row.Sport || !row.Level || !row.URL) return;
+    const key = `${row.Gender ? row.Gender + " " : ""}${row.Sport}`.trim();
+    (bySport[key] ||= []).push(row);
   });
-}
 
-/* Load data with Google->Local fallback */
-async function loadCsv(){
-  try { const t=await fetchTextOrThrow(GOOGLE_CSV); dbg.textContent='CSV: Google ✅'; return t; }
-  catch (e) { dbg.textContent=`CSV: Google ❌ (${e.message||e}) → local`; const t=await fetchTextOrThrow(LOCAL_CSV); dbg.textContent+=' • Local ✅'; return t; }
-}
-async function loadTeams(){
-  const csvText = await loadCsv();
-  const rows = parseTable(csvText);
-  dbg.textContent += ` • rows: ${rows.length}`;
-  // Expect headers: Season,Gender,Sport,Level,URL,MessageURL
-  return rows.map(r=>({
-    season:(r.Season||'').trim(),
-    gender:(r.Gender||'').trim(),
-    sport:(r.Sport||'').trim(),
-    level:(r.Level||'').trim(),
-    url:(r.URL||'').trim(),
-    msg:(r.MessageURL||'').trim(),
-  })).filter(r=>r.sport && r.level && r.url);
-}
-
-/* Group/sort */
-const LEVEL_ORDER = { "Varsity":0, "JV":1, "Freshman":2 };
-const PRIORITY_SPORTS = ["Volleyball","Football","Soccer","Softball"];
-function groupBySport(rows){
-  const map=new Map();
-  for(const r of rows){
-    if(!map.has(r.sport)) map.set(r.sport, []);
-    map.get(r.sport).push(r);
-  }
-  return map;
-}
-
-/* ICS helpers */
-async function fetchIcs(url){ const r=await fetch(url,{cache:'no-store'}); if(!r.ok) throw new Error(r.status); return r.text(); }
-function parseIcs(text){
-  const events=[], lines=text.replace(/\r/g,'').split('\n'); let ev=null;
-  for(let i=1;i<lines.length;i++){ if(/^[ \t]/.test(lines[i])){ lines[i-1]+=lines[i].slice(1); lines[i]=''; } }
-  for(const line of lines){
-    if(!line) continue;
-    if(line.startsWith('BEGIN:VEVENT')){ ev={}; continue; }
-    if(line.startsWith('END:VEVENT')){ if(ev && ev.start && ev.summary) events.push(ev); ev=null; continue; }
-    if(!ev) continue;
-    if(line.startsWith('DTSTART')) ev.start = icsDate(line.split(':').pop());
-    else if(line.startsWith('DTEND')) ev.end = icsDate(line.split(':').pop());
-    else if(line.startsWith('SUMMARY:')) ev.summary = line.slice(8).trim();
-    else if(line.startsWith('LOCATION:')) ev.location = line.slice(9).trim();
-  }
-  return events;
-}
-function icsDate(v){
-  const m=v.match(/^(\d{4})(\d{2})(\d{2})(?:T(\d{2})(\d{2})(\d{2})(Z)?)?$/);
-  if(!m) return null;
-  if(!m[4]) return new Date(`${m[1]}-${m[2]}-${m[3]}T00:00:00`);
-  return new Date(`${m[1]}-${m[2]}-${m[3]}T${m[4]}:${m[5]}:${m[6]}${m[7]?'Z':''}`);
-}
-function fmtDate(dt){ return new Intl.DateTimeFormat(undefined,{weekday:'short',month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}).format(dt); }
-async function openIcsModal(url,title){
-  const backdrop=document.getElementById('icsModalBackdrop');
-  const content=document.getElementById('icsContent');
-  const heading=document.getElementById('icsModalTitle');
-  heading.textContent=title;
-  content.innerHTML='<p style="opacity:.85">Loading events…</p>';
-  backdrop.classList.add('show');
-  try{
-    const text=await fetchIcs(url);
-    const all=parseIcs(text).filter(ev=>ev.start && ev.start>=new Date(Date.now()-86400000)).sort((a,b)=>a.start-b.start).slice(0,30);
-    if(!all.length){ content.innerHTML='<p style="opacity:.85">No upcoming events.</p>'; return; }
-    content.innerHTML=all.map(ev=>`
-      <div class="event">
-        <div class="when">${fmtDate(ev.start)}</div>
-        <div class="what">${ev.summary||''}</div>
-        ${ev.location?`<div class="where">${ev.location}</div>`:''}
-      </div>`).join('');
-  }catch(e){
-    backdrop.classList.remove('show'); // CORS or error → open raw
-    window.open(url, '_blank', 'noopener');
-  }
-}
-function closeIcsModal(){ document.getElementById('icsModalBackdrop').classList.remove('show'); }
-document.addEventListener('click',(e)=>{
-  const viewBtn=e.target.closest('.viewchip');
-  const close=e.target.closest('#icsClose');
-  const bg=e.target.id==='icsModalBackdrop';
-  if(viewBtn){
-    e.preventDefault();
-    const url=viewBtn.getAttribute('href') || viewBtn.dataset.url;
-    const title=viewBtn.getAttribute('data-title') || 'Upcoming';
-    openIcsModal(url, title);
-  } else if(close || bg){
-    closeIcsModal();
-  }
-});
-
-/* Filters + render */
-let ALL_TEAMS=[];
-const filters = { season:'All', gender:'Any' };
-
-function applyFilters(list){
-  return list.filter(r=>{
-    if(filters.season !== 'All' && filters.season !== 'All Year'){
-      if(!(r.season === filters.season || r.season.toLowerCase() === 'all year')) return false;
-    } else if(filters.season === 'All Year'){
-      if(r.season.toLowerCase() !== 'all year') return false;
-    }
-    if(filters.gender !== 'Any' && r.gender !== filters.gender) return false;
-    return true;
-  });
-}
-
-function render(){
-  const container=document.getElementById('sports');
-  container.innerHTML='';
-
-  const rows = applyFilters(ALL_TEAMS);
-  const grouped = groupBySport(rows);
-  const others = Array.from(grouped.keys()).filter(s=>!PRIORITY_SPORTS.includes(s)).sort((a,b)=>a.localeCompare(b));
-  const order = [...PRIORITY_SPORTS, ...others].filter(s=>grouped.has(s));
-
-  for(const sport of order){
-    const items = grouped.get(sport).slice()
-      .sort((a,b)=>(LEVEL_ORDER[a.level]??99)-(LEVEL_ORDER[b.level]??99) || a.level.localeCompare(b.level));
-    const section=document.createElement('section');
-    section.className='section';
-    section.setAttribute('aria-label',sport);
-    section.innerHTML = `<div class="section-head">${sport}</div><div class="grid"></div>`;
-    const grid=section.querySelector('.grid');
-
-    for(const t of items){
-      const msgURL = t.msg || MESSAGE_FALLBACK;
-      const card=document.createElement('div');
-      card.className='card';
+  const wrap = document.getElementById("teams");
+  wrap.innerHTML = "";
+  Object.entries(bySport).forEach(([sport, rows]) => {
+    const section = document.createElement("section");
+    section.className = "sport";
+    section.innerHTML = `<h3>${sport}</h3>`;
+    rows.forEach(r => {
+      const card = document.createElement("div");
+      card.className = "team-card";
       card.innerHTML = `
-        <div>
-          <div class="team">${t.level}</div>
-          <div class="tags">${t.gender || ''}${t.season ? ' • ' + t.season : ''}</div>
-        </div>
-        <div class="chips">
-          <a class="chip" href="${msgURL}" target="_blank" rel="noopener" aria-label="Message">
-            <img src="icons/message-solid-full.svg" alt="Message">
-          </a>
-          <a class="chip viewchip" href="${t.url}" data-title="${sport} • ${t.level}" aria-label="View">
-            <img src="icons/calendar.png" alt="View">
-          </a>
-          <a class="chip" href="${t.url}" target="_blank" rel="noopener" aria-label="Subscribe">
-            <img src="icons/apple.png" alt="Subscribe">
-          </a>
+        <div><strong>${r.Level}</strong></div>
+        <div class="actions">
+          <a class="btn" href="${r.URL}" target="_blank">📅 View / Subscribe</a>
+          ${r.MessageURL ? `<a class="btn secondary" href="${r.MessageURL}" target="_blank">💬 Messages</a>` : ""}
         </div>`;
-      grid.appendChild(card);
-    }
-    container.appendChild(section);
-  }
+      section.appendChild(card);
+    });
+    wrap.appendChild(section);
+  });
 }
 
-(async()=>{
-  ALL_TEAMS = await loadTeams();
-  render();
+async function renderWebsitesAndSocial() {
+  const data = await getCSV("Websites-Social");
+  const websitesText = data.filter(r => r.Platform && r.URL && /^(MSHSAA|Borgia Athletics)$/i.test(r.Platform.trim()));
+  const socials = data.filter(r => r.Platform && r.URL && !/^(MSHSAA|Borgia Athletics)$/i.test(r.Platform.trim()));
 
-  document.getElementById('filters').addEventListener('click',(e)=>{
-    const chip = e.target.closest('.filter'); if(!chip) return;
-    const season = chip.dataset.season;
-    const gender = chip.dataset.gender;
-    if(season !== undefined){
-      document.querySelectorAll('[data-season]').forEach(el=>el.classList.remove('active'));
-      chip.classList.add('active');
-      filters.season = season;
-    }
-    if(gender !== undefined){
-      document.querySelectorAll('[data-gender]').forEach(el=>el.classList.remove('active'));
-      chip.classList.add('active');
-      filters.gender = gender;
-    }
-    render();
-  });
+  const wt = document.getElementById("websites-text");
+  wt.innerHTML = websitesText.map(r => `<a href="${r.URL}" target="_blank" class="footer-link">${r.Platform}</a>`).join(" | ");
+
+  const iconMap = {
+    "facebook": "facebook.png",
+    "instagram": "instagram.png",
+    "x (twitter)": "x.png",
+    "twitter": "x.png",
+    "hudl": "hudl.png"
+  };
+  const si = document.getElementById("social-icons");
+  si.innerHTML = socials.map(r => {
+    const key = r.Platform.trim().toLowerCase();
+    const file = iconMap[key] || "link.png";
+    return `<a href="${r.URL}" target="_blank"><img src="icons/${file}" alt="${r.Platform}"></a>`;
+  }).join("");
+}
+
+(async function init(){
+  await Promise.all([renderTeams(), renderWebsitesAndSocial()]);
 })();
 </script>
 </body>
