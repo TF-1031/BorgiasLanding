@@ -42,3 +42,13 @@ See `sample-sheets/Websites-Social.csv` for an example with icons specified.
 ## Sample CSVs
 - `sample-sheets/Teams.csv` — copy into your Google Sheet tab named **Teams**.
 - `sample-sheets/Websites-Social.csv` — copy into your tab named **Websites-Social**.
+
+
+## Small Theme Option
+Add the class `small` to the `<body>` tag in `index.html` to switch to a compact layout:
+
+```html
+<body class="small">
+```
+
+This reduces padding, font sizes, and button spacing for a denser view.

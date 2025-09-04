@@ -1,10 +1,11 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Borgia Athletics Landing Page</title>
-  <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Borgia Athletics Landing Page</title>
+<style>
     body { font-family: Arial, sans-serif; margin:0; padding:0; background:#f8f9fa; }
     header { background:#0d2b57; color:#fff; text-align:center; padding:1rem; }
     .sport { background:#fff; margin:1rem; padding:1rem; border-radius:8px; }
@@ -15,28 +16,39 @@
     footer { background:#eee; padding:1rem; text-align:center; }
     .footer-link { margin:0 0.5rem; color:#0d2b57; text-decoration:none; font-weight:bold; }
     #social-icons img { height:28px; width:auto; }
-  </style>
+  
+/* --- Small Theme (compact layout) --- */
+body.small header { padding:0.5rem; font-size:0.9rem; }
+body.small .sport { margin:0.5rem; padding:0.5rem; }
+body.small .team-card { margin:0.25rem 0; padding:0.25rem; font-size:0.85rem; }
+body.small .btn { padding:0.25rem 0.5rem; font-size:0.8rem; }
+body.small footer { padding:0.5rem; font-size:0.85rem; }
+
+</style>
 </head>
 <body>
-  <header>
-    <h1>St. Francis Borgia Athletics</h1>
-    <p>Washington, MO</p>
-  </header>
-  <main>
-    <div id="teams"></div>
-  </main>
-  <footer>
-    <div id="websites-text"></div>
-    <div id="social-icons"></div>
-  </footer>
+<header>
+<h1>St. Francis Borgia Athletics</h1>
+<p>Washington, MO</p>
+</header>
+<main>
+<div id="teams"></div>
+</main>
+<footer>
+<div id="websites-text"></div>
+<div id="social-icons"></div>
+</footer>
 
 <script>
-const DOC_ID = "2PACX-1vRyUAmM6RN1RGM0conwd_6-3nRI6vHk70bpw7sfykf9GoKq_4xDDq1j_fsKrHdkbYbVnTful0z7koip";
-const csvUrl = (sheet) =>
-  `https://docs.google.com/spreadsheets/d/e/${DOC_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sheet)}`;
 
-async function getCSV(sheet) {
-  const res = await fetch(csvUrl(sheet));
+/* === CONFIG: published CSV URLs for each sheet === */
+const TEAMS_CSV  = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRyUAmM6RN1RGM0conwd_6-3nRI6vHk70bpw7sfykf9GoKq_4xDDq1j_fsKrHdkbYbVnTful0z7koip/pub?gid=589028711&single=true&output=csv";
+const SOCIAL_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRyUAmM6RN1RGM0conwd_6-3nRI6vHk70bpw7sfykf9GoKq_4xDDq1j_fsKrHdkbYbVnTful0z7koip/pub?gid=1519782147&single=true&output=csv";
+
+/* --- helpers --- */
+async function fetchCSV(url) {
+  const res = await fetch(url, { cache: "no-store" });
+  if (!res.ok) throw new Error(`HTTP ${res.status} for ${url}`);
   const text = await res.text();
   return csvToObjects(text);
 }
@@ -45,12 +57,20 @@ function csvToObjects(csv) {
   const rows = csv.trim().split(/\r?\n/).map(r =>
     r.split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/).map(c => c.replace(/^"|"$/g, "").trim())
   );
-  const headers = rows.shift();
+  const headers = rows.shift() || [];
   return rows.map(r => Object.fromEntries(headers.map((h,i)=>[h, r[i] ?? ""])));
 }
 
+function showError(msg) {
+  const box = document.createElement("div");
+  box.style.cssText = "margin:1rem;color:#8b1c1c;background:#fdecea;border:1px solid #f5c6cb;padding:.75rem;border-radius:6px";
+  box.textContent = msg;
+  document.querySelector("main").prepend(box);
+}
+
+/* --- render TEAMS (expects: Season, Gender, Sport, Level, URL, MessageURL) --- */
 async function renderTeams() {
-  const data = await getCSV("Teams");
+  const data = await fetchCSV(TEAMS_CSV);
   const bySport = {};
   data.forEach(row => {
     if (!row.Sport || !row.Level || !row.URL) return;
@@ -70,41 +90,48 @@ async function renderTeams() {
       card.innerHTML = `
         <div><strong>${r.Level}</strong></div>
         <div class="actions">
-          <a class="btn" href="${r.URL}" target="_blank">📅 View / Subscribe</a>
-          ${r.MessageURL ? `<a class="btn secondary" href="${r.MessageURL}" target="_blank">💬 Messages</a>` : ""}
+          <a class="btn" href="${r.URL}" target="_blank" rel="noopener">📅 View / Subscribe</a>
+          ${r.MessageURL ? `<a class="btn secondary" href="${r.MessageURL}" target="_blank" rel="noopener">💬 Messages</a>` : ""}
         </div>`;
       section.appendChild(card);
     });
     wrap.appendChild(section);
   });
+
+  if (!Object.keys(bySport).length) showError("No team rows found. Check the Teams sheet headers and that URLs are filled.");
 }
 
+/* --- render WEBSITES/SOCIAL (expects: Platform, URL, Icon [optional]) --- */
 async function renderWebsitesAndSocial() {
-  const data = await getCSV("Websites-Social");
-  const websitesText = data.filter(r => r.Platform && r.URL && /^(MSHSAA|Borgia Athletics)$/i.test(r.Platform.trim()));
-  const socials = data.filter(r => r.Platform && r.URL && !/^(MSHSAA|Borgia Athletics)$/i.test(r.Platform.trim()));
-
+  const data = await fetchCSV(SOCIAL_CSV);
   const wt = document.getElementById("websites-text");
-  wt.innerHTML = websitesText.map(r => `<a href="${r.URL}" target="_blank" class="footer-link">${r.Platform}</a>`).join(" | ");
-
-  const iconMap = {
-    "facebook": "facebook.png",
-    "instagram": "instagram.png",
-    "x (twitter)": "x.png",
-    "twitter": "x.png",
-    "hudl": "hudl.png"
-  };
   const si = document.getElementById("social-icons");
-  si.innerHTML = socials.map(r => {
-    const key = r.Platform.trim().toLowerCase();
-    const file = iconMap[key] || "link.png";
-    return `<a href="${r.URL}" target="_blank"><img src="icons/${file}" alt="${r.Platform}"></a>`;
-  }).join("");
+  wt.innerHTML = ""; si.innerHTML = "";
+
+  data.forEach(r => {
+    if (!r.Platform || !r.URL) return;
+    const icon = (r.Icon || "").trim();
+    if (icon) {
+      si.innerHTML += `
+        <a href="${r.URL}" target="_blank" rel="noopener" title="${r.Platform}">
+          <img src="icons/${icon}" alt="${r.Platform}" style="height:28px;width:auto" />
+        </a>`;
+    } else {
+      wt.innerHTML += (wt.innerHTML ? " | " : "") +
+        `<a class="footer-link" href="${r.URL}" target="_blank" rel="noopener">${r.Platform}</a>`;
+    }
+  });
 }
 
+/* --- init --- */
 (async function init(){
-  await Promise.all([renderTeams(), renderWebsitesAndSocial()]);
+  try {
+    await Promise.all([renderTeams(), renderWebsitesAndSocial()]);
+  } catch (err) {
+    console.error(err);
+    showError("Could not load data from Google Sheets. Make sure each sheet is published as CSV and the URLs are correct.");
+  }
 })();
-</script>
-</body>
+
+</script></body>
 </html>
