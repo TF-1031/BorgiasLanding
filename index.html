@@ -6,14 +6,7 @@
   <title>St. Francis Borgia Athletics</title>
   <link href="https://fonts.googleapis.com/css2?family=Lobster&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --navy:#0d2b57;
-      --gold:#f4c542;
-      --ink:#12223b;
-      --bg:#f7f8fb;
-      --card:#ffffff;
-      --muted:#6b7280;
-    }
+    :root { --navy:#0d2b57; --gold:#f4c542; --ink:#12223b; --bg:#f7f8fb; --card:#ffffff; --muted:#6b7280; }
     * { box-sizing:border-box; }
     body { margin:0; background:var(--bg); color:var(--ink); font-family:'Inter', system-ui, Arial, sans-serif; }
     header { padding:28px 16px 18px; text-align:center; background:linear-gradient(180deg, var(--navy), #12366c 70%); color:#fff; }
@@ -41,7 +34,7 @@
     #websites-text a { color:var(--navy); font-weight:700; text-decoration:none; }
     #social-icons { display:flex; justify-content:center; gap:12px; flex-wrap:wrap; }
     #social-icons img { height:28px; width:auto; display:block; }
-    /* Small/compact theme */
+    /* Small theme */
     body.small header { padding:16px 8px; }
     body.small .brand { font-size:32px; }
     body.small .wrap { padding:8px 8px 24px; }
@@ -56,9 +49,8 @@
   </header>
 
   <div class="wrap">
-    <!-- Filters (Season) -->
+    <!-- Filters -->
     <div class="filters" id="filters-season"></div>
-    <!-- Filters (Gender) -->
     <div class="filters" id="filters-gender"></div>
 
     <div id="teams"></div>
@@ -98,22 +90,26 @@ function el(tag, attrs={}, html="") {
 }
 
 /* ---------- filters ---------- */
-const STATE = { season:"All", gender:"All" };
-const SEASONS = ["All","Fall","Winter","Spring","All Year"];
-const GENDERS = ["All","Boys","Girls","Coed"];
+const STATE = { season:null, gender:null };
+const SEASONS = ["Fall","Winter","Spring"];
+const GENDERS = ["Boys","Girls"];
 
 function renderFilters() {
   const fs = document.getElementById("filters-season");
   const fg = document.getElementById("filters-gender");
   fs.innerHTML = ""; fg.innerHTML = "";
+
   SEASONS.forEach(s => {
-    const b = el("button", { class: "chip" + (STATE.season===s?" active":"") }, s);
-    b.onclick = ()=>{ STATE.season=s; renderTeamsUI(); renderFilters(); };
+    const active = STATE.season===s;
+    const b = el("button", { class: "chip" + (active ? " active" : "") }, s);
+    b.onclick = ()=>{ STATE.season = active ? null : s; renderTeamsUI(); renderFilters(); };
     fs.appendChild(b);
   });
+
   GENDERS.forEach(g => {
-    const b = el("button", { class: "chip" + (STATE.gender===g?" active":"") }, g);
-    b.onclick = ()=>{ STATE.gender=g; renderTeamsUI(); renderFilters(); };
+    const active = STATE.gender===g;
+    const b = el("button", { class: "chip" + (active ? " active" : "") }, g);
+    b.onclick = ()=>{ STATE.gender = active ? null : g; renderTeamsUI(); renderFilters(); };
     fg.appendChild(b);
   });
 }
@@ -124,7 +120,9 @@ let TEAMS_DATA = [];
 function groupBySport(items) {
   const by = {};
   items.forEach(r => {
-    const sportKey = `${r.Gender ? r.Gender + " " : ""}${r.Sport}`.trim();
+    // Do not prefix "Coed" before teams
+    const prefix = (r.Gender && r.Gender.toLowerCase() !== "coed") ? (r.Gender + " ") : "";
+    const sportKey = (prefix + (r.Sport || "")).trim();
     (by[sportKey] ||= []).push(r);
   });
   return by;
@@ -133,10 +131,17 @@ function groupBySport(items) {
 function renderTeamsUI() {
   const wrap = document.getElementById("teams");
   wrap.innerHTML = "";
-  const filtered = TEAMS_DATA.filter(r => 
-    (STATE.season==="All" || r.Season===STATE.season) &&
-    (STATE.gender==="All" || r.Gender===STATE.gender)
-  );
+  const filtered = TEAMS_DATA.filter(r => {
+    const season = (r.Season || "").trim();
+    const gender = (r.Gender || "").trim();
+
+    // Season: blank = All Year; show All Year items in every seasonal view
+    const seasonOK = (STATE.season==null) || (season === STATE.season) || (season === "");
+
+    // Gender: only Boys/Girls filters visible; treat Coed as both
+    const genderOK = (STATE.gender==null) || (gender === STATE.gender) || (gender.toLowerCase() === "coed");
+    return seasonOK && genderOK;
+  });
 
   const bySport = groupBySport(filtered);
   Object.entries(bySport).forEach(([sport, rows]) => {
@@ -149,7 +154,7 @@ function renderTeamsUI() {
       const card = el("div", { class:"team-card" });
       const head = el("div", { class:"team-head" }, `
         <span class="lvl">${r.Level}</span>
-        <span class="badges"><span>${r.Season || ""}</span></span>
+        <span class="badges"><span>${ (r.Season||'') || 'All Year' }</span></span>
       `);
       const actions = el("div", { class:"actions" });
       actions.innerHTML = `
