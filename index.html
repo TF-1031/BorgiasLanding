@@ -1,11 +1,12 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>St. Francis Borgia Athletics</title>
-  <link href="https://fonts.googleapis.com/css2?family=Lobster&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-  <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>St. Francis Borgia Athletics</title>
+<link href="https://fonts.googleapis.com/css2?family=Lobster&amp;family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<style>
     :root { --navy:#0d2b57; --gold:#f4c542; --ink:#12223b; --bg:#f7f8fb; --card:#ffffff; --muted:#6b7280; }
     * { box-sizing:border-box; }
     body { margin:0; background:var(--bg); color:var(--ink); font-family:'Inter', system-ui, Arial, sans-serif; }
@@ -43,24 +44,20 @@
   </style>
 </head>
 <body>
-  <header>
-    <h1 class="brand">St. Francis Borgia Athletics</h1>
-    <p class="sub">Washington, MO</p>
-  </header>
-
-  <div class="wrap">
-    <!-- Filters -->
-    <div class="filters" id="filters-season"></div>
-    <div class="filters" id="filters-gender"></div>
-
-    <div id="teams"></div>
-  </div>
-
-  <footer>
-    <div id="websites-text"></div>
-    <div id="social-icons"></div>
-  </footer>
-
+<header>
+<h1 class="brand">St. Francis Borgia Athletics</h1>
+<p class="sub">Washington, MO</p>
+</header>
+<div class="wrap">
+<!-- Filters -->
+<div class="filters" id="filters-season"></div>
+<div class="filters" id="filters-gender"></div>
+<div id="teams"></div>
+</div>
+<footer>
+<div id="websites-text"></div>
+<div id="social-icons"></div>
+</footer>
 <script>
 /* === Published CSVs per sheet === */
 const TEAMS_CSV  = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRyUAmM6RN1RGM0conwd_6-3nRI6vHk70bpw7sfykf9GoKq_4xDDq1j_fsKrHdkbYbVnTful0z7koip/pub?gid=589028711&single=true&output=csv";
@@ -192,9 +189,9 @@ async function renderWebsitesAndSocial() {
     if (!r.Platform || !r.URL) return;
     const icon = (r.Icon || "").trim();
     if (icon) {
-      si.innerHTML += `
-        <a href="${r.URL}" target="_blank" rel="noopener" title="${r.Platform}">
-          <img src="icons/${icon}" alt="${r.Platform}" />
+      si.innerHTML += `\
+        <a href="${r.URL}" target="_blank" rel="noopener" title="${r.Platform}">\
+          <img src="${ICONS_BASE}${icon}" alt="${r.Platform}" style="height:28px;width:auto" onerror="this.onerror=null; this.src=ICONS_BASE+'link.png';">\
         </a>`;
     } else {
       wt.innerHTML += (wt.innerHTML ? " | " : "") +
