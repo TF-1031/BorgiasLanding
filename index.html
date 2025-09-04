@@ -1,51 +1,80 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Borgia Athletics Landing Page</title>
-<style>
-    body { font-family: Arial, sans-serif; margin:0; padding:0; background:#f8f9fa; }
-    header { background:#0d2b57; color:#fff; text-align:center; padding:1rem; }
-    .sport { background:#fff; margin:1rem; padding:1rem; border-radius:8px; }
-    .team-card { margin:0.5rem 0; padding:0.5rem; border:1px solid #ddd; border-radius:6px; }
-    .btn { display:inline-block; margin:0.25rem; padding:0.5rem 1rem; border-radius:6px;
-           text-decoration:none; background:#0d2b57; color:#fff; font-weight:bold; }
-    .btn.secondary { background:#f4c542; color:#000; }
-    footer { background:#eee; padding:1rem; text-align:center; }
-    .footer-link { margin:0 0.5rem; color:#0d2b57; text-decoration:none; font-weight:bold; }
-    #social-icons img { height:28px; width:auto; }
-  
-/* --- Small Theme (compact layout) --- */
-body.small header { padding:0.5rem; font-size:0.9rem; }
-body.small .sport { margin:0.5rem; padding:0.5rem; }
-body.small .team-card { margin:0.25rem 0; padding:0.25rem; font-size:0.85rem; }
-body.small .btn { padding:0.25rem 0.5rem; font-size:0.8rem; }
-body.small footer { padding:0.5rem; font-size:0.85rem; }
-
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>St. Francis Borgia Athletics</title>
+  <link href="https://fonts.googleapis.com/css2?family=Lobster&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy:#0d2b57;
+      --gold:#f4c542;
+      --ink:#12223b;
+      --bg:#f7f8fb;
+      --card:#ffffff;
+      --muted:#6b7280;
+    }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--bg); color:var(--ink); font-family:'Inter', system-ui, Arial, sans-serif; }
+    header { padding:28px 16px 18px; text-align:center; background:linear-gradient(180deg, var(--navy), #12366c 70%); color:#fff; }
+    .brand { font-family:'Lobster', cursive; font-size:42px; line-height:1; margin:0 0 4px; }
+    .sub { opacity:.9; margin:0; font-weight:600; letter-spacing:.3px; }
+    .wrap { max-width:980px; margin:0 auto; padding:18px 16px 32px; }
+    .filters { display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin:10px 0 22px; }
+    .chip { border:1px solid #d8dbe3; background:#fff; color:#0d2b57; padding:8px 12px; border-radius:999px; font-weight:600; cursor:pointer; }
+    .chip.active { background:var(--gold); color:#111; border-color:var(--gold); }
+    section.sport { background:var(--card); border:1px solid #eef0f5; border-radius:14px; padding:14px; margin:14px 0; box-shadow:0 2px 10px rgba(13,43,87,.06); }
+    section.sport h3 { margin:4px 8px 10px; font-size:18px; color:var(--navy); }
+    .grid { display:grid; gap:10px; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); }
+    .team-card { border:1px solid #e7ebf2; border-radius:12px; padding:12px; background:#fff; }
+    .team-head { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:10px; }
+    .team-head .lvl { font-weight:700; color:#0d2b57; }
+    .badges { display:flex; align-items:center; gap:8px; color:var(--muted); font-size:12px; }
+    .actions { display:flex; gap:8px; flex-wrap:wrap; }
+    .btn { text-decoration:none; display:inline-flex; align-items:center; gap:6px; padding:10px 14px; border-radius:10px; font-weight:700; border:1px solid transparent; }
+    .btn.primary { background:var(--navy); color:#fff; }
+    .btn.primary:hover { filter:brightness(1.04); }
+    .btn.secondary { background:#fff; border-color:#dbe1ea; color:var(--navy); }
+    .btn.secondary:hover { background:#f5f7fb; }
+    footer { padding:20px 12px 36px; text-align:center; color:#4b5563; }
+    #websites-text { margin:8px 0 6px; display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+    #websites-text a { color:var(--navy); font-weight:700; text-decoration:none; }
+    #social-icons { display:flex; justify-content:center; gap:12px; flex-wrap:wrap; }
+    #social-icons img { height:28px; width:auto; display:block; }
+    /* Small/compact theme */
+    body.small header { padding:16px 8px; }
+    body.small .brand { font-size:32px; }
+    body.small .wrap { padding:8px 8px 24px; }
+    body.small .grid { grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:8px; }
+    body.small .btn { padding:8px 12px; }
+  </style>
 </head>
 <body>
-<header>
-<h1>St. Francis Borgia Athletics</h1>
-<p>Washington, MO</p>
-</header>
-<main>
-<div id="teams"></div>
-</main>
-<footer>
-<div id="websites-text"></div>
-<div id="social-icons"></div>
-</footer>
+  <header>
+    <h1 class="brand">St. Francis Borgia Athletics</h1>
+    <p class="sub">Washington, MO</p>
+  </header>
+
+  <div class="wrap">
+    <!-- Filters (Season) -->
+    <div class="filters" id="filters-season"></div>
+    <!-- Filters (Gender) -->
+    <div class="filters" id="filters-gender"></div>
+
+    <div id="teams"></div>
+  </div>
+
+  <footer>
+    <div id="websites-text"></div>
+    <div id="social-icons"></div>
+  </footer>
 
 <script>
-
-/* === CONFIG: published CSV URLs for each sheet === */
+/* === Published CSVs per sheet === */
 const TEAMS_CSV  = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRyUAmM6RN1RGM0conwd_6-3nRI6vHk70bpw7sfykf9GoKq_4xDDq1j_fsKrHdkbYbVnTful0z7koip/pub?gid=589028711&single=true&output=csv";
 const SOCIAL_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRyUAmM6RN1RGM0conwd_6-3nRI6vHk70bpw7sfykf9GoKq_4xDDq1j_fsKrHdkbYbVnTful0z7koip/pub?gid=1519782147&single=true&output=csv";
 
-/* --- helpers --- */
+/* ---------- helpers ---------- */
 async function fetchCSV(url) {
   const res = await fetch(url, { cache: "no-store" });
   if (!res.ok) throw new Error(`HTTP ${res.status} for ${url}`);
@@ -61,47 +90,93 @@ function csvToObjects(csv) {
   return rows.map(r => Object.fromEntries(headers.map((h,i)=>[h, r[i] ?? ""])));
 }
 
-function showError(msg) {
-  const box = document.createElement("div");
-  box.style.cssText = "margin:1rem;color:#8b1c1c;background:#fdecea;border:1px solid #f5c6cb;padding:.75rem;border-radius:6px";
-  box.textContent = msg;
-  document.querySelector("main").prepend(box);
+function el(tag, attrs={}, html="") {
+  const n = document.createElement(tag);
+  Object.entries(attrs).forEach(([k,v]) => n.setAttribute(k, v));
+  if (html) n.innerHTML = html;
+  return n;
 }
 
-/* --- render TEAMS (expects: Season, Gender, Sport, Level, URL, MessageURL) --- */
-async function renderTeams() {
-  const data = await fetchCSV(TEAMS_CSV);
-  const bySport = {};
-  data.forEach(row => {
-    if (!row.Sport || !row.Level || !row.URL) return;
-    const key = `${row.Gender ? row.Gender + " " : ""}${row.Sport}`.trim();
-    (bySport[key] ||= []).push(row);
-  });
+/* ---------- filters ---------- */
+const STATE = { season:"All", gender:"All" };
+const SEASONS = ["All","Fall","Winter","Spring","All Year"];
+const GENDERS = ["All","Boys","Girls","Coed"];
 
+function renderFilters() {
+  const fs = document.getElementById("filters-season");
+  const fg = document.getElementById("filters-gender");
+  fs.innerHTML = ""; fg.innerHTML = "";
+  SEASONS.forEach(s => {
+    const b = el("button", { class: "chip" + (STATE.season===s?" active":"") }, s);
+    b.onclick = ()=>{ STATE.season=s; renderTeamsUI(); renderFilters(); };
+    fs.appendChild(b);
+  });
+  GENDERS.forEach(g => {
+    const b = el("button", { class: "chip" + (STATE.gender===g?" active":"") }, g);
+    b.onclick = ()=>{ STATE.gender=g; renderTeamsUI(); renderFilters(); };
+    fg.appendChild(b);
+  });
+}
+
+/* ---------- data + render ---------- */
+let TEAMS_DATA = [];
+
+function groupBySport(items) {
+  const by = {};
+  items.forEach(r => {
+    const sportKey = `${r.Gender ? r.Gender + " " : ""}${r.Sport}`.trim();
+    (by[sportKey] ||= []).push(r);
+  });
+  return by;
+}
+
+function renderTeamsUI() {
   const wrap = document.getElementById("teams");
   wrap.innerHTML = "";
+  const filtered = TEAMS_DATA.filter(r => 
+    (STATE.season==="All" || r.Season===STATE.season) &&
+    (STATE.gender==="All" || r.Gender===STATE.gender)
+  );
+
+  const bySport = groupBySport(filtered);
   Object.entries(bySport).forEach(([sport, rows]) => {
-    const section = document.createElement("section");
-    section.className = "sport";
-    section.innerHTML = `<h3>${sport}</h3>`;
+    const sec = el("section", { class:"sport" });
+    sec.appendChild(el("h3", {}, sport));
+    const grid = el("div", { class:"grid" });
+    rows.sort((a,b)=> (a.Level||"").localeCompare(b.Level||""));
     rows.forEach(r => {
-      const card = document.createElement("div");
-      card.className = "team-card";
-      card.innerHTML = `
-        <div><strong>${r.Level}</strong></div>
-        <div class="actions">
-          <a class="btn" href="${r.URL}" target="_blank" rel="noopener">📅 View / Subscribe</a>
-          ${r.MessageURL ? `<a class="btn secondary" href="${r.MessageURL}" target="_blank" rel="noopener">💬 Messages</a>` : ""}
-        </div>`;
-      section.appendChild(card);
+      if (!r.Sport || !r.Level || !r.URL) return;
+      const card = el("div", { class:"team-card" });
+      const head = el("div", { class:"team-head" }, `
+        <span class="lvl">${r.Level}</span>
+        <span class="badges"><span>${r.Season || ""}</span></span>
+      `);
+      const actions = el("div", { class:"actions" });
+      actions.innerHTML = `
+        <a class="btn primary" href="${r.URL}" target="_blank" rel="noopener">📅 View / Subscribe</a>
+        ${r.MessageURL ? `<a class="btn secondary" href="${r.MessageURL}" target="_blank" rel="noopener">💬 Messages</a>` : ""}
+      `;
+      card.appendChild(head);
+      card.appendChild(actions);
+      grid.appendChild(card);
     });
-    wrap.appendChild(section);
+    sec.appendChild(grid);
+    wrap.appendChild(sec);
   });
 
-  if (!Object.keys(bySport).length) showError("No team rows found. Check the Teams sheet headers and that URLs are filled.");
+  if (!filtered.length) {
+    const warn = el("div", {}, "No team rows found for the selected filters.");
+    warn.style.cssText = "margin:1rem;color:#8b1c1c;background:#fdecea;border:1px solid #f5c6cb;padding:.75rem;border-radius:6px";
+    wrap.appendChild(warn);
+  }
 }
 
-/* --- render WEBSITES/SOCIAL (expects: Platform, URL, Icon [optional]) --- */
+async function renderTeams() {
+  TEAMS_DATA = await fetchCSV(TEAMS_CSV);
+  renderFilters();
+  renderTeamsUI();
+}
+
 async function renderWebsitesAndSocial() {
   const data = await fetchCSV(SOCIAL_CSV);
   const wt = document.getElementById("websites-text");
@@ -114,7 +189,7 @@ async function renderWebsitesAndSocial() {
     if (icon) {
       si.innerHTML += `
         <a href="${r.URL}" target="_blank" rel="noopener" title="${r.Platform}">
-          <img src="icons/${icon}" alt="${r.Platform}" style="height:28px;width:auto" />
+          <img src="icons/${icon}" alt="${r.Platform}" />
         </a>`;
     } else {
       wt.innerHTML += (wt.innerHTML ? " | " : "") +
@@ -123,15 +198,17 @@ async function renderWebsitesAndSocial() {
   });
 }
 
-/* --- init --- */
-(async function init(){
+(async function init() {
   try {
     await Promise.all([renderTeams(), renderWebsitesAndSocial()]);
-  } catch (err) {
-    console.error(err);
-    showError("Could not load data from Google Sheets. Make sure each sheet is published as CSV and the URLs are correct.");
+  } catch (e) {
+    console.error(e);
+    const wrap = document.getElementById("teams");
+    const warn = el("div", {}, "Could not load data from Google Sheets. Check that both tabs are Published as CSV.");
+    warn.style.cssText = "margin:1rem;color:#8b1c1c;background:#fdecea;border:1px solid #f5c6cb;padding:.75rem;border-radius:6px";
+    wrap.appendChild(warn);
   }
 })();
-
-</script></body>
+</script>
+</body>
 </html>
