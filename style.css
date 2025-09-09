@@ -1,0 +1,88 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #f8f9fa;
+  color: #2e2e2e;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+header {
+  background: #002855;
+  color: white;
+  padding: 1rem;
+}
+header .title {
+  font-family: 'Lobster', cursive;
+  font-size: 2.5rem;
+  margin: 0.5rem 0 0;
+}
+.logo {
+  max-width: 120px;
+}
+.chips {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin: 1rem 0;
+}
+.chip {
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  background: #ccc;
+  cursor: pointer;
+}
+.chip.active {
+  background: gold;
+  color: #002855;
+  font-weight: bold;
+}
+.teams-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+  padding: 1rem;
+}
+.team-card {
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 2px 2px 6px rgba(0,0,0,0.1);
+}
+.team-card h3 {
+  margin-top: 0;
+}
+.team-card .buttons {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 1rem;
+}
+.team-card button {
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.subscribe-btn {
+  background: #005baa;
+  color: white;
+}
+.message-btn {
+  background: #ffc107;
+  color: #002855;
+}
+footer {
+  background: #002855;
+  color: white;
+  padding: 1rem;
+}
+.social-icons img {
+  height: 28px;
+  margin: 0 0.5rem;
+}
+.footer-links a {
+  color: white;
+  margin: 0 0.5rem;
+  text-decoration: none;
+}

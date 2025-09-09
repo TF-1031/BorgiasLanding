@@ -1,216 +1,33 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1" name="viewport"/>
-<title>St. Francis Borgia Athletics</title>
-<link href="https://fonts.googleapis.com/css2?family=Lobster&amp;family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
-<style>
-    :root { --navy:#0d2b57; --gold:#f4c542; --ink:#12223b; --bg:#f7f8fb; --card:#ffffff; --muted:#6b7280; }
-    * { box-sizing:border-box; }
-    body { margin:0; background:var(--bg); color:var(--ink); font-family:'Inter', system-ui, Arial, sans-serif; }
-    header { padding:28px 16px 18px; text-align:center; background:linear-gradient(180deg, var(--navy), #12366c 70%); color:#fff; }
-    .brand { font-family:'Lobster', cursive; font-size:42px; line-height:1; margin:0 0 4px; }
-    .sub { opacity:.9; margin:0; font-weight:600; letter-spacing:.3px; }
-    .wrap { max-width:980px; margin:0 auto; padding:18px 16px 32px; }
-    .filters { display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin:10px 0 22px; }
-    .chip { border:1px solid #d8dbe3; background:#fff; color:#0d2b57; padding:8px 12px; border-radius:999px; font-weight:600; cursor:pointer; }
-    .chip.active { background:var(--gold); color:#111; border-color:var(--gold); }
-    section.sport { background:var(--card); border:1px solid #eef0f5; border-radius:14px; padding:14px; margin:14px 0; box-shadow:0 2px 10px rgba(13,43,87,.06); }
-    section.sport h3 { margin:4px 8px 10px; font-size:18px; color:var(--navy); }
-    .grid { display:grid; gap:10px; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); }
-    .team-card { border:1px solid #e7ebf2; border-radius:12px; padding:12px; background:#fff; }
-    .team-head { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:10px; }
-    .team-head .lvl { font-weight:700; color:#0d2b57; }
-    .badges { display:flex; align-items:center; gap:8px; color:var(--muted); font-size:12px; }
-    .actions { display:flex; gap:8px; flex-wrap:wrap; }
-    .btn { text-decoration:none; display:inline-flex; align-items:center; gap:6px; padding:10px 14px; border-radius:10px; font-weight:700; border:1px solid transparent; }
-    .btn.primary { background:var(--navy); color:#fff; }
-    .btn.primary:hover { filter:brightness(1.04); }
-    .btn.secondary { background:#fff; border-color:#dbe1ea; color:var(--navy); }
-    .btn.secondary:hover { background:#f5f7fb; }
-    footer { padding:20px 12px 36px; text-align:center; color:#4b5563; }
-    #websites-text { margin:8px 0 6px; display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
-    #websites-text a { color:var(--navy); font-weight:700; text-decoration:none; }
-    #social-icons { display:flex; justify-content:center; gap:12px; flex-wrap:wrap; }
-    #social-icons img { height:28px; width:auto; display:block; }
-    /* Small theme */
-    body.small header { padding:16px 8px; }
-    body.small .brand { font-size:32px; }
-    body.small .wrap { padding:8px 8px 24px; }
-    body.small .grid { grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:8px; }
-    body.small .btn { padding:8px 12px; }
-  </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Borgia Landing Page</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
 </head>
 <body>
-<header>
-<h1 class="brand">St. Francis Borgia Athletics</h1>
-<p class="sub">Washington, MO</p>
-</header>
-<div class="wrap">
-<!-- Filters -->
-<div class="filters" id="filters-season"></div>
-<div class="filters" id="filters-gender"></div>
-<div id="teams"></div>
-</div>
-<footer>
-<div id="websites-text"></div>
-<div id="social-icons"></div>
-</footer>
-<script>
-/* === Published CSVs per sheet === */
-const TEAMS_CSV  = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRyUAmM6RN1RGM0conwd_6-3nRI6vHk70bpw7sfykf9GoKq_4xDDq1j_fsKrHdkbYbVnTful0z7koip/pub?gid=589028711&single=true&output=csv";
-const SOCIAL_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRyUAmM6RN1RGM0conwd_6-3nRI6vHk70bpw7sfykf9GoKq_4xDDq1j_fsKrHdkbYbVnTful0z7koip/pub?gid=1519782147&single=true&output=csv";
+  <header>
+    <img src="images/Borgia_Athletics_Logo.png" alt="Borgia Athletics Logo" class="logo">
+    <h1 class="title">St. Francis Borgia Athletics Hub</h1>
+  </header>
 
-/* ---------- helpers ---------- */
-async function fetchCSV(url) {
-  const res = await fetch(url, { cache: "no-store" });
-  if (!res.ok) throw new Error(`HTTP ${res.status} for ${url}`);
-  const text = await res.text();
-  return csvToObjects(text);
-}
+  <section class="filters">
+    <div class="chips" id="seasonChips"></div>
+    <div class="chips" id="genderChips"></div>
+  </section>
 
-function csvToObjects(csv) {
-  const rows = csv.trim().split(/\r?\n/).map(r =>
-    r.split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/).map(c => c.replace(/^"|"$/g, "").trim())
-  );
-  const headers = rows.shift() || [];
-  return rows.map(r => Object.fromEntries(headers.map((h,i)=>[h, r[i] ?? ""])));
-}
+  <main>
+    <div id="teamsContainer" class="teams-container"></div>
+  </main>
 
-function el(tag, attrs={}, html="") {
-  const n = document.createElement(tag);
-  Object.entries(attrs).forEach(([k,v]) => n.setAttribute(k, v));
-  if (html) n.innerHTML = html;
-  return n;
-}
+  <footer>
+    <div id="social-icons" class="social-icons"></div>
+    <div id="websites-text" class="footer-links"></div>
+    <p class="footer-note">© 2025 St. Francis Borgia Athletics</p>
+  </footer>
 
-/* ---------- filters ---------- */
-const STATE = { season:null, gender:null };
-const SEASONS = ["Fall","Winter","Spring"];
-const GENDERS = ["Boys","Girls"];
-
-function renderFilters() {
-  const fs = document.getElementById("filters-season");
-  const fg = document.getElementById("filters-gender");
-  fs.innerHTML = ""; fg.innerHTML = "";
-
-  SEASONS.forEach(s => {
-    const active = STATE.season===s;
-    const b = el("button", { class: "chip" + (active ? " active" : "") }, s);
-    b.onclick = ()=>{ STATE.season = active ? null : s; renderTeamsUI(); renderFilters(); };
-    fs.appendChild(b);
-  });
-
-  GENDERS.forEach(g => {
-    const active = STATE.gender===g;
-    const b = el("button", { class: "chip" + (active ? " active" : "") }, g);
-    b.onclick = ()=>{ STATE.gender = active ? null : g; renderTeamsUI(); renderFilters(); };
-    fg.appendChild(b);
-  });
-}
-
-/* ---------- data + render ---------- */
-let TEAMS_DATA = [];
-
-function groupBySport(items) {
-  const by = {};
-  items.forEach(r => {
-    // Do not prefix "Coed" before teams
-    const prefix = (r.Gender && r.Gender.toLowerCase() !== "coed") ? (r.Gender + " ") : "";
-    const sportKey = (prefix + (r.Sport || "")).trim();
-    (by[sportKey] ||= []).push(r);
-  });
-  return by;
-}
-
-function renderTeamsUI() {
-  const wrap = document.getElementById("teams");
-  wrap.innerHTML = "";
-  const filtered = TEAMS_DATA.filter(r => {
-    const season = (r.Season || "").trim();
-    const gender = (r.Gender || "").trim();
-
-    // Season: blank = All Year; show All Year items in every seasonal view
-    const seasonOK = (STATE.season==null) || (season === STATE.season) || (season === "");
-
-    // Gender: only Boys/Girls filters visible; treat Coed as both
-    const genderOK = (STATE.gender==null) || (gender === STATE.gender) || (gender.toLowerCase() === "coed");
-    return seasonOK && genderOK;
-  });
-
-  const bySport = groupBySport(filtered);
-  Object.entries(bySport).forEach(([sport, rows]) => {
-    const sec = el("section", { class:"sport" });
-    sec.appendChild(el("h3", {}, sport));
-    const grid = el("div", { class:"grid" });
-    rows.sort((a,b)=> (a.Level||"").localeCompare(b.Level||""));
-    rows.forEach(r => {
-      if (!r.Sport || !r.Level || !r.URL) return;
-      const card = el("div", { class:"team-card" });
-      const head = el("div", { class:"team-head" }, `
-        <span class="lvl">${r.Level}</span>
-        <span class="badges"><span>${ (r.Season||'') || 'All Year' }</span></span>
-      `);
-      const actions = el("div", { class:"actions" });
-      actions.innerHTML = `
-        <a class="btn primary" href="${r.URL}" target="_blank" rel="noopener">📅 View / Subscribe</a>
-        ${r.MessageURL ? `<a class="btn secondary" href="${r.MessageURL}" target="_blank" rel="noopener">💬 Messages</a>` : ""}
-      `;
-      card.appendChild(head);
-      card.appendChild(actions);
-      grid.appendChild(card);
-    });
-    sec.appendChild(grid);
-    wrap.appendChild(sec);
-  });
-
-  if (!filtered.length) {
-    const warn = el("div", {}, "No team rows found for the selected filters.");
-    warn.style.cssText = "margin:1rem;color:#8b1c1c;background:#fdecea;border:1px solid #f5c6cb;padding:.75rem;border-radius:6px";
-    wrap.appendChild(warn);
-  }
-}
-
-async function renderTeams() {
-  TEAMS_DATA = await fetchCSV(TEAMS_CSV);
-  renderFilters();
-  renderTeamsUI();
-}
-
-async function renderWebsitesAndSocial() {
-  const data = await fetchCSV(SOCIAL_CSV);
-  const wt = document.getElementById("websites-text");
-  const si = document.getElementById("social-icons");
-  wt.innerHTML = ""; si.innerHTML = "";
-
-  data.forEach(r => {
-    if (!r.Platform || !r.URL) return;
-    const icon = (r.Icon || "").trim();
-    if (icon) {
-      si.innerHTML += `\
-        <a href="${r.URL}" target="_blank" rel="noopener" title="${r.Platform}">\
-          <img src="${ICONS_BASE}${icon}" alt="${r.Platform}" style="height:28px;width:auto" onerror="this.onerror=null; this.src=ICONS_BASE+'link.png';">\
-        </a>`;
-    } else {
-      wt.innerHTML += (wt.innerHTML ? " | " : "") +
-        `<a class="footer-link" href="${r.URL}" target="_blank" rel="noopener">${r.Platform}</a>`;
-    }
-  });
-}
-
-(async function init() {
-  try {
-    await Promise.all([renderTeams(), renderWebsitesAndSocial()]);
-  } catch (e) {
-    console.error(e);
-    const wrap = document.getElementById("teams");
-    const warn = el("div", {}, "Could not load data from Google Sheets. Check that both tabs are Published as CSV.");
-    warn.style.cssText = "margin:1rem;color:#8b1c1c;background:#fdecea;border:1px solid #f5c6cb;padding:.75rem;border-radius:6px";
-    wrap.appendChild(warn);
-  }
-})();
-</script>
+  <script src="script.js"></script>
 </body>
 </html>

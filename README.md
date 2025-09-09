@@ -1,54 +1,25 @@
-# Borgia Athletics Landing Page
+# Borgia Landing Page
 
-This package contains a simple landing page that pulls team schedules and social/website links from a published Google Sheet.
+This is a live landing page for **St. Francis Borgia Athletics**.
 
-## Contents
-- `index.html` — main landing page
-- `icons/` — folder with placeholder PNG icons (`facebook.png`, `instagram.png`, `x.png`, `hudl.png`, `link.png`). Replace with your actual graphics.
+## How It Works
+- Data comes directly from Google Sheets (CSV publish links).
+- `Teams` sheet → renders team cards with buttons.
+- `Websites-Social` sheet → renders footer icons and hotlinks.
 
-## Google Sheet Setup
-The page is connected to this published Google Sheet:
-- Sheet tab **Teams** — columns: `Season, Gender, Sport, Level, URL, MessageURL`
-- Sheet tab **Websites-Social** — columns: `Platform, URL`
+## Updating Data
+1. Open the Google Sheet.
+2. Update team info (iCal, Message links, Season, Gender).
+3. Update social media / website links.
+4. Publish changes.
+5. The site updates automatically.
 
-### Teams Tab
-Use one row per team level (e.g., Boys Basketball Varsity).  
-- `URL` = iCal feed or schedule link  
-- `MessageURL` = optional (TeamSnap, Remind, GroupMe, etc.)
+## Deploying
+- Upload files to GitHub repo.
+- Go to **Settings → Pages**.
+- Select branch (main) and root.
+- Site will be live at `https://username.github.io/borgia-landing/`.
 
-### Websites-Social Tab
-- Include rows for `MSHSAA` and `Borgia Athletics` (these will appear as text links in the footer).  
-- Social platforms (Facebook, Instagram, X (Twitter), Hudl) will render as icons from the `icons/` folder.
-
-## Hosting Instructions
-1. Upload `index.html` and the `icons/` folder to your web server.  
-2. Replace placeholder icons in `/icons` with actual PNGs.  
-3. Ensure your Google Sheet remains published to the web (File → Share → Publish to web).  
-4. Families can visit the page, click team links, and subscribe to calendars or access social platforms.
-
-## Updating
-- Update the Google Sheet (Teams or Websites-Social tab).  
-- Changes appear automatically on the landing page after refresh — no need to edit HTML.
-
-
-
-## Optional: Icon column (Websites-Social)
-If you add an `Icon` column to the **Websites-Social** sheet:
-- If `Icon` has a filename (e.g., `facebook.png`), the page will show that icon from `/icons/`.
-- If `Icon` is blank, the page will show the Platform name as a text link.
-
-See `sample-sheets/Websites-Social.csv` for an example with icons specified.
-
-## Sample CSVs
-- `sample-sheets/Teams.csv` — copy into your Google Sheet tab named **Teams**.
-- `sample-sheets/Websites-Social.csv` — copy into your tab named **Websites-Social**.
-
-
-## Small Theme Option
-Add the class `small` to the `<body>` tag in `index.html` to switch to a compact layout:
-
-```html
-<body class="small">
-```
-
-This reduces padding, font sizes, and button spacing for a denser view.
+## Customizing
+- Replace `/images/Borgia_Athletics_Logo.png` with your school logo.
+- Replace icons in `/icons/` with branded versions.
