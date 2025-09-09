@@ -3,7 +3,9 @@ const SOCIAL_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRyUAmM6RN1R
 
 function parseCSV(text) {
   const [header, ...rows] = text.trim().split(/\r?\n/).map(r => r.split(","));
-  return rows.map(r => Object.fromEntries(header.map((h, i) => [h.trim(), r[i] ? r[i].trim() : ""])));
+  return rows.map(r =>
+    Object.fromEntries(header.map((h, i) => [h.trim(), r[i] ? r[i].trim() : ""]))
+  );
 }
 
 async function fetchCSV(url) {
@@ -25,18 +27,24 @@ function renderChips(season) {
   const genderChips = ["Boys", "Girls"];
   const seasonEl = document.getElementById("seasonChips");
   const genderEl = document.getElementById("genderChips");
-  seasonEl.innerHTML = seasonChips.map(s => `<div class="chip ${s===season?'active':''}" data-type="season" data-value="${s}">${s}</div>`).join("");
-  genderEl.innerHTML = genderChips.map(g => `<div class="chip" data-type="gender" data-value="${g}">${g}</div>`).join("");
+  seasonEl.innerHTML = seasonChips
+    .map(s => `<div class="chip ${s === season ? "active" : ""}" data-type="season" data-value="${s}">${s}</div>`)
+    .join("");
+  genderEl.innerHTML = genderChips
+    .map(g => `<div class="chip" data-type="gender" data-value="${g}">${g}</div>`)
+    .join("");
 
-  document.querySelectorAll(".chip").forEach(chip => chip.addEventListener("click", () => {
-    if (chip.dataset.type === "season") {
-      document.querySelectorAll("#seasonChips .chip").forEach(c => c.classList.remove("active"));
-    } else {
-      document.querySelectorAll("#genderChips .chip").forEach(c => c.classList.remove("active"));
-    }
-    chip.classList.add("active");
-    renderTeams();
-  }));
+  document.querySelectorAll(".chip").forEach(chip =>
+    chip.addEventListener("click", () => {
+      if (chip.dataset.type === "season") {
+        document.querySelectorAll("#seasonChips .chip").forEach(c => c.classList.remove("active"));
+      } else {
+        document.querySelectorAll("#genderChips .chip").forEach(c => c.classList.remove("active"));
+      }
+      chip.classList.add("active");
+      renderTeams();
+    })
+  );
 }
 
 let teamsData = [];
@@ -45,16 +53,25 @@ async function renderTeams() {
   const gender = document.querySelector("#genderChips .chip.active")?.dataset.value;
   const container = document.getElementById("teamsContainer");
   container.innerHTML = "";
+
   teamsData.forEach(team => {
     if (season && team.Season && team.Season !== season && team.Season !== "All") return;
     if (gender && team.Gender && team.Gender !== gender) return;
-    container.innerHTML += `<div class="team-card">
-      <h3>${team.Team}</h3>
-      <div class="buttons">
-        <a href="${team.MessageLink||'#'}" target="_blank"><button class="message-btn">💬 Message</button></a>
-        <a href="${team.iCal||'#'}" target="_blank"><button class="subscribe-btn">📅 Subscribe</button></a>
-      </div>
-    </div>`;
+
+    const teamName = `${team.Gender || ""} ${team.Sport || ""} ${team.Level || ""}`.trim();
+
+    container.innerHTML += `
+      <div class="team-card">
+        <h3>${teamName}</h3>
+        <div class="buttons">
+          <a href="${team["Team Messaging URL"] || '#'}" target="_blank">
+            <button class="message-btn">💬 Message</button>
+          </a>
+          <a href="${team["ics-URL"] || '#'}" target="_blank">
+            <button class="subscribe-btn">📅 Subscribe</button>
+          </a>
+        </div>
+      </div>`;
   });
 }
 
@@ -63,12 +80,18 @@ async function renderSocial() {
   const si = document.getElementById("social-icons");
   const wt = document.getElementById("websites-text");
   si.innerHTML = ""; wt.innerHTML = "";
+
   data.forEach(r => {
     if (!r.Platform || !r.URL) return;
-    const icon = r.Icon ? r.Icon.trim() : "";
-    if (icon) {
-      si.innerHTML += `<a href="${r.URL}" target="_blank"><img src="icons/${icon}" alt="${r.Platform}" onerror="this.onerror=null;this.src='icons/link.png';"></a>`;
-    } else {
+
+    // If icon is provided, use local icons folder
+    if (r.Icon) {
+      si.innerHTML += `<a href="${r.URL}" target="_blank">
+        <img src="icons/${r.Icon}" alt="${r.Platform}" onerror="this.onerror=null;this.src='icons/link.png';">
+      </a>`;
+    }
+    // Else just fallback to text link
+    else {
       wt.innerHTML += `<a href="${r.URL}" target="_blank">${r.Platform}</a>`;
     }
   });
