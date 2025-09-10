@@ -1,96 +1,33 @@
-<script>
-/* === CONFIG: paste your two published CSV URLs here ===
-   In Google Sheets: File → Share → Publish to web → select each sheet → CSV
-   Copy each link and paste below.
-*/
-const TEAMS_CSV  = "PASTE_TEAMS_CSV_URL_HERE";
-const SOCIAL_CSV = "PASTE_WEBSITES_SOCIAL_CSV_URL_HERE";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Borgia Landing Page</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/x-icon" href="images/favicon.ico">
+  <link rel="apple-touch-icon" href="images/app-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Borgia Athletics">
+  <script defer src="script.js"></script>
+</head>
+<body>
+  <header>
+    <img src="images/Borgia_Athletics_Logo.png" id="logo" alt="Borgia Knights Logo">
+    <h1>St. Francis Borgia Athletics Hub</h1>
+    <h2>Washington, MO</h2>
+  </header>
 
-/* --- helpers --- */
-async function fetchCSV(url) {
-  const res = await fetch(url, { cache: "no-store" });
-  if (!res.ok) throw new Error(`HTTP ${res.status} for ${url}`);
-  const text = await res.text();
-  return csvToObjects(text);
-}
+  <main id="team-container"></main>
 
-function csvToObjects(csv) {
-  const rows = csv.trim().split(/\r?\n/).map(r =>
-    r.split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/).map(c => c.replace(/^"|"$/g, "").trim())
-  );
-  const headers = rows.shift() || [];
-  return rows.map(r => Object.fromEntries(headers.map((h,i)=>[h, r[i] ?? ""])));
-}
-
-function showError(msg) {
-  const box = document.createElement("div");
-  box.style.cssText = "margin:1rem;color:#8b1c1c;background:#fdecea;border:1px solid #f5c6cb;padding:.75rem;border-radius:6px";
-  box.textContent = msg;
-  document.querySelector("main").prepend(box);
-}
-
-/* --- render TEAMS (expects: Season, Gender, Sport, Level, URL, MessageURL) --- */
-async function renderTeams() {
-  const data = await fetchCSV(TEAMS_CSV);
-  const bySport = {};
-  data.forEach(row => {
-    if (!row.Sport || !row.Level || !row.URL) return;
-    const key = `${row.Gender ? row.Gender + " " : ""}${row.Sport}`.trim();
-    (bySport[key] ||= []).push(row);
-  });
-
-  const wrap = document.getElementById("teams");
-  wrap.innerHTML = "";
-  Object.entries(bySport).forEach(([sport, rows]) => {
-    const section = document.createElement("section");
-    section.className = "sport";
-    section.innerHTML = `<h3>${sport}</h3>`;
-    rows.forEach(r => {
-      const card = document.createElement("div");
-      card.className = "team-card";
-      card.innerHTML = `
-        <div><strong>${r.Level}</strong></div>
-        <div class="actions">
-          <a class="btn" href="${r.URL}" target="_blank" rel="noopener">📅 View / Subscribe</a>
-          ${r.MessageURL ? `<a class="btn secondary" href="${r.MessageURL}" target="_blank" rel="noopener">💬 Messages</a>` : ""}
-        </div>`;
-      section.appendChild(card);
-    });
-    wrap.appendChild(section);
-  });
-
-  if (!Object.keys(bySport).length) showError("No team rows found. Check the Teams sheet headers and that URLs are filled.");
-}
-
-/* --- render WEBSITES/SOCIAL (expects: Platform, URL, Icon [optional]) --- */
-async function renderWebsitesAndSocial() {
-  const data = await fetchCSV(SOCIAL_CSV);
-  const wt = document.getElementById("websites-text");
-  const si = document.getElementById("social-icons");
-  wt.innerHTML = ""; si.innerHTML = "";
-
-  data.forEach(r => {
-    if (!r.Platform || !r.URL) return;
-    const icon = (r.Icon || "").trim();
-    if (icon) {
-      si.innerHTML += `
-        <a href="${r.URL}" target="_blank" rel="noopener" title="${r.Platform}">
-          <img src="icons/${icon}" alt="${r.Platform}" style="height:28px;width:auto" />
-        </a>`;
-    } else {
-      wt.innerHTML += (wt.innerHTML ? " | " : "") +
-        `<a class="footer-link" href="${r.URL}" target="_blank" rel="noopener">${r.Platform}</a>`;
-    }
-  });
-}
-
-/* --- init --- */
-(async function init(){
-  try {
-    await Promise.all([renderTeams(), renderWebsitesAndSocial()]);
-  } catch (err) {
-    console.error(err);
-    showError("Could not load data from Google Sheets. Make sure each sheet is published as CSV and the URLs are correct.");
-  }
-})();
-</script>
+  <footer>
+    <div id="social-icons"></div>
+    <p>
+      <a href="https://www.mshsaa.org/myschool/?s=544" target="_blank">MSHAA</a> |
+      <a href="https://www.borgia.com/athletics/borgia-athletics" target="_blank">Borgia Athletics</a>
+    </p>
+  </footer>
+</body>
+</html>
