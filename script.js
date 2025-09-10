@@ -1,106 +1,109 @@
 const TEAMS_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRyUAmM6RN1RGM0conwd_6-3nRI6vHk70bpw7sfykf9GoKq_4xDDq1j_fsKrHdkbYbVnTful0z7koip/pub?gid=589028711&single=true&output=csv";
-const SOCIAL_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRyUAmM6RN1RGM0conwd_6-3nRI6vHk70bpw7sfykf9GoKq_4xDDq1j_fsKrHdkbYbVnTful0z7koip/pub?gid=1519782147&single=true&output=csv";
+const SOCIALS_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRyUAmM6RN1RGM0conwd_6-3nRI6vHk70bpw7sfykf9GoKq_4xDDq1j_fsKrHdkbYbVnTful0z7koip/pub?gid=1519782147&single=true&output=csv";
 
-function parseCSV(text) {
-  const [header, ...rows] = text.trim().split(/\r?\n/).map(r => r.split(","));
-  return rows.map(r =>
-    Object.fromEntries(header.map((h, i) => [h.trim(), r[i] ? r[i].trim() : ""]))
-  );
-}
+document.getElementById("logo").addEventListener("click", () => location.reload());
 
 async function fetchCSV(url) {
   const res = await fetch(url);
-  return parseCSV(await res.text());
+  const text = await res.text();
+  return text.split("\n").map(r => r.split(","));
 }
 
-function getCurrentSeason() {
-  const today = new Date();
-  const month = today.getMonth() + 1;
-  const day = today.getDate();
-  if (month >= 8 && month <= 11) return "Fall";
-  if (month === 12 || month <= 3 || (month === 3 && day <= 15)) return "Winter";
-  return "Spring";
-}
+function buildTeams(data) {
+  const container = document.getElementById("team-container");
+  const headers = data[0];
+  data.slice(1).forEach(row => {
+    const team = {};
+    headers.forEach((h, i) => team[h.trim()] = row[i] || "");
+    if (!team.Sport) return;
 
-function renderChips(season) {
-  const seasonChips = ["Fall", "Winter", "Spring"];
-  const genderChips = ["Boys", "Girls"];
-  const seasonEl = document.getElementById("seasonChips");
-  const genderEl = document.getElementById("genderChips");
-  seasonEl.innerHTML = seasonChips
-    .map(s => `<div class="chip ${s === season ? "active" : ""}" data-type="season" data-value="${s}">${s}</div>`)
-    .join("");
-  genderEl.innerHTML = genderChips
-    .map(g => `<div class="chip" data-type="gender" data-value="${g}">${g}</div>`)
-    .join("");
+    const chip = document.createElement("div");
+    chip.className = "team-chip";
 
-  document.querySelectorAll(".chip").forEach(chip =>
-    chip.addEventListener("click", () => {
-      if (chip.dataset.type === "season") {
-        document.querySelectorAll("#seasonChips .chip").forEach(c => c.classList.remove("active"));
-      } else {
-        document.querySelectorAll("#genderChips .chip").forEach(c => c.classList.remove("active"));
-      }
-      chip.classList.add("active");
-      renderTeams();
-    })
-  );
-}
+    const nameDiv = document.createElement("div");
+    nameDiv.className = "team-name";
+    nameDiv.textContent = `${team.Gender ? team.Gender + " " : ""}${team.Sport} ${team.Level || ""}`.trim();
+    chip.appendChild(nameDiv);
 
-let teamsData = [];
-async function renderTeams() {
-  const season = document.querySelector("#seasonChips .chip.active")?.dataset.value;
-  const gender = document.querySelector("#genderChips .chip.active")?.dataset.value;
-  const container = document.getElementById("teamsContainer");
-  container.innerHTML = "";
+    if (team.Gender && team.Gender !== "Coed") {
+      const left = document.createElement("div");
+      left.className = "corner-label corner-left";
+      left.textContent = team.Gender;
+      chip.appendChild(left);
+    }
+    if (team.Level) {
+      const right = document.createElement("div");
+      right.className = "corner-label corner-right";
+      right.textContent = team.Level;
+      chip.appendChild(right);
+    }
 
-  teamsData.forEach(team => {
-    if (season && team.Season && team.Season !== season && team.Season !== "All") return;
-    if (gender && team.Gender && team.Gender !== gender) return;
+    const iconsDiv = document.createElement("div");
+    iconsDiv.className = "icon-buttons";
+    if (team["Team Messaging URL"]) {
+      const msg = document.createElement("a");
+      msg.href = team["Team Messaging URL"];
+      msg.target = "_blank";
+      const img = document.createElement("img");
+      img.src = "icons/message.png";
+      img.alt = "Message";
+      msg.appendChild(img);
+      iconsDiv.appendChild(msg);
+    }
+    if (team["ics-URL"]) {
+      const sub = document.createElement("a");
+      sub.href = team["ics-URL"];
+      sub.target = "_blank";
+      const img = document.createElement("img");
+      img.src = "icons/calendar.png";
+      img.alt = "Subscribe";
+      sub.appendChild(img);
+      iconsDiv.appendChild(sub);
+    }
+    chip.appendChild(iconsDiv);
 
-    const teamName = `${team.Gender || ""} ${team.Sport || ""} ${team.Level || ""}`.trim();
+    const accordion = document.createElement("div");
+    accordion.className = "accordion";
+    accordion.textContent = team.Coach || team.Contact ? `Coach: ${team.Coach || "N/A"} | Contact: ${team.Contact || "N/A"}` : "Info coming soon…";
 
-    container.innerHTML += `
-      <div class="team-card">
-        <h3>${teamName}</h3>
-        <div class="buttons">
-          <a href="${team["Team Messaging URL"] || '#'}" target="_blank">
-            <button class="message-btn">💬 Message</button>
-          </a>
-          <a href="${team["ics-URL"] || '#'}" target="_blank">
-            <button class="subscribe-btn">📅 Subscribe</button>
-          </a>
-        </div>
-      </div>`;
+    chip.addEventListener("click", (e) => {
+      if (e.target.tagName === "IMG") return; // prevent double toggle
+      accordion.classList.toggle("open");
+    });
+
+    container.appendChild(chip);
+    container.appendChild(accordion);
   });
 }
 
-async function renderSocial() {
-  const data = await fetchCSV(SOCIAL_CSV);
-  const si = document.getElementById("social-icons");
-  const wt = document.getElementById("websites-text");
-  si.innerHTML = ""; wt.innerHTML = "";
+function buildSocials(data) {
+  const container = document.getElementById("social-icons");
+  const headers = data[0];
+  data.slice(1).forEach(row => {
+    const obj = {};
+    headers.forEach((h, i) => obj[h.trim()] = row[i] || "");
+    if (!obj.URL || !obj.Icon) return;
 
-  data.forEach(r => {
-    if (!r.Platform || !r.URL) return;
+    const link = document.createElement("a");
+    link.href = obj.URL;
+    link.target = "_blank";
 
-    // If icon is provided, use local icons folder
-    if (r.Icon) {
-      si.innerHTML += `<a href="${r.URL}" target="_blank">
-        <img src="icons/${r.Icon}" alt="${r.Platform}" onerror="this.onerror=null;this.src='icons/link.png';">
-      </a>`;
-    }
-    // Else just fallback to text link
-    else {
-      wt.innerHTML += `<a href="${r.URL}" target="_blank">${r.Platform}</a>`;
-    }
+    const img = document.createElement("img");
+    img.src = "icons/" + obj.Icon;
+    img.alt = obj.Platform;
+    img.onerror = () => img.src = "icons/red-x.png";
+
+    link.appendChild(img);
+    container.appendChild(link);
   });
 }
 
-document.addEventListener("DOMContentLoaded", async () => {
-  const season = getCurrentSeason();
-  renderChips(season);
-  teamsData = await fetchCSV(TEAMS_CSV);
-  renderTeams();
-  renderSocial();
-});
+async function init() {
+  const teams = await fetchCSV(TEAMS_CSV);
+  buildTeams(teams);
+
+  const socials = await fetchCSV(SOCIALS_CSV);
+  buildSocials(socials);
+}
+
+init(); 
