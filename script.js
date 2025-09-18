@@ -1,7 +1,10 @@
 const TEAMS_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRyUAmM6RN1RGM0conwd_6-3nRI6vHk70bpw7sfykf9GoKq_4xDDq1j_fsKrHdkbYbVnTful0z7koip/pub?gid=589028711&single=true&output=csv";
 const SOCIALS_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRyUAmM6RN1RGM0conwd_6-3nRI6vHk70bpw7sfykf9GoKq_4xDDq1j_fsKrHdkbYbVnTful0z7koip/pub?gid=1519782147&single=true&output=csv";
 
-document.getElementById("logo").addEventListener("click", () => location.reload());
+const logo = document.getElementById("logo");
+if (logo) {
+  logo.addEventListener("click", () => location.reload());
+}
 
 async function fetchCSV(url) {
   const res = await fetch(url);
@@ -11,6 +14,7 @@ async function fetchCSV(url) {
 
 function buildTeams(data) {
   const container = document.getElementById("team-container");
+  if (!container) return;
   const headers = data[0];
   data.slice(1).forEach(row => {
     const team = {};
@@ -78,6 +82,7 @@ function buildTeams(data) {
 
 function buildSocials(data) {
   const container = document.getElementById("social-icons");
+  if (!container) return;
   const headers = data[0];
   data.slice(1).forEach(row => {
     const obj = {};
